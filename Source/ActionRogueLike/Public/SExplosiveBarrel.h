@@ -20,10 +20,20 @@ public:
 protected:
 
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* StaticMeshComponent;
+	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	URadialForceComponent* RadialForceComponent;
+	TObjectPtr<URadialForceComponent> RadialForceComponent;
+
+	UFUNCTION()
+	void OnActorHit(
+		UPrimitiveComponent* HitComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherHitComponent,
+		FVector NormalImpulse,
+		const FHitResult &Hit);
+
+	void PostInitializeComponents();
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

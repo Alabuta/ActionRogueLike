@@ -21,13 +21,13 @@ public:
 protected:
 
 	UPROPERTY(EditAnywhere)
-	USphereComponent* SphereComponent;
+	TObjectPtr<USphereComponent> SphereComponent;
 	
 	UPROPERTY(EditAnywhere)
-	UProjectileMovementComponent* MovementComponent;
+	TObjectPtr<UProjectileMovementComponent> MovementComponent;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystemComponent* FXComponent;
+	TObjectPtr<UParticleSystemComponent> FXComponent;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

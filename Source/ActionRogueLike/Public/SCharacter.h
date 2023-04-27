@@ -26,10 +26,10 @@ public:
 protected:
 
 	UPROPERTY(VisibleAnywhere)
-	USpringArmComponent* SpringArmComponent;
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
 	
 	UPROPERTY(VisibleAnywhere)
-	UCameraComponent* CameraComponent;
+	TObjectPtr<UCameraComponent> CameraComponent;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
