@@ -18,11 +18,11 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 
     RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>("RadialForce");
 	RadialForceComponent->SetupAttachment(StaticMeshComponent);
-	/*RadialForceComponent->SetAutoActivate(false);
+	RadialForceComponent->SetAutoActivate(false);
 	RadialForceComponent->Radius = 750.f;
 	RadialForceComponent->ImpulseStrength = 2'500.f;
-	RadialForceComponent->bImpulseVelChange = true;*/
-	// RadialForceComponent->AddCollisionChannelToAffect(ECC_WorldDynamic);
+	RadialForceComponent->bImpulseVelChange = true;
+	RadialForceComponent->AddCollisionChannelToAffect(ECC_WorldDynamic);
 }
 
 void ASExplosiveBarrel::PostInitializeComponents()
