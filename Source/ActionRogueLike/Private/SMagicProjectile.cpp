@@ -13,17 +13,17 @@ ASMagicProjectile::ASMagicProjectile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	SphereComponent = CreateDefaultSubobject<USphereComponent>("SphereComponent");
+	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	SphereComponent->SetCollisionProfileName("Projectile");
 	
 	RootComponent = SphereComponent;
 
-	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("MoveComponent");
+	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("MoveComponent"));
 	MovementComponent->InitialSpeed = 100.f;
 	MovementComponent->bRotationFollowsVelocity = true;
 	MovementComponent->bInitialVelocityInLocalSpace = true;
 
-	FXComponent = CreateDefaultSubobject<UParticleSystemComponent>("FXComponent");
+	FXComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FXComponent"));
 	FXComponent->SetupAttachment(RootComponent);
 }
 
