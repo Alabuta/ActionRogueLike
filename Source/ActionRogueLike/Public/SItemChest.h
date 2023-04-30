@@ -13,6 +13,11 @@ class ACTIONROGUELIKE_API ASItemChest : public AActor, public ISGameplayInterfac
 	GENERATED_BODY()
 
 	void Interact_Implementation(APawn* InstigatorPawn) override;
+
+public:
+
+	UPROPERTY(EditAnywhere)
+	int TargetPitch = 110;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -25,7 +30,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> LidMeshComponent;
-	
+
+protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
