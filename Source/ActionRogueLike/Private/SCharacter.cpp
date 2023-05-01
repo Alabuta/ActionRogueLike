@@ -78,6 +78,13 @@ void ASCharacter::MoveRight(float Value)
 
 void ASCharacter::PrimaryAttack()
 {
+	PlayAnimMontage(AttackAnim);
+	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_TimeElapsed,
+	                                PrimaryAttackDelay); // :TODO: use animation events
+}
+
+void ASCharacter::PrimaryAttack_TimeElapsed()
+{
 	UWorld* World = GetWorld();
 	if (World == nullptr)
 		return;
