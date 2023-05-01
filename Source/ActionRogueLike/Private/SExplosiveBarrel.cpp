@@ -8,7 +8,6 @@
 // Sets default values
 ASExplosiveBarrel::ASExplosiveBarrel()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
@@ -27,7 +26,6 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 
 void ASExplosiveBarrel::PostInitializeComponents()
 {
-	// Don't forget to call parent function
 	Super::PostInitializeComponents();
 
 	// StaticMeshComponent->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::OnActorHit);
@@ -49,13 +47,11 @@ void ASExplosiveBarrel::OnActorHit(
 	DrawDebugString(GetWorld(), Hit.ImpactPoint, CombinedString, nullptr, FColor::Green, 2.0f, true);
 }
 
-// Called when the game starts or when spawned
 void ASExplosiveBarrel::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-// Called every frame
 void ASExplosiveBarrel::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

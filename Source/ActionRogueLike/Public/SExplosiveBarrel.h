@@ -12,10 +12,6 @@ UCLASS()
 class ACTIONROGUELIKE_API ASExplosiveBarrel : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	ASExplosiveBarrel();
 
 protected:
 
@@ -31,15 +27,15 @@ protected:
 		AActor* OtherActor,
 		UPrimitiveComponent* OtherHitComponent,
 		FVector NormalImpulse,
-		const FHitResult &Hit);
+		const FHitResult& Hit);
 
-	void PostInitializeComponents();
-	
-	// Called when the game starts or when spawned
+	virtual void PostInitializeComponents() override;
+
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+public:
 
+	ASExplosiveBarrel();
+
+	virtual void Tick(float DeltaTime) override;
 };

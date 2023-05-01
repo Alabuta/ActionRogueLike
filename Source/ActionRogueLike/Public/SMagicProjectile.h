@@ -13,27 +13,23 @@ UCLASS()
 class ACTIONROGUELIKE_API ASMagicProjectile : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	ASMagicProjectile();
 
 protected:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USphereComponent> SphereComponent;
-	
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UProjectileMovementComponent> MovementComponent;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UParticleSystemComponent> FXComponent;
 
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+public:
 
+	ASMagicProjectile();
+
+	virtual void Tick(float DeltaTime) override;
 };
