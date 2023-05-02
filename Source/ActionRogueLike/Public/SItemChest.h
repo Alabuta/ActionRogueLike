@@ -14,10 +14,10 @@ class ACTIONROGUELIKE_API ASItemChest : public AActor, public ISGameplayInterfac
 
 protected:
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UStaticMeshComponent> BaseMeshComponent;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UStaticMeshComponent> LidMeshComponent;
 
 	virtual void BeginPlay() override;
