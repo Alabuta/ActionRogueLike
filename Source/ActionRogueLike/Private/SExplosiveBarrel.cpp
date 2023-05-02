@@ -28,7 +28,7 @@ void ASExplosiveBarrel::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	// StaticMeshComponent->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::OnActorHit);
+	StaticMeshComponent->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::OnActorHit);
 }
 
 void ASExplosiveBarrel::OnActorHit(
