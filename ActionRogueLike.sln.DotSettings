@@ -1,0 +1,12 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=21E24E015CAEED48ADB1650071404B61/Text/@EntryValue">virtual $TYPE$ $NAME$() = 0;$END$</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=85AC1A378115B941A073BDEA4513A6C0/Text/@EntryValue">UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="$VAR$")
+TObjectPtr&lt;$TYPE$&gt; $NAME$Component;$END$</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=89ED6D76D9630F428AC06A2B13C8A8AB/Text/@EntryValue">UFUNCTION(BlueprintCallable, Category="$VAR$")
+$TYPE$ $NAME$();$END$</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=A7A281E2FEEB5545821A525D24E98FF2/Text/@EntryValue">UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="$VAR$")
+TObjectPtr&lt;$TYPE$&gt; $NAME$Component;$END$</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=C592877B12E81A4398F9362E29A789B7/Text/@EntryValue">UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="$VAR$")
+TObjectPtr&lt;$TYPE$&gt; $NAME$Component;$END$</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DC973DB108C7464E95B9C762AC042CF6/Text/@EntryValue">UFUNCTION(BlueprintCallable, Category="$VAR$", meta=(WorldContext="WorldContextObject"))
+$TYPE$ $NAME$(UObject* WorldContextObject);$END$</s:String></wpf:ResourceDictionary>
