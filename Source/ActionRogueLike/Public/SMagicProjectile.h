@@ -16,13 +16,13 @@ class ACTIONROGUELIKE_API ASMagicProjectile : public AActor
 
 protected:
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TObjectPtr<USphereComponent> SphereComponent;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TObjectPtr<UProjectileMovementComponent> MovementComponent;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TObjectPtr<UParticleSystemComponent> FXComponent;
 
 	virtual void BeginPlay() override;

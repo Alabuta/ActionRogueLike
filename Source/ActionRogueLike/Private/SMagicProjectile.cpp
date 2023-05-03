@@ -17,7 +17,7 @@ ASMagicProjectile::ASMagicProjectile()
 	RootComponent = SphereComponent;
 
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("MoveComponent"));
-	MovementComponent->InitialSpeed = 100.f;
+	MovementComponent->InitialSpeed = 800.f;
 	MovementComponent->bRotationFollowsVelocity = true;
 	MovementComponent->bInitialVelocityInLocalSpace = true;
 
