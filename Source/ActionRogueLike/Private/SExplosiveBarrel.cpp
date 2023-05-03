@@ -20,7 +20,7 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 	RadialForceComponent->SetAutoActivate(false);
 	RadialForceComponent->Radius = 750.f;
 	RadialForceComponent->ImpulseStrength = 2'500.f;
-	RadialForceComponent->bImpulseVelChange = true;
+	RadialForceComponent->bImpulseVelChange = false;
 	RadialForceComponent->AddCollisionChannelToAffect(ECC_WorldDynamic);
 }
 
@@ -56,4 +56,3 @@ void ASExplosiveBarrel::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
-

@@ -51,8 +51,9 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("LookUp", this, &ASCharacter::AddControllerPitchInput);
 
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &ASCharacter::PrimaryAttack);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASCharacter::Jump);
 	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &ASCharacter::PrimaryInteract);
+
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASCharacter::Jump);
 }
 
 void ASCharacter::MoveForward(float Value)
@@ -89,8 +90,29 @@ void ASCharacter::PrimaryAttack_TimeElapsed()
 	if (World == nullptr)
 		return;
 
+	FCollisionObjectQueryParams ObjectQueryParams;
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
+
+	FCollisionShape Shape;
+	Shape.SetSphere(20.0f);
+
+	FCollisionQueryParams AdditionalQueryParams;
+	AdditionalQueryParams.AddIgnoredActor(this);
+
+	FVector TraceStart = CameraComponent->GetComponentLocation();
+	FVector TraceEnd = TraceStart + GetControlRotation().Vector() * 10'000;
+
+	FHitResult Hit;
+	bool bBlockingHit = World->SweepSingleByObjectType(Hit, TraceStart, TraceEnd, FQuat::Identity,
+	                                                   ObjectQueryParams, Shape, AdditionalQueryParams);
+	if (bBlockingHit)
+		TraceEnd = Hit.ImpactPoint;
+
 	const FVector RightHandSocketLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	const FTransform SpawnTransform = FTransform(GetControlRotation(), RightHandSocketLocation);
+	FRotator SpawnRotation = FRotationMatrix::MakeFromX(TraceEnd - RightHandSocketLocation).Rotator();
+	const FTransform SpawnTransform = FTransform(SpawnRotation, RightHandSocketLocation);
 
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
