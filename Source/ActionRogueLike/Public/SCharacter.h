@@ -17,17 +17,29 @@ class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 
 protected:
 
-	UPROPERTY(EditAnywhere, Category="Attack")
+	UPROPERTY(EditAnywhere, Category="Config|Primary Attack")
 	TSubclassOf<AActor> ProjectileClass;
 
-	UPROPERTY(EditAnywhere, Category="Attack")
+	UPROPERTY(EditAnywhere, Category="Config|Primary Attack")
 	TObjectPtr<UAnimMontage> AttackAnim;
 
-	UPROPERTY(EditAnywhere, Category="Attack")
+	UPROPERTY(EditAnywhere, Category="Config|Primary Attack")
 	FTimerHandle TimerHandle_PrimaryAttack;
 	
-	UPROPERTY(EditAnywhere, Category="Attack")
+	UPROPERTY(EditAnywhere, Category="Config|Primary Attack")
 	float PrimaryAttackDelay = .2f;
+
+	UPROPERTY(EditAnywhere, Category="Config|Black Hole Attack")
+	TSubclassOf<AActor> BlackHoleAttackProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category="Config|Black Hole Attack")
+	TObjectPtr<UAnimMontage> BlackHoleAttackAnim;
+
+	UPROPERTY(EditAnywhere, Category="Config|Black Hole Attack")
+	FTimerHandle TimerHandle_BlackHoleAttack;
+	
+	UPROPERTY(EditAnywhere, Category="Config|Black Hole Attack")
+	float BlackHoleAttackDelay = .2f;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
@@ -45,6 +57,9 @@ protected:
 
 	void PrimaryAttack();
 	void PrimaryAttack_TimeElapsed();
+	
+	void BlackHoleAttack();
+	void BlackHoleAttack_TimeElapsed();
 
 	void PrimaryInteract();
 

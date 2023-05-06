@@ -4,7 +4,6 @@
 #include "SCharacter.h"
 
 #include "SInteractionComponent.h"
-#include "GenericPlatform/GenericPlatformMath.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -51,6 +50,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("LookUp", this, &ASCharacter::AddControllerPitchInput);
 
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &ASCharacter::PrimaryAttack);
+	PlayerInputComponent->BindAction("BlackHoleAttack", IE_Pressed, this, &ASCharacter::BlackHoleAttack);
 	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &ASCharacter::PrimaryInteract);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASCharacter::Jump);
@@ -87,8 +87,6 @@ void ASCharacter::PrimaryAttack()
 void ASCharacter::PrimaryAttack_TimeElapsed()
 {
 	UWorld* World = GetWorld();
-	if (World == nullptr)
-		return;
 
 	FCollisionObjectQueryParams ObjectQueryParams;
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
@@ -119,6 +117,27 @@ void ASCharacter::PrimaryAttack_TimeElapsed()
 	SpawnParameters.Instigator = this;
 
 	World->SpawnActor<AActor>(ProjectileClass, SpawnTransform, SpawnParameters);
+}
+
+void ASCharacter::BlackHoleAttack()
+{
+	PlayAnimMontage(AttackAnim);
+	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::BlackHoleAttack_TimeElapsed,
+									PrimaryAttackDelay); // :TODO: use animation events
+}
+
+void ASCharacter::BlackHoleAttack_TimeElapsed()
+{
+	UWorld* World = GetWorld();
+
+	const FVector RightHandSocketLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	const FTransform SpawnTransform = FTransform(GetControlRotation(), RightHandSocketLocation);
+
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParameters.Instigator = this;
+
+	World->SpawnActor<AActor>(BlackHoleAttackProjectileClass, SpawnTransform, SpawnParameters);
 }
 
 void ASCharacter::PrimaryInteract()
