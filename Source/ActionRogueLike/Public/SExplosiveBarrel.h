@@ -15,10 +15,10 @@ class ACTIONROGUELIKE_API ASExplosiveBarrel : public AActor
 
 protected:
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category="Components")
 	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components")
 	TObjectPtr<URadialForceComponent> RadialForceComponent;
 
 	UFUNCTION()
