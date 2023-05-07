@@ -9,20 +9,6 @@
 
 ASMagicProjectile::ASMagicProjectile()
 {
-	PrimaryActorTick.bCanEverTick = true;
-
-	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-	SphereComponent->SetCollisionProfileName("Projectile");
-	
-	RootComponent = SphereComponent;
-
-	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("MoveComponent"));
-	MovementComponent->InitialSpeed = 800.f;
-	MovementComponent->bRotationFollowsVelocity = true;
-	MovementComponent->bInitialVelocityInLocalSpace = true;
-
-	FXComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FXComponent"));
-	FXComponent->SetupAttachment(RootComponent);
 }
 
 void ASMagicProjectile::BeginPlay()
