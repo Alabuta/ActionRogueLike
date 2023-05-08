@@ -14,17 +14,15 @@ ASProjectileBase::ASProjectileBase()
 
 	ColliderComponent = CreateDefaultSubobject<USphereComponent>(TEXT("ColliderComponent"));
 	ColliderComponent->SetCollisionProfileName("Projectile");
-	ColliderComponent->SetSimulatePhysics(false);
-	ColliderComponent->SetEnableGravity(false);
 	SetRootComponent(ColliderComponent);
 
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("MovementComponent"));
+	MovementComponent->ProjectileGravityScale = 0.f;
 	MovementComponent->InitialSpeed = 1'000.f;
 	MovementComponent->bRotationFollowsVelocity = true;
 	MovementComponent->bInitialVelocityInLocalSpace = true;
 
 	VfxComponent = CreateDefaultSubobject<UParticleSystemComponent>("VfxComponent");
-	// VfxComponent->SetComponentTickEnabled(false);
 	VfxComponent->SetupAttachment(RootComponent);
 }
 
