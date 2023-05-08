@@ -3,6 +3,7 @@
 
 #include "SCharacter.h"
 
+#include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -21,6 +22,8 @@ ASCharacter::ASCharacter()
 	CameraComponent->bUsePawnControlRotation = false;
 
 	InteractionComponent = CreateDefaultSubobject<USInteractionComponent>(TEXT("InteractionComponent"));
+
+	AttributeComponent = CreateDefaultSubobject<USAttributeComponent>(TEXT("AttributeComponent"));
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
@@ -86,6 +89,9 @@ void ASCharacter::PrimaryAttack()
 
 void ASCharacter::PrimaryAttack_TimeElapsed()
 {
+	if (!ensureAlways(ProjectileClass))
+		return;
+
 	UWorld* World = GetWorld();
 
 	FCollisionObjectQueryParams ObjectQueryParams;
@@ -123,11 +129,14 @@ void ASCharacter::BlackHoleAttack()
 {
 	PlayAnimMontage(AttackAnim);
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::BlackHoleAttack_TimeElapsed,
-									PrimaryAttackDelay); // :TODO: use animation events
+	                                PrimaryAttackDelay); // :TODO: use animation events
 }
 
 void ASCharacter::BlackHoleAttack_TimeElapsed()
 {
+	if (!ensureAlways(BlackHoleAttackProjectileClass))
+		return;
+
 	UWorld* World = GetWorld();
 
 	const FVector RightHandSocketLocation = GetMesh()->GetSocketLocation("Muzzle_01");

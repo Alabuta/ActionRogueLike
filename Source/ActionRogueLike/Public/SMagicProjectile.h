@@ -15,13 +15,22 @@ class ACTIONROGUELIKE_API ASMagicProjectile : public ASProjectileBase
 {
 	GENERATED_BODY()
 
-protected:
-
-	virtual void BeginPlay() override;
-
 public:
 
 	ASMagicProjectile();
 
-	virtual void Tick(float DeltaTime) override;
+protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Config")
+	float HealthDamageValue = -20.f;
+
+private:
+	
+	UFUNCTION()
+	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
+	                    AActor* OtherActor,
+	                    UPrimitiveComponent* OtherComp,
+	                    int32 OtherBodyIndex,
+	                    bool bFromSweep,
+	                    const FHitResult& SweepResult);
 };
