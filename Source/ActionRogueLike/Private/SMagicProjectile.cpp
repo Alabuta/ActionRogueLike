@@ -23,6 +23,9 @@ void ASMagicProjectile::OnActorOverlap(
 	if (OtherActor == nullptr)
 		return;
 
+	if (OtherActor == GetInstigator())
+		return;
+
 	USAttributeComponent* AttributeComponent = Cast<USAttributeComponent>(
 		OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
 
