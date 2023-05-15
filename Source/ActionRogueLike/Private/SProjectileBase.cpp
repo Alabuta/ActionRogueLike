@@ -5,6 +5,7 @@
 
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 
 
@@ -14,11 +15,12 @@ ASProjectileBase::ASProjectileBase()
 
 	ColliderComponent = CreateDefaultSubobject<USphereComponent>(TEXT("ColliderComponent"));
 	ColliderComponent->SetCollisionProfileName("Projectile");
+	ColliderComponent->OnComponentHit.AddDynamic(this, &ASProjectileBase::OnActorHit);
 	SetRootComponent(ColliderComponent);
 
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("MovementComponent"));
 	MovementComponent->ProjectileGravityScale = 0.f;
-	MovementComponent->InitialSpeed = 1'000.f;
+	MovementComponent->InitialSpeed = 2'000.f;
 	MovementComponent->bRotationFollowsVelocity = true;
 	MovementComponent->bInitialVelocityInLocalSpace = true;
 
@@ -29,6 +31,24 @@ ASProjectileBase::ASProjectileBase()
 void ASProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ASProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComponent,
+	FVector NormalImpulse,
+	const FHitResult& Hit)
+{
+	Explode();
+}
+
+void ASProjectileBase::Explode_Implementation()
+{
+	if (!ensure(IsValid(this)))
+		return;
+
+	UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVfx, GetActorLocation(), GetActorRotation());
+	Destroy();
 }
 
 void ASProjectileBase::Tick(float DeltaTime)

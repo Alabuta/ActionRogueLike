@@ -54,9 +54,11 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &ASCharacter::PrimaryAttack);
 	PlayerInputComponent->BindAction("BlackHoleAttack", IE_Pressed, this, &ASCharacter::BlackHoleAttack);
+	
 	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &ASCharacter::PrimaryInteract);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASCharacter::Jump);
+	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &ASCharacter::Dash);
 }
 
 void ASCharacter::MoveForward(float Value)
@@ -89,7 +91,57 @@ void ASCharacter::PrimaryAttack()
 
 void ASCharacter::PrimaryAttack_TimeElapsed()
 {
-	if (!ensureAlways(ProjectileClass))
+	SpawnProjectile(ProjectileClass);
+}
+
+void ASCharacter::BlackHoleAttack()
+{
+	PlayAnimMontage(BlackHoleAttackAnim);
+	GetWorldTimerManager().SetTimer(TimerHandle_BlackHoleAttack, this, &ASCharacter::BlackHoleAttack_TimeElapsed,
+	                                BlackHoleAttackDelay); // :TODO: use animation events
+}
+
+void ASCharacter::BlackHoleAttack_TimeElapsed()
+{
+	SpawnProjectile(BlackHoleAttackProjectileClass);
+	/*if (!ensureAlways(BlackHoleAttackProjectileClass))
+		return;
+
+	UWorld* World = GetWorld();
+
+	const FVector RightHandSocketLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	const FTransform SpawnTransform = FTransform(GetControlRotation(), RightHandSocketLocation);
+
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParameters.Instigator = this;
+
+	World->SpawnActor<AActor>(BlackHoleAttackProjectileClass, SpawnTransform, SpawnParameters);*/
+}
+
+void ASCharacter::Dash()
+{
+	PlayAnimMontage(DashAttackAnim);
+	GetWorldTimerManager().SetTimer(TimerHandle_Dash, this, &ASCharacter::Dash_TimeElapsed, 
+									DashAttackDelay); // :TODO: use animation events
+}
+
+void ASCharacter::Dash_TimeElapsed()
+{
+	SpawnProjectile(DashProjectileClass);
+}
+
+void ASCharacter::PrimaryInteract()
+{
+	if (InteractionComponent == nullptr)
+		return;
+
+	InteractionComponent->PrimaryInteract();
+}
+
+void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClassToSpawn)
+{
+	if (!ensureAlways(ProjectileClassToSpawn))
 		return;
 
 	UWorld* World = GetWorld();
@@ -106,7 +158,7 @@ void ASCharacter::PrimaryAttack_TimeElapsed()
 	AdditionalQueryParams.AddIgnoredActor(this);
 
 	FVector TraceStart = CameraComponent->GetComponentLocation();
-	FVector TraceEnd = TraceStart + GetControlRotation().Vector() * 10'000;
+	FVector TraceEnd = TraceStart + GetControlRotation().Vector() * 5'000;
 
 	FHitResult Hit;
 	bool bBlockingHit = World->SweepSingleByObjectType(Hit, TraceStart, TraceEnd, FQuat::Identity,
@@ -122,37 +174,5 @@ void ASCharacter::PrimaryAttack_TimeElapsed()
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParameters.Instigator = this;
 
-	World->SpawnActor<AActor>(ProjectileClass, SpawnTransform, SpawnParameters);
-}
-
-void ASCharacter::BlackHoleAttack()
-{
-	PlayAnimMontage(AttackAnim);
-	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::BlackHoleAttack_TimeElapsed,
-	                                PrimaryAttackDelay); // :TODO: use animation events
-}
-
-void ASCharacter::BlackHoleAttack_TimeElapsed()
-{
-	if (!ensureAlways(BlackHoleAttackProjectileClass))
-		return;
-
-	UWorld* World = GetWorld();
-
-	const FVector RightHandSocketLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	const FTransform SpawnTransform = FTransform(GetControlRotation(), RightHandSocketLocation);
-
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParameters.Instigator = this;
-
-	World->SpawnActor<AActor>(BlackHoleAttackProjectileClass, SpawnTransform, SpawnParameters);
-}
-
-void ASCharacter::PrimaryInteract()
-{
-	if (InteractionComponent == nullptr)
-		return;
-
-	InteractionComponent->PrimaryInteract();
+	World->SpawnActor<AActor>(ProjectileClassToSpawn, SpawnTransform, SpawnParameters);
 }

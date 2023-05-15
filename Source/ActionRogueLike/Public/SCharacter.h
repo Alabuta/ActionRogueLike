@@ -16,6 +16,14 @@ class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+public:
+
+	ASCharacter();
+
+	virtual void Tick(float DeltaTime) override;
+
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
 protected:
 
 	UPROPERTY(EditAnywhere, Category="Config|Primary Attack")
@@ -23,9 +31,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Config|Primary Attack")
 	TObjectPtr<UAnimMontage> AttackAnim;
-
-	UPROPERTY(EditAnywhere, Category="Config|Primary Attack")
-	FTimerHandle TimerHandle_PrimaryAttack;
 	
 	UPROPERTY(EditAnywhere, Category="Config|Primary Attack")
 	float PrimaryAttackDelay = .2f;
@@ -35,12 +40,18 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Config|Black Hole Attack")
 	TObjectPtr<UAnimMontage> BlackHoleAttackAnim;
-
-	UPROPERTY(EditAnywhere, Category="Config|Black Hole Attack")
-	FTimerHandle TimerHandle_BlackHoleAttack;
 	
 	UPROPERTY(EditAnywhere, Category="Config|Black Hole Attack")
 	float BlackHoleAttackDelay = .2f;
+
+	UPROPERTY(EditAnywhere, Category="Config|Dash")
+	TSubclassOf<AActor> DashProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category="Config|Dash")
+	TObjectPtr<UAnimMontage> DashAttackAnim;
+	
+	UPROPERTY(EditAnywhere, Category="Config|Dash")
+	float DashAttackDelay = .2f;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
@@ -56,22 +67,25 @@ protected:
 	
 	virtual void BeginPlay() override;
 
+private:
+
+	FTimerHandle TimerHandle_PrimaryAttack;
+	FTimerHandle TimerHandle_BlackHoleAttack;
+	FTimerHandle TimerHandle_Dash;
+
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
 	void PrimaryAttack();
 	void PrimaryAttack_TimeElapsed();
-	
+
 	void BlackHoleAttack();
 	void BlackHoleAttack_TimeElapsed();
 
 	void PrimaryInteract();
-
-public:
-
-	ASCharacter();
-
-	virtual void Tick(float DeltaTime) override;
-
-	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	
+	void Dash();
+	void Dash_TimeElapsed();
+	
+	void SpawnProjectile(TSubclassOf<AActor> ProjectileClassToSpawn);
 };

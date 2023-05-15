@@ -28,10 +28,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UProjectileMovementComponent> MovementComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UParticleSystem> ImpactVfx;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	TObjectPtr<UParticleSystemComponent> VfxComponent;
+
 	virtual void BeginPlay() override;
 
-private:
+	UFUNCTION()
+	virtual void OnActorHit(
+		UPrimitiveComponent* HitComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComponent,
+		FVector NormalImpulse,
+		const FHitResult& Hit);
 
-	UPROPERTY(VisibleAnywhere, Category="Components")
-	TObjectPtr<UParticleSystemComponent> VfxComponent;
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void Explode();
 };

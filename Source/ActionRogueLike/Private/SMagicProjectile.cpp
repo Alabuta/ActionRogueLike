@@ -9,7 +9,6 @@
 
 ASMagicProjectile::ASMagicProjectile()
 {
-	ColliderComponent->OnComponentBeginOverlap.AddDynamic(this, &ASMagicProjectile::OnActorOverlap);
 }
 
 void ASMagicProjectile::OnActorOverlap(
