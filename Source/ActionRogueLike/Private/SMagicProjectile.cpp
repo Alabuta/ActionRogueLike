@@ -19,7 +19,7 @@ void ASMagicProjectile::OnActorOverlap(
 	bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	if (OtherActor == nullptr)
+	if (!OtherActor)
 		return;
 
 	if (OtherActor == GetInstigator())
@@ -28,7 +28,7 @@ void ASMagicProjectile::OnActorOverlap(
 	USAttributeComponent* AttributeComponent = Cast<USAttributeComponent>(
 		OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
 
-	if (AttributeComponent == nullptr)
+	if (!AttributeComponent)
 		return;
 
 	AttributeComponent->ApplyHealthChange(HealthDamageValue);

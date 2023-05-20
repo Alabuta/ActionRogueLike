@@ -15,7 +15,6 @@ class ACTIONROGUELIKE_API ASTargetDummy : public AActor
 
 public:
 
-	// Sets default values for this actor's properties
 	ASTargetDummy();
 
 protected:

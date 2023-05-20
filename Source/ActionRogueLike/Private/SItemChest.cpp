@@ -19,13 +19,3 @@ void ASItemChest::Interact_Implementation(APawn* InstigatorPawn)
 	LidMeshComponent->SetRelativeRotation(FRotator(TargetPitch, 0, 0));
 }
 
-void ASItemChest::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-void ASItemChest::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-

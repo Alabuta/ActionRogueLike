@@ -28,12 +28,8 @@ ASProjectileBase::ASProjectileBase()
 	VfxComponent->SetupAttachment(RootComponent);
 }
 
-void ASProjectileBase::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-void ASProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent,
+void ASProjectileBase::OnActorHit(
+	UPrimitiveComponent* HitComponent,
 	AActor* OtherActor,
 	UPrimitiveComponent* OtherComponent,
 	FVector NormalImpulse,
@@ -49,9 +45,4 @@ void ASProjectileBase::Explode_Implementation()
 
 	UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVfx, GetActorLocation(), GetActorRotation());
 	Destroy();
-}
-
-void ASProjectileBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }

@@ -27,7 +27,9 @@ protected:
 
 	virtual void Explode_Implementation() override;
 
-	void TeleportInstigator();
-
 	virtual void BeginPlay() override;
+
+private:
+	
+	void TeleportInstigator() const;
 };

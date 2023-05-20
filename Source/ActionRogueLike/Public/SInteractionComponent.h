@@ -12,17 +12,9 @@ class ACTIONROGUELIKE_API USInteractionComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-protected:
-
-	virtual void BeginPlay() override;
-
 public:
 
 	USInteractionComponent();
 
 	void PrimaryInteract();
-
-	virtual void TickComponent(float DeltaTime,
-	                           ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
 };

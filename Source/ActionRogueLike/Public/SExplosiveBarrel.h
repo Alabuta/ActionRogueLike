@@ -13,6 +13,10 @@ class ACTIONROGUELIKE_API ASExplosiveBarrel : public AActor
 {
 	GENERATED_BODY()
 
+public:
+
+	ASExplosiveBarrel();
+
 protected:
 
 	UPROPERTY(EditAnywhere, Category="Components")
@@ -30,12 +34,4 @@ protected:
 		const FHitResult& Hit);
 
 	virtual void PostInitializeComponents() override;
-
-	virtual void BeginPlay() override;
-
-public:
-
-	ASExplosiveBarrel();
-
-	virtual void Tick(float DeltaTime) override;
 };

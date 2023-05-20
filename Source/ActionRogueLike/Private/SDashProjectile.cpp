@@ -35,7 +35,7 @@ void ASDashProjectile::Explode_Implementation()
 	GetWorldTimerManager().SetTimer(TimerHandle_DelayedTeleport, this, &ASDashProjectile::TeleportInstigator, TeleportDelay);
 }
 
-void ASDashProjectile::TeleportInstigator()
+void ASDashProjectile::TeleportInstigator() const
 {
 	auto* ActorToTeleport = GetInstigator();
 	if (!ensure(ActorToTeleport))

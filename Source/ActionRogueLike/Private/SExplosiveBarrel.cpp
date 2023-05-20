@@ -46,13 +46,3 @@ void ASExplosiveBarrel::OnActorHit(
 	const FString CombinedString = FString::Printf(TEXT("Hit at location: %s"), *Hit.ImpactPoint.ToString());
 	DrawDebugString(GetWorld(), Hit.ImpactPoint, CombinedString, nullptr, FColor::Green, 2.0f, true);
 }
-
-void ASExplosiveBarrel::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-void ASExplosiveBarrel::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}

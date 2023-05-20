@@ -18,23 +18,19 @@ public:
 
 	ASProjectileBase();
 
-	virtual void Tick(float DeltaTime) override;
-
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<USphereComponent> ColliderComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UProjectileMovementComponent> MovementComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<UParticleSystem> ImpactVfx;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UParticleSystemComponent> VfxComponent;
 
-	virtual void BeginPlay() override;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Effects")
+	TObjectPtr<UParticleSystem> ImpactVfx;
 
 	UFUNCTION()
 	virtual void OnActorHit(

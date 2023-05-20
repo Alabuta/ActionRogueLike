@@ -20,8 +20,6 @@ public:
 
 	ASCharacter();
 
-	virtual void Tick(float DeltaTime) override;
-
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 protected:
@@ -65,8 +63,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config|Components")
 	TObjectPtr<USAttributeComponent> AttributeComponent;
 	
-	virtual void BeginPlay() override;
-
 private:
 
 	FTimerHandle TimerHandle_PrimaryAttack;

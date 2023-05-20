@@ -12,6 +12,13 @@ class ACTIONROGUELIKE_API ASItemChest : public AActor, public ISGameplayInterfac
 {
 	GENERATED_BODY()
 
+public:
+
+	UPROPERTY(EditAnywhere)
+	int TargetPitch = 110;
+
+	ASItemChest();
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
@@ -20,16 +27,5 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UStaticMeshComponent> LidMeshComponent;
 
-	virtual void BeginPlay() override;
-
-public:
-
-	UPROPERTY(EditAnywhere)
-	int TargetPitch = 110;
-
-	ASItemChest();
-
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
-
-	virtual void Tick(float DeltaTime) override;
 };
