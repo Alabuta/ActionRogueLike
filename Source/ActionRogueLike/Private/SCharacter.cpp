@@ -52,7 +52,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void ASCharacter::MoveForward(float Value)
 {
-	FRotator ControlRotation = GetControlRotation();
+	auto ControlRotation = GetControlRotation();
 	ControlRotation.Pitch = 0;
 	ControlRotation.Roll = 0;
 
@@ -61,12 +61,12 @@ void ASCharacter::MoveForward(float Value)
 
 void ASCharacter::MoveRight(float Value)
 {
-	FRotator ControlRotation = GetControlRotation();
+	auto ControlRotation = GetControlRotation();
 	// ControlRotation.Yaw = FGenericPlatformMath::Abs(ControlRotation.Yaw);
 	ControlRotation.Pitch = 0;
 	ControlRotation.Roll = 0;
 
-	const FVector RightVector = FRotationMatrix(ControlRotation).GetScaledAxis(EAxis::Y);
+	const auto RightVector = FRotationMatrix(ControlRotation).GetScaledAxis(EAxis::Y);
 
 	AddMovementInput(RightVector, Value);
 }
@@ -122,7 +122,7 @@ void ASCharacter::Dash_TimeElapsed()
 
 void ASCharacter::PrimaryInteract()
 {
-	if (InteractionComponent == nullptr)
+	if (!InteractionComponent)
 		return;
 
 	InteractionComponent->PrimaryInteract();
@@ -133,7 +133,7 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClassToSpawn)
 	if (!ensureAlways(ProjectileClassToSpawn))
 		return;
 
-	UWorld* World = GetWorld();
+	auto* World = GetWorld();
 
 	FCollisionObjectQueryParams ObjectQueryParams;
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
@@ -146,18 +146,18 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClassToSpawn)
 	FCollisionQueryParams AdditionalQueryParams;
 	AdditionalQueryParams.AddIgnoredActor(this);
 
-	FVector TraceStart = CameraComponent->GetComponentLocation();
-	FVector TraceEnd = TraceStart + GetControlRotation().Vector() * 5'000;
+	auto TraceStart = CameraComponent->GetComponentLocation();
+	auto TraceEnd = TraceStart + GetControlRotation().Vector() * 5'000;
 
 	FHitResult Hit;
-	bool bBlockingHit = World->SweepSingleByObjectType(Hit, TraceStart, TraceEnd, FQuat::Identity,
+	auto bBlockingHit = World->SweepSingleByObjectType(Hit, TraceStart, TraceEnd, FQuat::Identity,
 	                                                   ObjectQueryParams, Shape, AdditionalQueryParams);
 	if (bBlockingHit)
 		TraceEnd = Hit.ImpactPoint;
 
-	const FVector RightHandSocketLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	FRotator SpawnRotation = FRotationMatrix::MakeFromX(TraceEnd - RightHandSocketLocation).Rotator();
-	const FTransform SpawnTransform = FTransform(SpawnRotation, RightHandSocketLocation);
+	const auto RightHandSocketLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	auto SpawnRotation = FRotationMatrix::MakeFromX(TraceEnd - RightHandSocketLocation).Rotator();
+	const auto SpawnTransform = FTransform(SpawnRotation, RightHandSocketLocation);
 
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;

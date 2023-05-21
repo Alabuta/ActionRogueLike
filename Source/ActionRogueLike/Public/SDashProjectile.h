@@ -25,9 +25,8 @@ protected:
 
 	FTimerHandle TimerHandle_DelayedDetonate;
 
-	virtual void Explode_Implementation() override;
-
 	virtual void BeginPlay() override;
+	virtual void Explode_Implementation() override;
 
 private:
 	
