@@ -4,10 +4,12 @@
 #include "SMagicProjectile.h"
 
 #include "SAttributeComponent.h"
+#include "Components/SphereComponent.h"
 
 
 ASMagicProjectile::ASMagicProjectile()
 {
+	ColliderComponent->OnComponentBeginOverlap.AddDynamic(this, &ASMagicProjectile::OnActorOverlap);
 }
 
 void ASMagicProjectile::OnActorOverlap(
