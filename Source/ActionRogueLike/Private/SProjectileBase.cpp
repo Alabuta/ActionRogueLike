@@ -44,5 +44,11 @@ void ASProjectileBase::Explode_Implementation()
 		return;
 
 	UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVfx, GetActorLocation(), GetActorRotation());
+
+	/*VfxComponent->DeactivateSystem();
+
+	MovementComponent->StopMovementImmediately();
+	SetActorEnableCollision(false);*/
+	
 	Destroy();
 }

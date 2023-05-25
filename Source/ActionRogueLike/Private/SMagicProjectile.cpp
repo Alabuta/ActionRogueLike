@@ -4,7 +4,6 @@
 #include "SMagicProjectile.h"
 
 #include "SAttributeComponent.h"
-#include "Components/SphereComponent.h"
 
 
 ASMagicProjectile::ASMagicProjectile()
