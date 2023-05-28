@@ -165,3 +165,21 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClassToSpawn)
 
 	World->SpawnActor<AActor>(ProjectileClassToSpawn, SpawnTransform, SpawnParameters);
 }
+
+void ASCharacter::OnHealthChanged(AActor* InstigatorActor,
+	USAttributeComponent* OwningComponent,
+	float NewHealth,
+	float Delta)
+{
+	if (NewHealth <= 0.f && Delta < 0.f)
+	{
+		DisableInput(Cast<APlayerController>(GetController()));
+	}
+}
+
+void ASCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	
+	AttributeComponent->OnHealthChange.AddDynamic(this, &ASCharacter::OnHealthChanged);
+}
