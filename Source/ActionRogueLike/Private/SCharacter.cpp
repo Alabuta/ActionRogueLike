@@ -74,8 +74,11 @@ void ASCharacter::MoveRight(float Value)
 void ASCharacter::PrimaryAttack()
 {
 	PlayAnimMontage(AttackAnim);
-	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_TimeElapsed,
-	                                PrimaryAttackDelay); // :TODO: use animation events
+	GetWorldTimerManager().SetTimer(
+		TimerHandle_PrimaryAttack,
+		this,
+		&ASCharacter::PrimaryAttack_TimeElapsed,
+		PrimaryAttackDelay); // :TODO: use animation events
 }
 
 void ASCharacter::PrimaryAttack_TimeElapsed()
@@ -93,19 +96,6 @@ void ASCharacter::BlackHoleAttack()
 void ASCharacter::BlackHoleAttack_TimeElapsed()
 {
 	SpawnProjectile(BlackHoleAttackProjectileClass);
-	/*if (!ensureAlways(BlackHoleAttackProjectileClass))
-		return;
-
-	UWorld* World = GetWorld();
-
-	const FVector RightHandSocketLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	const FTransform SpawnTransform = FTransform(GetControlRotation(), RightHandSocketLocation);
-
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParameters.Instigator = this;
-
-	World->SpawnActor<AActor>(BlackHoleAttackProjectileClass, SpawnTransform, SpawnParameters);*/
 }
 
 void ASCharacter::Dash()
@@ -149,14 +139,22 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClassToSpawn)
 	auto TraceStart = CameraComponent->GetComponentLocation();
 	auto TraceEnd = TraceStart + GetControlRotation().Vector() * 5'000;
 
-	FHitResult Hit;
-	auto bBlockingHit = World->SweepSingleByObjectType(Hit, TraceStart, TraceEnd, FQuat::Identity,
-	                                                   ObjectQueryParams, Shape, AdditionalQueryParams);
-	if (bBlockingHit)
-		TraceEnd = Hit.ImpactPoint;
-
 	const auto RightHandSocketLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	auto SpawnRotation = FRotationMatrix::MakeFromX(TraceEnd - RightHandSocketLocation).Rotator();
+
+	FHitResult Hit;
+	auto bBlockingHit = World->SweepSingleByObjectType(
+		Hit,
+		TraceStart,
+		TraceEnd,
+		FQuat::Identity,
+		ObjectQueryParams,
+		Shape,
+		AdditionalQueryParams);
+
+	auto SpawnRotation = bBlockingHit
+		                ? FRotationMatrix::MakeFromX(Hit.ImpactPoint - RightHandSocketLocation).Rotator()
+		                : FRotationMatrix::MakeFromX(TraceEnd - RightHandSocketLocation).Rotator();
+
 	const auto SpawnTransform = FTransform(SpawnRotation, RightHandSocketLocation);
 
 	FActorSpawnParameters SpawnParameters;
@@ -166,15 +164,14 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClassToSpawn)
 	World->SpawnActor<AActor>(ProjectileClassToSpawn, SpawnTransform, SpawnParameters);
 }
 
-void ASCharacter::OnHealthChanged(AActor* InstigatorActor,
+void ASCharacter::OnHealthChanged(
+	AActor* InstigatorActor,
 	USAttributeComponent* OwningComponent,
 	float NewHealth,
 	float Delta)
 {
 	if (NewHealth <= 0.f && Delta < 0.f)
-	{
 		DisableInput(Cast<APlayerController>(GetController()));
-	}
 }
 
 void ASCharacter::PostInitializeComponents()

@@ -22,7 +22,7 @@ public:
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Config")
-	float HealthDamageValue = -20.f;
+	float HealthDamageValue = 20.f;
 
 	UFUNCTION()
 	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent,

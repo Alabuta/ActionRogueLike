@@ -11,7 +11,7 @@
 
 ASProjectileBase::ASProjectileBase()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	// PrimaryActorTick.bCanEverTick = true;
 
 	ColliderComponent = CreateDefaultSubobject<USphereComponent>(TEXT("ColliderComponent"));
 	ColliderComponent->SetCollisionProfileName("Projectile");
@@ -45,10 +45,16 @@ void ASProjectileBase::Explode_Implementation()
 
 	UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVfx, GetActorLocation(), GetActorRotation());
 
-	/*VfxComponent->DeactivateSystem();
+	VfxComponent->DeactivateSystem();
 
 	MovementComponent->StopMovementImmediately();
-	SetActorEnableCollision(false);*/
+	SetActorEnableCollision(false);
 	
 	Destroy();
+}
+
+void ASProjectileBase::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	// ColliderComponent->IgnoreActorWhenMoving(GetInstigator(), true);
 }

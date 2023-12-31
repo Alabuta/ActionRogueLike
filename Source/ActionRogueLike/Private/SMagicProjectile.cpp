@@ -9,6 +9,7 @@
 
 ASMagicProjectile::ASMagicProjectile()
 {
+	ColliderComponent->SetSphereRadius(20.f);
 	ColliderComponent->OnComponentBeginOverlap.AddDynamic(this, &ASMagicProjectile::OnActorOverlap);
 }
 
@@ -26,12 +27,12 @@ void ASMagicProjectile::OnActorOverlap(
 	if (OtherActor == GetInstigator())
 		return;
 
-	USAttributeComponent* AttributeComponent = Cast<USAttributeComponent>(
-		OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
-
+	auto* ActorComponent = OtherActor->GetComponentByClass(USAttributeComponent::StaticClass());
+	auto* AttributeComponent = Cast<USAttributeComponent>(ActorComponent);
 	if (!AttributeComponent)
 		return;
 
-	AttributeComponent->ApplyHealthChange(HealthDamageValue);
-	Destroy();
+	AttributeComponent->ApplyHealthChange(-HealthDamageValue);
+
+	Explode();
 }

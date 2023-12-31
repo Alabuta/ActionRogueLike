@@ -25,21 +25,20 @@ void USInteractionComponent::PrimaryInteract()
 	auto* World = GetWorld();
 
 	TArray<FHitResult> Hits;
-	
+
 	constexpr float Radius = 30.f;
-	
-	FCollisionShape Shape;
-	Shape.SetSphere(Radius);
+
+	auto Shape = FCollisionShape::MakeSphere(Radius);
 
 	auto bBlockingHit = World->SweepMultiByObjectType(Hits, EyeLocation, End, FQuat::Identity, ObjectQueryParams, Shape);
 	auto LineColor = bBlockingHit ? FColor::Green : FColor::Red;
-	
+
 	DrawDebugLine(World, EyeLocation, End, LineColor, false, 2.f, 0, 2.f);
 
 	for (const FHitResult& Hit : Hits)
 	{
 		DrawDebugSphere(World, Hit.ImpactPoint, Radius, 32, LineColor, false, 2.f);
-		
+
 		auto* HitActor = Hit.GetActor();
 		if (HitActor == nullptr)
 			continue;
