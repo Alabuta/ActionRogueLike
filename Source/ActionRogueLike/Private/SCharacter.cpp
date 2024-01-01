@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
+
 ASCharacter::ASCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -74,11 +75,12 @@ void ASCharacter::MoveRight(float Value)
 void ASCharacter::PrimaryAttack()
 {
 	PlayAnimMontage(AttackAnim);
-	GetWorldTimerManager().SetTimer(
-		TimerHandle_PrimaryAttack,
-		this,
-		&ASCharacter::PrimaryAttack_TimeElapsed,
-		PrimaryAttackDelay); // :TODO: use animation events
+	GetWorldTimerManager()
+		.SetTimer(
+			TimerHandle_PrimaryAttack,
+			this,
+			&ASCharacter::PrimaryAttack_TimeElapsed,
+			PrimaryAttackDelay); // :TODO: use animation events
 }
 
 void ASCharacter::PrimaryAttack_TimeElapsed()
@@ -89,8 +91,12 @@ void ASCharacter::PrimaryAttack_TimeElapsed()
 void ASCharacter::BlackHoleAttack()
 {
 	PlayAnimMontage(BlackHoleAttackAnim);
-	GetWorldTimerManager().SetTimer(TimerHandle_BlackHoleAttack, this, &ASCharacter::BlackHoleAttack_TimeElapsed,
-	                                BlackHoleAttackDelay); // :TODO: use animation events
+	GetWorldTimerManager()
+		.SetTimer(
+			TimerHandle_BlackHoleAttack,
+			this,
+			&ASCharacter::BlackHoleAttack_TimeElapsed,
+			BlackHoleAttackDelay); // :TODO: use animation events
 }
 
 void ASCharacter::BlackHoleAttack_TimeElapsed()
@@ -101,8 +107,11 @@ void ASCharacter::BlackHoleAttack_TimeElapsed()
 void ASCharacter::Dash()
 {
 	PlayAnimMontage(DashAttackAnim);
-	GetWorldTimerManager().SetTimer(TimerHandle_Dash, this, &ASCharacter::Dash_TimeElapsed, 
-									DashAttackDelay); // :TODO: use animation events
+	GetWorldTimerManager()
+		.SetTimer(TimerHandle_Dash,
+		          this,
+		          &ASCharacter::Dash_TimeElapsed,
+		          DashAttackDelay); // :TODO: use animation events
 }
 
 void ASCharacter::Dash_TimeElapsed()
@@ -112,10 +121,10 @@ void ASCharacter::Dash_TimeElapsed()
 
 void ASCharacter::PrimaryInteract()
 {
-	if (!InteractionComponent)
-		return;
-
-	InteractionComponent->PrimaryInteract();
+	if (InteractionComponent != nullptr)
+	{
+		InteractionComponent->PrimaryInteract();
+	}
 }
 
 void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClassToSpawn)
@@ -171,7 +180,9 @@ void ASCharacter::OnHealthChanged(
 	float Delta)
 {
 	if (NewHealth <= 0.f && Delta < 0.f)
+	{
 		DisableInput(Cast<APlayerController>(GetController()));
+	}
 }
 
 void ASCharacter::PostInitializeComponents()
