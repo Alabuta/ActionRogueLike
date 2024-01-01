@@ -16,11 +16,12 @@ ASProjectileBase::ASProjectileBase()
 	ColliderComponent = CreateDefaultSubobject<USphereComponent>(TEXT("ColliderComponent"));
 	ColliderComponent->SetCollisionProfileName("Projectile");
 	ColliderComponent->OnComponentHit.AddDynamic(this, &ASProjectileBase::OnActorHit);
+
 	SetRootComponent(ColliderComponent);
 
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("MovementComponent"));
 	MovementComponent->ProjectileGravityScale = 0.f;
-	MovementComponent->InitialSpeed = 2'000.f;
+	MovementComponent->InitialSpeed = 8'000.f;
 	MovementComponent->bRotationFollowsVelocity = true;
 	MovementComponent->bInitialVelocityInLocalSpace = true;
 
