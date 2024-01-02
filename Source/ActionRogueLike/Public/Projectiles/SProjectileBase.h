@@ -31,8 +31,25 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UParticleSystemComponent> VfxComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Effects")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	TObjectPtr<UAudioComponent> FlightAudioComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="FX")
+	TObjectPtr<USoundBase> ImpactSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="FX")
 	TObjectPtr<UParticleSystem> ImpactVfx;
+
+	UPROPERTY(EditDefaultsOnly, Category = "FX|Camera Shake")
+	float ImpactCameraShakeInnerRadius = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "FX|Camera Shake")
+	float ImpactCameraShakeOuterRadius = 1500.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "FX|Camera Shake")
+	TSubclassOf<UCameraShakeBase> ImpactCameraShake;
+
+	virtual void PostInitializeComponents() override;
 
 	UFUNCTION()
 	virtual void OnActorHit(
@@ -45,5 +62,5 @@ protected:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Explode();
 
-	virtual void PostInitializeComponents() override;
+	void ApplyHitFX() const;
 };

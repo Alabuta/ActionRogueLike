@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 ASCharacter::ASCharacter()
@@ -119,6 +120,19 @@ void ASCharacter::Dash_TimeElapsed()
 	SpawnProjectile(DashProjectileClass);
 }
 
+void ASCharacter::StartAttackFXs(UAnimMontage* AttackAnimMontage)
+{
+	PlayAnimMontage(AttackAnimMontage);
+
+	UGameplayStatics::SpawnEmitterAttached(
+		CastingVfx,
+		GetMesh(),
+		RightHandSocketName,
+		FVector::ZeroVector,
+		FRotator::ZeroRotator,
+		EAttachLocation::SnapToTarget);
+}
+
 void ASCharacter::PrimaryInteract()
 {
 	if (InteractionComponent != nullptr)
@@ -148,7 +162,7 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClassToSpawn)
 	auto TraceStart = CameraComponent->GetComponentLocation();
 	auto TraceEnd = TraceStart + GetControlRotation().Vector() * 5'000;
 
-	const auto RightHandSocketLocation = GetMesh()->GetSocketLocation(TEXT("Muzzle_01"));
+	const auto RightHandSocketLocation = GetMesh()->GetSocketLocation(RightHandSocketName);
 
 	FHitResult Hit;
 	auto bBlockingHit = World->SweepSingleByObjectType(
@@ -179,9 +193,14 @@ void ASCharacter::OnHealthChanged(
 	float NewHealth,
 	float Delta)
 {
-	if (NewHealth <= 0.f && Delta < 0.f)
+	if (Delta < 0.f)
 	{
-		DisableInput(Cast<APlayerController>(GetController()));
+		GetMesh()->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
+
+		if (NewHealth <= 0.f)
+		{
+			DisableInput(Cast<APlayerController>(GetController()));
+		}
 	}
 }
 

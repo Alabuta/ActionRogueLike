@@ -12,11 +12,11 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 	PrimaryActorTick.bCanEverTick = true;
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-    StaticMeshComponent->SetSimulatePhysics(true);
-    StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::PhysicsActor_ProfileName);
-    RootComponent = StaticMeshComponent;
+	StaticMeshComponent->SetSimulatePhysics(true);
+	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::PhysicsActor_ProfileName);
+	SetRootComponent(StaticMeshComponent);
 
-    RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForce"));
+	RadialForceComponent = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForce"));
 	RadialForceComponent->SetupAttachment(StaticMeshComponent);
 	RadialForceComponent->SetAutoActivate(false);
 	RadialForceComponent->Radius = 750.f;
@@ -42,7 +42,12 @@ void ASExplosiveBarrel::OnActorHit(
 	RadialForceComponent->FireImpulse();
 
 	UE_LOG(LogTemp, Log, TEXT("OnActorHit in Explosive Barrel"));
-	UE_LOG(LogTemp, Warning, TEXT("OtherActor: %s, at game time: %f"), *GetNameSafe(OtherActor), GetWorld()->TimeSeconds);
+	UE_LOG(
+		LogTemp,
+		Warning,
+		TEXT("OtherActor: %s, at game time: %f"),
+		*GetNameSafe(OtherActor),
+		GetWorld()->TimeSeconds);
 
 	const FString CombinedString = FString::Printf(TEXT("Hit at location: %s"), *Hit.ImpactPoint.ToString());
 	DrawDebugString(GetWorld(), Hit.ImpactPoint, CombinedString, nullptr, FColor::Green, 2.0f, true);

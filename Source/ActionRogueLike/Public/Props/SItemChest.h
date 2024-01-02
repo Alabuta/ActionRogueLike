@@ -20,6 +20,8 @@ public:
 
 	ASItemChest();
 
+	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
@@ -27,6 +29,4 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UStaticMeshComponent> LidMeshComponent;
-
-	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 };

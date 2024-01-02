@@ -9,7 +9,7 @@ ASItemChest::ASItemChest()
 	PrimaryActorTick.bCanEverTick = true;
 
 	BaseMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseStaticMesh"));
-	RootComponent = BaseMeshComponent;
+	SetRootComponent(BaseMeshComponent);
 
 	LidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LidStaticMesh"));
 	LidMeshComponent->SetupAttachment(RootComponent);
@@ -19,4 +19,3 @@ void ASItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
 	LidMeshComponent->SetRelativeRotation(FRotator(TargetPitch, 0, 0));
 }
-

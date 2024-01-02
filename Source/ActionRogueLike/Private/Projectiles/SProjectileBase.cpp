@@ -3,6 +3,7 @@
 
 #include "Projectiles/SProjectileBase.h"
 
+#include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -14,7 +15,7 @@ ASProjectileBase::ASProjectileBase()
 	// PrimaryActorTick.bCanEverTick = true;
 
 	ColliderComponent = CreateDefaultSubobject<USphereComponent>(TEXT("ColliderComponent"));
-	ColliderComponent->SetCollisionProfileName("Projectile");
+	ColliderComponent->SetCollisionProfileName(TEXT("Projectile"));
 	ColliderComponent->OnComponentHit.AddDynamic(this, &ASProjectileBase::OnActorHit);
 
 	SetRootComponent(ColliderComponent);
@@ -27,6 +28,9 @@ ASProjectileBase::ASProjectileBase()
 
 	VfxComponent = CreateDefaultSubobject<UParticleSystemComponent>("VfxComponent");
 	VfxComponent->SetupAttachment(RootComponent);
+
+	FlightAudioComponent = CreateDefaultSubobject<UAudioComponent>("FlightAudioComponent");
+	FlightAudioComponent->SetupAttachment(RootComponent);
 }
 
 void ASProjectileBase::OnActorHit(
@@ -39,16 +43,33 @@ void ASProjectileBase::OnActorHit(
 	Explode();
 }
 
+void ASProjectileBase::ApplyHitFX() const
+{
+	UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVfx, GetActorLocation(), GetActorRotation());
+
+	if (ImpactSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
+	}
+
+	UGameplayStatics::PlayWorldCameraShake(
+		this,
+		ImpactCameraShake,
+		GetActorLocation(),
+		ImpactCameraShakeInnerRadius,
+		ImpactCameraShakeOuterRadius);
+}
+
 void ASProjectileBase::Explode_Implementation()
 {
 	if (!ensure(IsValid(this)))
 		return;
 
-	UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVfx, GetActorLocation(), GetActorRotation());
+	ApplyHitFX();
 
 	VfxComponent->DeactivateSystem();
-
 	MovementComponent->StopMovementImmediately();
+
 	SetActorEnableCollision(false);
 	
 	Destroy();

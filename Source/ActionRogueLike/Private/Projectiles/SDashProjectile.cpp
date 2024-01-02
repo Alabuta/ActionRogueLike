@@ -24,7 +24,7 @@ void ASDashProjectile::Explode_Implementation()
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle_DelayedDetonate);
 
-	UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVfx, GetActorLocation(), GetActorRotation());
+	ApplyHitFX();
 
 	VfxComponent->DeactivateSystem();
 	MovementComponent->StopMovementImmediately();

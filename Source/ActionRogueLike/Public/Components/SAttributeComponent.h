@@ -29,11 +29,20 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	bool ApplyHealthChange(float Delta);
 
-	UFUNCTION(BlueprintCallable, Category="Attributes")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Attributes")
 	bool IsAlive() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Attributes")
+	bool IsFullHealth() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Attributes")
+	float GetHealthMax() const;
 
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Config|Attributes")
-	float Health = 100.f;
+	float HealthMax = 100.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Config|Attributes")
+	float Health = HealthMax;
 };

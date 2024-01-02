@@ -26,6 +26,12 @@ public:
 
 protected:
 
+	UPROPERTY(VisibleAnywhere, Category="Config|FX")
+	FName RightHandSocketName{TEXT("Muzzle_01")};
+
+	UPROPERTY(VisibleAnywhere, Category="Config|FX")
+	FName TimeToHitParamName{TEXT("TimeToHit")};
+
 	UPROPERTY(EditAnywhere, Category="Config|Primary Attack")
 	TSubclassOf<AActor> ProjectileClass;
 
@@ -53,17 +59,20 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Config|Dash")
 	float DashAttackDelay = .2f;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category="Config|Components")
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category="Config|Components")
 	TObjectPtr<UCameraComponent> CameraComponent;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category="Config|Components")
 	TObjectPtr<USInteractionComponent> InteractionComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config|Components")
 	TObjectPtr<USAttributeComponent> AttributeComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category="Config|FX")
+	TObjectPtr<UParticleSystem> CastingVfx;
 	
 private:
 
@@ -84,6 +93,8 @@ private:
 	
 	void Dash();
 	void Dash_TimeElapsed();
+
+	void StartAttackFXs(UAnimMontage* AttackAnimMontage);
 	
 	void SpawnProjectile(TSubclassOf<AActor> ProjectileClassToSpawn);
 
