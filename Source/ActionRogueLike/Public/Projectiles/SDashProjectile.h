@@ -24,6 +24,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Teleport")
 	float DetonateDelay = .2f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Teleport")
+	float AdjustmentOffsetZ = 10.f;
+
 	FTimerHandle TimerHandle_DelayedDetonate;
 
 	virtual void BeginPlay() override;
