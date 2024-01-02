@@ -6,8 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "SProjectileBase.generated.h"
 
+
 class UProjectileMovementComponent;
 class USphereComponent;
+
 
 UCLASS(Abstract)
 class ACTIONROGUELIKE_API ASProjectileBase : public AActor

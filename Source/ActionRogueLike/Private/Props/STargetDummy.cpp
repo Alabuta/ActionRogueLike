@@ -1,9 +1,9 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "STargetDummy.h"
+#include "Props/STargetDummy.h"
 
-#include "SAttributeComponent.h"
+#include "Components/SAttributeComponent.h"
 
 
 ASTargetDummy::ASTargetDummy()

@@ -6,7 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "STargetDummy.generated.h"
 
+
 class USAttributeComponent;
+
 
 UCLASS()
 class ACTIONROGUELIKE_API ASTargetDummy : public AActor
@@ -26,8 +28,9 @@ protected:
 	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
 
 	UFUNCTION()
-	void OnHealthChanged(AActor* InstigatorActor,
-	                     USAttributeComponent* OwningComponent,
-	                     float NewHealth,
-	                     float Delta);
+	void OnHealthChanged(
+		AActor* InstigatorActor,
+		USAttributeComponent* OwningComponent,
+		float NewHealth,
+		float Delta);
 };

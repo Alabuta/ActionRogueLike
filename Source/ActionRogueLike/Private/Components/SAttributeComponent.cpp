@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SAttributeComponent.h"
+#include "Components/SAttributeComponent.h"
 
 
 bool USAttributeComponent::ApplyHealthChange(float Delta)

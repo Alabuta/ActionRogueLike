@@ -1,9 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SExplosiveBarrel.h"
+#include "Props/SExplosiveBarrel.h"
 
 #include "PhysicsEngine/RadialForceComponent.h"
+
 
 // Sets default values
 ASExplosiveBarrel::ASExplosiveBarrel()

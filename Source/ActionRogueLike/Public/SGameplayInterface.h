@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "SGameplayInterface.generated.h"
 
+
 UINTERFACE(MinimalAPI)
 class USGameplayInterface : public UInterface
 {

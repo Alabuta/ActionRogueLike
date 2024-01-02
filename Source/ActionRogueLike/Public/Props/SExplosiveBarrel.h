@@ -6,7 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "SExplosiveBarrel.generated.h"
 
+
 class URadialForceComponent;
+
 
 UCLASS()
 class ACTIONROGUELIKE_API ASExplosiveBarrel : public AActor

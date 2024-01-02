@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SMagicProjectile.h"
+#include "Projectiles/SMagicProjectile.h"
 
-#include "SAttributeComponent.h"
+#include "Components/SAttributeComponent.h"
 #include "Components/SphereComponent.h"
 
 
@@ -30,7 +30,7 @@ void ASMagicProjectile::OnActorOverlap(
 	if (auto* AttributeComponent = OtherActor->GetComponentByClass<USAttributeComponent>(); AttributeComponent != nullptr)
 	{
 		AttributeComponent->ApplyHealthChange(-HealthDamageValue);
-
-		Explode();
 	}
+
+	Explode();
 }

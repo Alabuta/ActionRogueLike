@@ -6,10 +6,12 @@
 #include "GameFramework/Character.h"
 #include "SCharacter.generated.h"
 
+
 class USAttributeComponent;
 class USInteractionComponent;
 class UCameraComponent;
 class USpringArmComponent;
+
 
 UCLASS()
 class ACTIONROGUELIKE_API ASCharacter : public ACharacter
