@@ -26,6 +26,6 @@ void ASTargetDummy::OnHealthChanged(
 	if (Delta >= 0.f)
 		return;
 
-	StaticMeshComponent->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
+	StaticMeshComponent->SetScalarParameterValueOnMaterials(TEXT("TimeToHit"), GetWorld()->TimeSeconds);
 }
 

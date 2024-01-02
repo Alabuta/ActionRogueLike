@@ -36,19 +36,19 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis("MoveForward", this, &ASCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &ASCharacter::MoveRight);
+	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &ASCharacter::MoveForward);
+	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &ASCharacter::MoveRight);
 
-	PlayerInputComponent->BindAxis("Turn", this, &ASCharacter::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("LookUp", this, &ASCharacter::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &ASCharacter::AddControllerYawInput);
+	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &ASCharacter::AddControllerPitchInput);
 
-	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &ASCharacter::PrimaryAttack);
-	PlayerInputComponent->BindAction("BlackHoleAttack", IE_Pressed, this, &ASCharacter::BlackHoleAttack);
-	
-	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &ASCharacter::PrimaryInteract);
+	PlayerInputComponent->BindAction(TEXT("PrimaryAttack"), IE_Pressed, this, &ASCharacter::PrimaryAttack);
+	PlayerInputComponent->BindAction(TEXT("BlackHoleAttack"), IE_Pressed, this, &ASCharacter::BlackHoleAttack);
 
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASCharacter::Jump);
-	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &ASCharacter::Dash);
+	PlayerInputComponent->BindAction(TEXT("PrimaryInteract"), IE_Pressed, this, &ASCharacter::PrimaryInteract);
+
+	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ASCharacter::Jump);
+	PlayerInputComponent->BindAction(TEXT("Dash"), IE_Pressed, this, &ASCharacter::Dash);
 }
 
 void ASCharacter::MoveForward(float Value)
@@ -148,7 +148,7 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClassToSpawn)
 	auto TraceStart = CameraComponent->GetComponentLocation();
 	auto TraceEnd = TraceStart + GetControlRotation().Vector() * 5'000;
 
-	const auto RightHandSocketLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	const auto RightHandSocketLocation = GetMesh()->GetSocketLocation(TEXT("Muzzle_01"));
 
 	FHitResult Hit;
 	auto bBlockingHit = World->SweepSingleByObjectType(
@@ -161,8 +161,8 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClassToSpawn)
 		AdditionalQueryParams);
 
 	auto SpawnRotation = bBlockingHit
-		                ? FRotationMatrix::MakeFromX(Hit.ImpactPoint - RightHandSocketLocation).Rotator()
-		                : FRotationMatrix::MakeFromX(TraceEnd - RightHandSocketLocation).Rotator();
+		                     ? FRotationMatrix::MakeFromX(Hit.ImpactPoint - RightHandSocketLocation).Rotator()
+		                     : FRotationMatrix::MakeFromX(TraceEnd - RightHandSocketLocation).Rotator();
 
 	const auto SpawnTransform = FTransform(SpawnRotation, RightHandSocketLocation);
 
@@ -188,6 +188,6 @@ void ASCharacter::OnHealthChanged(
 void ASCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	
+
 	AttributeComponent->OnHealthChange.AddDynamic(this, &ASCharacter::OnHealthChanged);
 }
