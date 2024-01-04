@@ -17,5 +17,4 @@ void ASAICharacter::BeginPlay()
 void ASAICharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
