@@ -35,9 +35,11 @@
 /FUNCTIONPADMIN:6
 "D:\Unreal Projects\ActionRogueLike\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\DebugGame\RiderLC\RiderLC.cpp.obj"
 "D:\Unreal Projects\ActionRogueLike\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\DebugGame\RiderLC\Default.rc2.res"
+"Developer\Windows\LiveCoding\Private\External\LC_JumpToSelf.lib"
 "..\Intermediate\Build\Win64\x64\UnrealEditor\Development\Core\UnrealEditor-Core.lib"
 "..\Intermediate\Build\Win64\x64\UnrealEditor\Development\Engine\UnrealEditor-Engine.lib"
 "D:\Unreal Projects\ActionRogueLike\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\DebugGame\RiderLink\UnrealEditor-RiderLink-Win64-DebugGame.lib"
+"..\Intermediate\Build\Win64\x64\UnrealEditor\Development\LiveCoding\UnrealEditor-LiveCoding.lib"
 "D:\Unreal Projects\ActionRogueLike\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\DebugGame\RD\UnrealEditor-RD-Win64-DebugGame.lib"
 "delayimp.lib"
 "wininet.lib"
