@@ -7,6 +7,8 @@
 #include "SAICharacter.generated.h"
 
 
+class UPawnSensingComponent;
+
 UCLASS()
 class ACTIONROGUELIKE_API ASAICharacter : public ACharacter
 {
@@ -16,9 +18,13 @@ public:
 
 	ASAICharacter();
 
-	virtual void Tick(float DeltaTime) override;
+	virtual void PostInitializeComponents() override;
 
 protected:
 
-	virtual void BeginPlay() override;
+	UPROPERTY(VisibleAnywhere, Category="Components")
+	TObjectPtr<UPawnSensingComponent> PawnSensingComponent;
+
+	UFUNCTION()
+	void OnPawnSeen(APawn* Pawn);
 };

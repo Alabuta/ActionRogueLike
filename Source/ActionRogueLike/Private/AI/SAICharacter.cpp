@@ -3,18 +3,33 @@
 
 #include "AI/SAICharacter.h"
 
+#include "AI/SAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Perception/PawnSensingComponent.h"
+
 
 ASAICharacter::ASAICharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComponent"));
 }
 
-void ASAICharacter::BeginPlay()
+void ASAICharacter::PostInitializeComponents()
 {
-	Super::BeginPlay();
+	Super::PostInitializeComponents();
+
+	PawnSensingComponent->OnSeePawn.AddDynamic(this, &ASAICharacter::OnPawnSeen);
 }
 
-void ASAICharacter::Tick(float DeltaTime)
+void ASAICharacter::OnPawnSeen(APawn* Pawn)
 {
-	Super::Tick(DeltaTime);
+	auto* AIController = Cast<ASAIController>(GetController());
+	if (AIController != nullptr)
+	{
+		auto* BlackboardComponent = AIController->GetBlackboardComponent();
+		BlackboardComponent->SetValueAsObject(TEXT("TargetActor"), Pawn);
+
+		DrawDebugString(GetWorld(),	GetActorLocation(), TEXT("PLAYER SPOTTED"), nullptr, FColor::Orange, 2.f, true);
+	}
 }
