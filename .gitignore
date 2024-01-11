@@ -1,6 +1,11 @@
 # Visual Studio 2015 user specific files
 .vs/
 
+# Rider user specific files
+.idea/
+
+.cache/
+
 # Compiled Object files
 *.slo
 *.lo
@@ -15,9 +20,6 @@
 *.so
 *.dylib
 *.dll
-
-# Fortran module files
-*.mod
 
 # Compiled Static libraries
 *.lai
@@ -40,6 +42,7 @@
 *.sdf
 *.VC.db
 *.VC.opendb
+*.vsconfig
 
 # Precompiled Assets
 SourceArt/**/*.png
@@ -47,7 +50,27 @@ SourceArt/**/*.tga
 
 # Binary Files
 Binaries/*
-Plugins/*/Binaries/*
+Plugins/**/Binaries/*
+Plugins/**/Intermediate/*
+
+# Whitelist WWise third-party binaries
+!Plugins/WWise/ThirdParty/**/lib/*
+!Plugins/WWise/ThirdParty/**/bin/*
+
+# PS4
+Plugins/WWise/ThirdParty/PS4*/*
+# PS5
+Plugins/WWise/ThirdParty/PS5_SDK5*/*
+# Win32
+Plugins/WWise/ThirdParty/Win32_vc*/*
+!Plugins/WWise/ThirdParty/Win32_vc170/*
+# Win64
+Plugins/WWise/ThirdParty/x64_vc150/*
+# WinGC
+Plugins/WWise/ThirdParty/WinGC_vc160/*
+!Plugins/WWise/ThirdParty/WinGC_vc170/*
+# XBoxOne
+Plugins/WWise/ThirdParty/XboxOne*/*
 
 # Builds
 Build/*
@@ -72,5 +95,14 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
-/.vsconfig
-/.idea/.idea.ActionRogueLike/.idea/git_toolbox_prj.xml
+
+# Rider Link plugin
+Plugins/Developer/RiderLink/
+
+enc_temp_folder/
+
+# ftp helper file, appears after using update_bin.bat
+files_meta.xml
+
+# Python cache
+**/__pycache__/*
