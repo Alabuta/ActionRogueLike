@@ -33,6 +33,13 @@ ASCharacter::ASCharacter()
 	bUseControllerRotationRoll = false;
 }
 
+void ASCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	AttributeComponent->OnHealthChange.AddDynamic(this, &ASCharacter::OnHealthChanged);
+}
+
 void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -202,11 +209,4 @@ void ASCharacter::OnHealthChanged(
 			DisableInput(Cast<APlayerController>(GetController()));
 		}
 	}
-}
-
-void ASCharacter::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-
-	AttributeComponent->OnHealthChange.AddDynamic(this, &ASCharacter::OnHealthChanged);
 }

@@ -27,6 +27,30 @@ void ASGameModeBase::StartPlay()
 
 void ASGameModeBase::SpawnBot()
 {
+	int32 AliveBotsNum = 0;
+	for (TActorIterator<ASAICharacter> It{GetWorld()}; It; ++It)
+	{
+		const auto* AttributeComponent = It->GetComponentByClass<USAttributeComponent>();
+		if (ensure(AttributeComponent != nullptr) && AttributeComponent->IsAlive())
+		{
+			++AliveBotsNum;
+		}
+	}
+
+	int32 AliveBotsMaxCount = 0;
+	if (DifficultyCurve)
+	{
+		AliveBotsMaxCount = static_cast<int32>(DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds));
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("Found %i alive bots"), AliveBotsNum);
+
+	if (AliveBotsNum >= AliveBotsMaxCount)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Maximum bot capacity has reached."));
+		return;
+	}
+
 	auto* QueryInstance = UEnvQueryManager::RunEQSQuery(
 		this,
 		SpawnBotQuery,
@@ -50,29 +74,15 @@ void ASGameModeBase::OnBotSpawnQueryCompleted(
 		return;
 	}
 
-	int32 AliveBotsNum = 0;
-	for (TActorIterator<ASAICharacter> It{GetWorld()}; It; ++It)
-	{
-		const auto* AttributeComponent = It->GetComponentByClass<USAttributeComponent>();
-		AliveBotsNum += AttributeComponent != nullptr && AttributeComponent->IsAlive() ? 1 : 0;
-	}
-
-	int32 AliveBotsMaxCount = 0;
-	if (DifficultyCurve)
-	{
-		AliveBotsMaxCount = static_cast<int32>(DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds));
-	}
-
-	if (AliveBotsNum >= AliveBotsMaxCount)
-	{
-		return;
-	}
-
 	auto Locations = QueryInstance->GetResultsAsLocations();
 	if (!Locations.IsValidIndex(0))
 	{
 		return;
 	}
 
-	GetWorld()->SpawnActor<AActor>(SpawnMinionBotClass, Locations[0], FRotator::ZeroRotator);
+	auto* SpawnedBot = GetWorld()->SpawnActor<AActor>(SpawnMinionBotClass, Locations[0], FRotator::ZeroRotator);
+	if (ensure(SpawnedBot != nullptr))
+	{
+		DrawDebugSphere(GetWorld(), SpawnedBot->GetActorLocation(), 50, 20, FColor::Blue, false, 60);
+	}
 }
