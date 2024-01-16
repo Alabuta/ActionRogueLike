@@ -21,7 +21,7 @@ void ASPickUpItem_HealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 	auto* AttributeComponent = InstigatorPawn->GetComponentByClass<USAttributeComponent>();
 	if (ensure(AttributeComponent != nullptr) && !AttributeComponent->IsFullHealth())
 	{
-		if (AttributeComponent->ApplyHealthChange(AttributeComponent->GetHealthMax()))
+		if (AttributeComponent->ApplyHealthChange(this, AttributeComponent->GetHealthMax()))
 		{
 			HideAndCooldown();
 		}

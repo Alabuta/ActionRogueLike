@@ -13,6 +13,7 @@
 ASAICharacter::ASAICharacter()
 {
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComponent"));
+
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	AttributeComponent = CreateDefaultSubobject<USAttributeComponent>(TEXT("AttributeComponent"));
@@ -27,13 +28,23 @@ void ASAICharacter::PostInitializeComponents()
 	AttributeComponent->OnHealthChange.AddDynamic(this, &ASAICharacter::OnHealthChanged);
 }
 
-void ASAICharacter::OnPawnSeen(APawn* Pawn)
+bool ASAICharacter::SetNewTarget(AActor* NewTargetActor) const
 {
 	if (auto* AIController = Cast<ASAIController>(GetController()); AIController != nullptr)
 	{
 		auto* BlackboardComponent = AIController->GetBlackboardComponent();
-		BlackboardComponent->SetValueAsObject(TEXT("TargetActor"), Pawn);
+		BlackboardComponent->SetValueAsObject(TEXT("TargetActor"), NewTargetActor);
 
+		return true;
+	}
+
+	return false;
+}
+
+void ASAICharacter::OnPawnSeen(APawn* Pawn)
+{
+	if (SetNewTarget(Pawn))
+	{
 		DrawDebugString(GetWorld(),	GetActorLocation(), TEXT("PLAYER SPOTTED"), nullptr, FColor::Orange, 2.f, true);
 	}
 }
@@ -44,21 +55,28 @@ void ASAICharacter::OnHealthChanged(
 	float NewHealth,
 	float Delta)
 {
-	if (Delta < 0.f)
+	if (Delta >= 0.f)
 	{
-		// GetMesh()->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
+		return;
+	}
 
-		if (NewHealth <= 0.f)
+	if (InstigatorActor != this)
+	{
+		SetNewTarget(InstigatorActor);
+	}
+
+	GetMesh()->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
+
+	if (NewHealth <= 0.f)
+	{
+		if (const auto* AIController = Cast<ASAIController>(GetController()); AIController != nullptr)
 		{
-			if (const auto* AIController = Cast<ASAIController>(GetController()); AIController != nullptr)
-			{
-				AIController->GetBrainComponent()->StopLogic(TEXT("Killed"));
-			}
-
-			GetMesh()->SetAllBodiesSimulatePhysics(true);
-			GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
-
-			SetLifeSpan(10.f);
+			AIController->GetBrainComponent()->StopLogic(TEXT("Killed"));
 		}
+
+		GetMesh()->SetAllBodiesSimulatePhysics(true);
+		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+
+		SetLifeSpan(10.f);
 	}
 }

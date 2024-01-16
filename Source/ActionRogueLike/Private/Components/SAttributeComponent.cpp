@@ -4,12 +4,12 @@
 #include "Components/SAttributeComponent.h"
 
 
-bool USAttributeComponent::ApplyHealthChange(float Delta)
+bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
 	Delta = FMath::Clamp(Health + Delta, 0, HealthMax) - Health;
 	Health += Delta;
 
-	OnHealthChange.Broadcast(nullptr, this, Health, Delta);
+	OnHealthChange.Broadcast(InstigatorActor, this, Health, Delta);
 
 	return Delta != 0;
 }
@@ -27,4 +27,19 @@ bool USAttributeComponent::IsFullHealth() const
 float USAttributeComponent::GetHealthMax() const
 {
 	return HealthMax;
+}
+
+USAttributeComponent* USAttributeComponent::GetAttributeComponent(const AActor* FromActor)
+{
+	return FromActor != nullptr ? FromActor->GetComponentByClass<USAttributeComponent>() : nullptr;
+}
+
+bool USAttributeComponent::IsActorAlive(const AActor* Actor)
+{
+	if (const auto* AttributeComponent = GetAttributeComponent(Actor); AttributeComponent != nullptr)
+	{
+		return AttributeComponent->IsAlive();
+	}
+
+	return false;
 }

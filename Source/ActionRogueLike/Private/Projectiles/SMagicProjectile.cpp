@@ -29,7 +29,7 @@ void ASMagicProjectile::OnActorOverlap(
 
 	if (auto* AttributeComponent = OtherActor->GetComponentByClass<USAttributeComponent>(); AttributeComponent != nullptr)
 	{
-		AttributeComponent->ApplyHealthChange(-HealthDamageValue);
+		AttributeComponent->ApplyHealthChange(GetInstigator(), -HealthDamageValue);
 	}
 
 	Explode();

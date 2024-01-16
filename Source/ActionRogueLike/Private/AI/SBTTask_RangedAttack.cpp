@@ -5,6 +5,7 @@
 
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/SAttributeComponent.h"
 #include "GameFramework/Character.h"
 
 
@@ -12,7 +13,7 @@ EBTNodeResult::Type USBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& O
 {
 	if (const auto* AIController = OwnerComp.GetAIOwner(); AIController != nullptr)
 	{
-		const auto* Pawn = Cast<ACharacter>(AIController->GetPawn());
+		auto* Pawn = Cast<ACharacter>(AIController->GetPawn());
 		if (Pawn == nullptr)
 		{
 			return EBTNodeResult::Failed;
@@ -27,12 +28,21 @@ EBTNodeResult::Type USBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& O
 				return EBTNodeResult::Failed;
 			}
 
+			if (const auto IsTargetActorAlive = USAttributeComponent::IsActorAlive(TargetActor); !IsTargetActorAlive)
+			{
+				return EBTNodeResult::Failed;
+			}
+
 			const auto PawnMuzzleLocation = Pawn->GetMesh()->GetSocketLocation(TEXT("Muzzle_01"));
 			const auto Direction = TargetActor->GetActorLocation() - PawnMuzzleLocation;
-			const auto PawnMuzzleRotation = Direction.Rotation();
+			auto PawnMuzzleRotation = Direction.Rotation();
+
+			PawnMuzzleRotation.Pitch += FMath::RandRange(0.f, MaxProjectileSpread);
+			PawnMuzzleRotation.Yaw += FMath::RandRange(-MaxProjectileSpread, MaxProjectileSpread);
 
 			FActorSpawnParameters SpawnParameters;
 			SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			SpawnParameters.Instigator = Pawn;
 
 			const auto* SpawnedProjectile = GetWorld()->SpawnActor<AActor>(
 				ProjectileClass,

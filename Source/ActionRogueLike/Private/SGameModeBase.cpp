@@ -30,7 +30,7 @@ void ASGameModeBase::SpawnBot()
 	int32 AliveBotsNum = 0;
 	for (TActorIterator<ASAICharacter> It{GetWorld()}; It; ++It)
 	{
-		const auto* AttributeComponent = It->GetComponentByClass<USAttributeComponent>();
+		const auto* AttributeComponent = USAttributeComponent::GetAttributeComponent(*It);
 		if (ensure(AttributeComponent != nullptr) && AttributeComponent->IsAlive())
 		{
 			++AliveBotsNum;

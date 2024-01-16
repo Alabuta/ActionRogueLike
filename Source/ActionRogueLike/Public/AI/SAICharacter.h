@@ -29,6 +29,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<USAttributeComponent> AttributeComponent;
 
+	UPROPERTY(VisibleAnywhere, Category="Config|FX")
+	FName TimeToHitParamName{TEXT("TimeToHit")};
+
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
 
@@ -38,4 +41,6 @@ protected:
 		USAttributeComponent* OwningComponent,
 		float NewHealth,
 		float Delta);
+
+	bool SetNewTarget(AActor* NewTargetActor) const;
 };
