@@ -4,8 +4,10 @@
 #include "AI/SAICharacter.h"
 
 #include "BrainComponent.h"
+#include "SWorldUserWidget.h"
 #include "AI/SAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "Components/SAttributeComponent.h"
 #include "Perception/PawnSensingComponent.h"
 
@@ -63,6 +65,16 @@ void ASAICharacter::OnHealthChanged(
 	if (InstigatorActor != this)
 	{
 		SetNewTarget(InstigatorActor);
+	}
+
+	if (ActiveHealthBarWidget == nullptr)
+	{
+		ActiveHealthBarWidget = CreateWidget<USWorldUserWidget>(GetWorld(), HealthBarWidgetClass);
+		if (ActiveHealthBarWidget != nullptr)
+		{
+			ActiveHealthBarWidget->AttachedActor = this;
+			ActiveHealthBarWidget->AddToViewport();
+		}
 	}
 
 	GetMesh()->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);

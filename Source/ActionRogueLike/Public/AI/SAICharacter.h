@@ -7,6 +7,7 @@
 #include "SAICharacter.generated.h"
 
 
+class USWorldUserWidget;
 class USAttributeComponent;
 class UPawnSensingComponent;
 
@@ -29,6 +30,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<USAttributeComponent> AttributeComponent;
 
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<USWorldUserWidget> HealthBarWidgetClass;
+
 	UPROPERTY(VisibleAnywhere, Category="Config|FX")
 	FName TimeToHitParamName{TEXT("TimeToHit")};
 
@@ -43,4 +47,9 @@ protected:
 		float Delta);
 
 	bool SetNewTarget(AActor* NewTargetActor) const;
+
+private:
+
+	UPROPERTY(Transient)
+	USWorldUserWidget* ActiveHealthBarWidget;
 };
