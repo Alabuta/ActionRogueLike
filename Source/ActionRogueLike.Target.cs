@@ -5,11 +5,15 @@ using System.Collections.Generic;
 
 public class ActionRogueLikeTarget : TargetRules
 {
-	public ActionRogueLikeTarget( TargetInfo Target) : base(Target)
+	public ActionRogueLikeTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
-		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_1;
+		bLegacyParentIncludePaths = false;
+		CppStandard = CppStandardVersion.Default;
+		WindowsPlatform.bStrictConformanceMode = true;
+		bValidateFormatStrings = true;
+		DefaultBuildSettings = BuildSettingsVersion.Latest;
+		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
 		ExtraModuleNames.Add("ActionRogueLike");
 	}
 }

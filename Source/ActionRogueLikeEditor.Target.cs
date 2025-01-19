@@ -5,11 +5,15 @@ using System.Collections.Generic;
 
 public class ActionRogueLikeEditorTarget : TargetRules
 {
-	public ActionRogueLikeEditorTarget( TargetInfo Target) : base(Target)
+	public ActionRogueLikeEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
-		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_1;
+		bLegacyParentIncludePaths = false;
+		CppStandard = CppStandardVersion.Default;
+		WindowsPlatform.bStrictConformanceMode = true;
+		bValidateFormatStrings = true;
+		DefaultBuildSettings = BuildSettingsVersion.Latest;
+		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
 		ExtraModuleNames.Add("ActionRogueLike");
 	}
 }
