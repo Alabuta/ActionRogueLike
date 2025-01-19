@@ -4,11 +4,13 @@
 #include "AI/SAICharacter.h"
 
 #include "BrainComponent.h"
+#include "DrawDebugHelpers.h"
 #include "SWorldUserWidget.h"
 #include "AI/SAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/SAttributeComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Perception/PawnSensingComponent.h"
 
 

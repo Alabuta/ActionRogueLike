@@ -4,6 +4,8 @@
 #include "Props/STargetDummy.h"
 
 #include "Components/SAttributeComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine/World.h"
 
 
 ASTargetDummy::ASTargetDummy()

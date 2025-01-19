@@ -4,6 +4,9 @@
 #include "PickUpItems/SPickUpItem_HealthPotion.h"
 
 #include "Components/SAttributeComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine/CollisionProfile.h"
+#include "GameFramework/Pawn.h"
 
 
 ASPickUpItem_HealthPotion::ASPickUpItem_HealthPotion()

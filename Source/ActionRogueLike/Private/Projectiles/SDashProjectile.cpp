@@ -3,6 +3,8 @@
 
 #include "Projectiles/SDashProjectile.h"
 
+#include "TimerManager.h"
+#include "GameFramework/Pawn.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"

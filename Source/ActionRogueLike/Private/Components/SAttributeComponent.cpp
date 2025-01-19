@@ -3,6 +3,8 @@
 
 #include "Components/SAttributeComponent.h"
 
+#include "GameFramework/Actor.h"
+
 
 bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {

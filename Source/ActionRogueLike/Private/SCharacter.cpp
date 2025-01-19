@@ -3,9 +3,12 @@
 
 #include "SCharacter.h"
 
+#include "TimerManager.h"
 #include "Components/SAttributeComponent.h"
 #include "Components/SInteractionComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/InputComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"

@@ -3,7 +3,9 @@
 
 #include "SGameModeBase.h"
 
+#include "DrawDebugHelpers.h"
 #include "EngineUtils.h"
+#include "TimerManager.h"
 #include "AI/SAICharacter.h"
 #include "Components/SAttributeComponent.h"
 #include "EnvironmentQuery/EnvQueryManager.h"

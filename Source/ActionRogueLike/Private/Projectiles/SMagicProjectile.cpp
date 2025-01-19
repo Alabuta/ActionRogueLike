@@ -5,6 +5,7 @@
 
 #include "Components/SAttributeComponent.h"
 #include "Components/SphereComponent.h"
+#include "GameFramework/Pawn.h"
 
 
 ASMagicProjectile::ASMagicProjectile()

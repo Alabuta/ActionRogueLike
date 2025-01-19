@@ -3,6 +3,9 @@
 
 #include "Props/SExplosiveBarrel.h"
 
+#include "Components/StaticMeshComponent.h"
+#include "Engine/CollisionProfile.h"
+#include "Engine/World.h"
 #include "PhysicsEngine/RadialForceComponent.h"
 
 
