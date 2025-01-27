@@ -17,19 +17,24 @@
 ASAICharacter::ASAICharacter()
 {
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComponent"));
+	AttributeComponent = CreateDefaultSubobject<USAttributeComponent>(TEXT("AttributeComponent"));
 
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-
-	AttributeComponent = CreateDefaultSubobject<USAttributeComponent>(TEXT("AttributeComponent"));
 }
 
 void ASAICharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	PawnSensingComponent->OnSeePawn.AddDynamic(this, &ASAICharacter::OnPawnSeen);
+	if (IsValid(PawnSensingComponent))
+	{
+		PawnSensingComponent->OnSeePawn.AddDynamic(this, &ASAICharacter::OnPawnSeen);
+	}
 
-	AttributeComponent->OnHealthChange.AddDynamic(this, &ASAICharacter::OnHealthChanged);
+	if (IsValid(AttributeComponent))
+	{
+		AttributeComponent->OnHealthChange.AddDynamic(this, &ASAICharacter::OnHealthChanged);
+	}
 }
 
 bool ASAICharacter::SetNewTarget(AActor* NewTargetActor) const
