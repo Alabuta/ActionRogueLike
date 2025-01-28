@@ -33,7 +33,7 @@ float USAttributeComponent::GetHealthMax() const
 
 USAttributeComponent* USAttributeComponent::GetAttributeComponent(const AActor* FromActor)
 {
-	return FromActor != nullptr ? FromActor->GetComponentByClass<USAttributeComponent>() : nullptr;
+	return IsValid(FromActor) ? FromActor->GetComponentByClass<USAttributeComponent>() : nullptr;
 }
 
 bool USAttributeComponent::IsActorAlive(const AActor* Actor)

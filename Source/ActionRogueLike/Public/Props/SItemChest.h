@@ -16,7 +16,7 @@ class ACTIONROGUELIKE_API ASItemChest : public AActor, public ISGameplayInterfac
 public:
 
 	UPROPERTY(EditAnywhere)
-	int TargetPitch = 110;
+	double TargetPitch{110};
 
 	ASItemChest();
 
@@ -25,8 +25,8 @@ public:
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-	TObjectPtr<UStaticMeshComponent> BaseMeshComponent;
+	TObjectPtr<UStaticMeshComponent> BaseMeshComponent{nullptr};
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-	TObjectPtr<UStaticMeshComponent> LidMeshComponent;
+	TObjectPtr<UStaticMeshComponent> LidMeshComponent{nullptr};
 };

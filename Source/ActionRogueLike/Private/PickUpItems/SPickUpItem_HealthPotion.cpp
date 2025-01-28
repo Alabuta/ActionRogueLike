@@ -22,7 +22,7 @@ void ASPickUpItem_HealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 		return;
 
 	auto* AttributeComponent = InstigatorPawn->GetComponentByClass<USAttributeComponent>();
-	if (ensure(AttributeComponent != nullptr) && !AttributeComponent->IsFullHealth())
+	if (ensure(IsValid(AttributeComponent)) && !AttributeComponent->IsFullHealth())
 	{
 		if (AttributeComponent->ApplyHealthChange(this, AttributeComponent->GetHealthMax()))
 		{

@@ -18,12 +18,12 @@ class ACTIONROGUELIKE_API USWorldUserWidget : public UUserWidget
 public:
 
 	UPROPERTY(BlueprintReadOnly, Category="UI")
-	TObjectPtr<AActor> AttachedActor;
+	TObjectPtr<AActor> AttachedActor{nullptr};
 
 protected:
 
 	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<USizeBox> ParentSizeBox;
+	TObjectPtr<USizeBox> ParentSizeBox{nullptr};
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 };

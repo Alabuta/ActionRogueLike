@@ -25,16 +25,16 @@ public:
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="AI")
-	TObjectPtr<UCurveFloat> DifficultyCurve;
+	TObjectPtr<UCurveFloat> DifficultyCurve{nullptr};
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
-	TObjectPtr<UEnvQuery> SpawnBotQuery;
+	TObjectPtr<UEnvQuery> SpawnBotQuery{nullptr};
 
 	UPROPERTY(EditAnywhere, Category="AI")
-	TSubclassOf<AActor> SpawnMinionBotClass;
+	TSubclassOf<AActor> SpawnMinionBotClass{nullptr};
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
-	float SpawnTimeInterval = 2.f;
+	float SpawnTimeInterval{2.f};
 	
 	FTimerHandle TimerHandle_SpawnBots;
 

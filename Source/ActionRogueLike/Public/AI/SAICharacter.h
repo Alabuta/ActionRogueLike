@@ -25,16 +25,16 @@ public:
 protected:
 
 	UPROPERTY(VisibleAnywhere, Category="Components")
-	TObjectPtr<UPawnSensingComponent> PawnSensingComponent;
+	TObjectPtr<UPawnSensingComponent> PawnSensingComponent{nullptr};
 
 	UPROPERTY(VisibleAnywhere, Category="Components")
-	TObjectPtr<USAttributeComponent> AttributeComponent;
+	TObjectPtr<USAttributeComponent> AttributeComponent{nullptr};
 
 	UPROPERTY(EditDefaultsOnly, Category="UI")
-	TSubclassOf<USWorldUserWidget> HealthBarWidgetClass;
+	TSubclassOf<USWorldUserWidget> HealthBarWidgetClass{nullptr};
 
 	UPROPERTY(VisibleAnywhere, Category="Config|FX")
-	FName TimeToHitParamName{TEXT("TimeToHit")};
+	FName TimeToHitParamName{TEXTVIEW("TimeToHit")};
 
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
@@ -43,13 +43,13 @@ protected:
 	void OnHealthChanged(
 		AActor* InstigatorActor,
 		USAttributeComponent* OwningComponent,
-		float NewHealth,
-		float Delta);
+		const float NewHealth,
+		const float Delta);
 
 	bool SetNewTarget(AActor* NewTargetActor) const;
 
 private:
 
 	UPROPERTY(Transient)
-	USWorldUserWidget* ActiveHealthBarWidget;
+	USWorldUserWidget* ActiveHealthBarWidget{nullptr};
 };

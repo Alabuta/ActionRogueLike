@@ -22,11 +22,13 @@ ASTargetDummy::ASTargetDummy()
 void ASTargetDummy::OnHealthChanged(
 	AActor* InstigatorActor,
 	USAttributeComponent* OwningComponent,
-	float NewHealth,
-	float Delta)
+	const float NewHealth,
+	const float Delta)
 {
 	if (Delta >= 0.f)
+	{
 		return;
+	}
 
 	StaticMeshComponent->SetScalarParameterValueOnMaterials(TEXT("TimeToHit"), GetWorld()->TimeSeconds);
 }

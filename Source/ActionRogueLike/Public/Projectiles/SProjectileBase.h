@@ -7,6 +7,9 @@
 #include "SProjectileBase.generated.h"
 
 
+class UCameraShakeBase;
+class UAudioComponent;
+class UParticleSystemComponent;
 class UProjectileMovementComponent;
 class USphereComponent;
 
@@ -23,31 +26,31 @@ public:
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-	TObjectPtr<USphereComponent> ColliderComponent;
+	TObjectPtr<USphereComponent> ColliderComponent{nullptr};
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-	TObjectPtr<UProjectileMovementComponent> MovementComponent;
+	TObjectPtr<UProjectileMovementComponent> MovementComponent{nullptr};
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-	TObjectPtr<UParticleSystemComponent> VfxComponent;
+	TObjectPtr<UParticleSystemComponent> VfxComponent{nullptr};
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-	TObjectPtr<UAudioComponent> FlightAudioComponent;
+	TObjectPtr<UAudioComponent> FlightAudioComponent{nullptr};
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="FX")
-	TObjectPtr<USoundBase> ImpactSound;
+	TObjectPtr<USoundBase> ImpactSound{nullptr};
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="FX")
-	TObjectPtr<UParticleSystem> ImpactVfx;
+	TObjectPtr<UParticleSystem> ImpactVfx{nullptr};
 
-	UPROPERTY(EditDefaultsOnly, Category = "FX|Camera Shake")
-	float ImpactCameraShakeInnerRadius = 0.f;
+	UPROPERTY(EditDefaultsOnly, Category="FX|Camera Shake")
+	float ImpactCameraShakeInnerRadius{0.f};
 
-	UPROPERTY(EditDefaultsOnly, Category = "FX|Camera Shake")
-	float ImpactCameraShakeOuterRadius = 1500.f;
+	UPROPERTY(EditDefaultsOnly, Category="FX|Camera Shake")
+	float ImpactCameraShakeOuterRadius{1500.f};
 
-	UPROPERTY(EditDefaultsOnly, Category = "FX|Camera Shake")
-	TSubclassOf<UCameraShakeBase> ImpactCameraShake;
+	UPROPERTY(EditDefaultsOnly, Category="FX|Camera Shake")
+	TSubclassOf<UCameraShakeBase> ImpactCameraShake{nullptr};
 
 	virtual void PostInitializeComponents() override;
 

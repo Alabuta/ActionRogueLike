@@ -83,7 +83,7 @@ void ASGameModeBase::OnBotSpawnQueryCompleted(
 	}
 
 	auto* SpawnedBot = GetWorld()->SpawnActor<AActor>(SpawnMinionBotClass, Locations[0], FRotator::ZeroRotator);
-	if (ensure(SpawnedBot != nullptr))
+	if (ensure(IsValid(SpawnedBot)))
 	{
 		DrawDebugSphere(GetWorld(), SpawnedBot->GetActorLocation(), 50, 20, FColor::Blue, false, 60);
 	}

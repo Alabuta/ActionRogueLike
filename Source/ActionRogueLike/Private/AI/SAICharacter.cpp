@@ -61,8 +61,8 @@ void ASAICharacter::OnPawnSeen(APawn* Pawn)
 void ASAICharacter::OnHealthChanged(
 	AActor* InstigatorActor,
 	USAttributeComponent* OwningComponent,
-	float NewHealth,
-	float Delta)
+	const float NewHealth,
+	const float Delta)
 {
 	if (Delta >= 0.f)
 	{
@@ -84,7 +84,13 @@ void ASAICharacter::OnHealthChanged(
 		}
 	}
 
-	GetMesh()->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
+	auto* SkeletalMeshComponent = GetMesh();
+	if (!IsValid(SkeletalMeshComponent))
+	{
+		return;
+	}
+
+	SkeletalMeshComponent->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
 
 	if (NewHealth <= 0.f)
 	{
@@ -93,8 +99,8 @@ void ASAICharacter::OnHealthChanged(
 			AIController->GetBrainComponent()->StopLogic(TEXT("Killed"));
 		}
 
-		GetMesh()->SetAllBodiesSimulatePhysics(true);
-		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+		SkeletalMeshComponent->SetAllBodiesSimulatePhysics(true);
+		SkeletalMeshComponent->SetCollisionProfileName(TEXT("Ragdoll"));
 
 		SetLifeSpan(10.f);
 	}

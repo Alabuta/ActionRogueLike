@@ -19,13 +19,13 @@ public:
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Teleport")
-	float TeleportDelay = .2f;
+	float TeleportDelay{.2f};
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Teleport")
-	float DetonateDelay = .2f;
+	float DetonateDelay{.2f};
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Teleport")
-	float AdjustmentOffsetZ = 10.f;
+	float AdjustmentOffsetZ{10.f};
 
 	FTimerHandle TimerHandle_DelayedDetonate;
 

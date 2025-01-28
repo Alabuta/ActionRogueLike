@@ -45,8 +45,10 @@ void ASDashProjectile::Explode_Implementation()
 void ASDashProjectile::TeleportInstigator() const
 {
 	auto* ActorToTeleport = GetInstigator();
-	if (!ensure(ActorToTeleport != nullptr))
+	if (!ensure(IsValid(ActorToTeleport)))
+	{
 		return;
+	}
 
 	ActorToTeleport->TeleportTo(GetActorLocation() + FVector::UpVector * AdjustmentOffsetZ, ActorToTeleport->GetActorRotation());
 }

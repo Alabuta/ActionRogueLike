@@ -52,6 +52,6 @@ void ASExplosiveBarrel::OnActorHit(
 		*GetNameSafe(OtherActor),
 		GetWorld()->TimeSeconds);
 
-	const FString CombinedString = FString::Printf(TEXT("Hit at location: %s"), *Hit.ImpactPoint.ToString());
+	const auto CombinedString = FString::Printf(TEXT("Hit at location: %s"), *Hit.ImpactPoint.ToString());
 	DrawDebugString(GetWorld(), Hit.ImpactPoint, CombinedString, nullptr, FColor::Green, 2.0f, true);
 }

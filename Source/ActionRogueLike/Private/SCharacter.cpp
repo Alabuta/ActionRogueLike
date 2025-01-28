@@ -200,8 +200,8 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClassToSpawn)
 void ASCharacter::OnHealthChanged(
 	AActor* InstigatorActor,
 	USAttributeComponent* OwningComponent,
-	float NewHealth,
-	float Delta)
+	const float NewHealth,
+	const float Delta)
 {
 	if (Delta < 0.f)
 	{

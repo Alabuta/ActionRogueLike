@@ -25,11 +25,11 @@ public:
 
 protected:
 
-	UPROPERTY(EditAnywhere, Category="PickUpItem|Config")
-	float RespawnTime = 10.f;
-
 	UPROPERTY(VisibleAnywhere, Category="PickUpItem|Components")
-	TObjectPtr<USphereComponent> ColliderComponent;
+	TObjectPtr<USphereComponent> ColliderComponent{nullptr};
+
+	UPROPERTY(EditAnywhere, Category="PickUpItem|Config")
+	float RespawnTime{10.f};
 	
 	FTimerHandle TimerHandle_RespawnTimer;
 

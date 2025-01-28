@@ -27,52 +27,52 @@ public:
 protected:
 
 	UPROPERTY(VisibleAnywhere, Category="Config|FX")
-	FName RightHandSocketName{TEXT("Muzzle_01")};
+	FName RightHandSocketName{TEXTVIEW("Muzzle_01")};
 
 	UPROPERTY(VisibleAnywhere, Category="Config|FX")
-	FName TimeToHitParamName{TEXT("TimeToHit")};
+	FName TimeToHitParamName{TEXTVIEW("TimeToHit")};
 
 	UPROPERTY(EditAnywhere, Category="Config|Primary Attack")
-	TSubclassOf<AActor> ProjectileClass;
+	TSubclassOf<AActor> ProjectileClass{nullptr};
 
 	UPROPERTY(EditAnywhere, Category="Config|Primary Attack")
-	TObjectPtr<UAnimMontage> AttackAnim;
+	TObjectPtr<UAnimMontage> AttackAnim{nullptr};
 	
 	UPROPERTY(EditAnywhere, Category="Config|Primary Attack")
-	float PrimaryAttackDelay = .2f;
+	float PrimaryAttackDelay{.2f};
 
 	UPROPERTY(EditAnywhere, Category="Config|Black Hole Attack")
-	TSubclassOf<AActor> BlackHoleAttackProjectileClass;
+	TSubclassOf<AActor> BlackHoleAttackProjectileClass{nullptr};
 
 	UPROPERTY(EditAnywhere, Category="Config|Black Hole Attack")
-	TObjectPtr<UAnimMontage> BlackHoleAttackAnim;
+	TObjectPtr<UAnimMontage> BlackHoleAttackAnim{nullptr};
 	
 	UPROPERTY(EditAnywhere, Category="Config|Black Hole Attack")
-	float BlackHoleAttackDelay = .2f;
+	float BlackHoleAttackDelay{.2f};
 
 	UPROPERTY(EditAnywhere, Category="Config|Dash")
-	TSubclassOf<AActor> DashProjectileClass;
+	TSubclassOf<AActor> DashProjectileClass{nullptr};
 
 	UPROPERTY(EditAnywhere, Category="Config|Dash")
-	TObjectPtr<UAnimMontage> DashAttackAnim;
+	TObjectPtr<UAnimMontage> DashAttackAnim{nullptr};
 	
 	UPROPERTY(EditAnywhere, Category="Config|Dash")
-	float DashAttackDelay = .2f;
+	float DashAttackDelay{.2f};
 
 	UPROPERTY(VisibleAnywhere, Category="Config|Components")
-	TObjectPtr<USpringArmComponent> SpringArmComponent;
+	TObjectPtr<USpringArmComponent> SpringArmComponent{nullptr};
 
 	UPROPERTY(VisibleAnywhere, Category="Config|Components")
-	TObjectPtr<UCameraComponent> CameraComponent;
+	TObjectPtr<UCameraComponent> CameraComponent{nullptr};
 
 	UPROPERTY(VisibleAnywhere, Category="Config|Components")
-	TObjectPtr<USInteractionComponent> InteractionComponent;
+	TObjectPtr<USInteractionComponent> InteractionComponent{nullptr};
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config|Components")
-	TObjectPtr<USAttributeComponent> AttributeComponent;
+	TObjectPtr<USAttributeComponent> AttributeComponent{nullptr};
 
 	UPROPERTY(EditDefaultsOnly, Category="Config|FX")
-	TObjectPtr<UParticleSystem> CastingVfx;
+	TObjectPtr<UParticleSystem> CastingVfx{nullptr};
 	
 private:
 
@@ -102,8 +102,8 @@ private:
 	void OnHealthChanged(
 		AActor* InstigatorActor,
 		USAttributeComponent* OwningComponent,
-		float NewHealth,
-		float Delta);
+		const float NewHealth,
+		const float Delta);
 
 	virtual void PostInitializeComponents() override;
 };

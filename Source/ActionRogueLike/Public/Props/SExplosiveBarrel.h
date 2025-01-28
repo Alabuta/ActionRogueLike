@@ -22,10 +22,10 @@ public:
 protected:
 
 	UPROPERTY(EditAnywhere, Category="Components")
-	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
+	TObjectPtr<UStaticMeshComponent> StaticMeshComponent{nullptr};
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components")
-	TObjectPtr<URadialForceComponent> RadialForceComponent;
+	TObjectPtr<URadialForceComponent> RadialForceComponent{nullptr};
 
 	UFUNCTION()
 	void OnActorHit(

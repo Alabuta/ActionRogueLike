@@ -11,8 +11,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(
 	FOnHealthChange,
 	AActor*, InstigatorActor,
 	USAttributeComponent*, OwningComponent,
-	float, NewHealth,
-	float, Delta);
+	const float, NewHealth,
+	const float, Delta);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ACTIONROGUELIKE_API USAttributeComponent : public UActorComponent
@@ -47,8 +47,8 @@ public:
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Config|Attributes")
-	float HealthMax = 100.f;
+	float HealthMax{100.f};
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Config|Attributes")
-	float Health = HealthMax;
+	float Health{HealthMax};
 };

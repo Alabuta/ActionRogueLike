@@ -19,5 +19,5 @@ ASItemChest::ASItemChest()
 
 void ASItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
-	LidMeshComponent->SetRelativeRotation(FRotator(TargetPitch, 0, 0));
+	LidMeshComponent->SetRelativeRotation(FRotator{TargetPitch, 0, 0});
 }

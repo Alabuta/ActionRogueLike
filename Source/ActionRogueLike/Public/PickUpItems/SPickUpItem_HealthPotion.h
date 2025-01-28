@@ -21,5 +21,5 @@ public:
 protected:
 
 	UPROPERTY(EditAnywhere, Category="Components")
-	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
+	TObjectPtr<UStaticMeshComponent> StaticMeshComponent{nullptr};
 };

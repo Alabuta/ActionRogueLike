@@ -22,11 +22,15 @@ void ASMagicProjectile::OnActorOverlap(
 	bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	if (OtherActor == nullptr)
+	if (!IsValid(OtherActor))
+	{
 		return;
+	}
 
 	if (OtherActor == GetInstigator())
+	{
 		return;
+	}
 
 	if (auto* AttributeComponent = OtherActor->GetComponentByClass<USAttributeComponent>(); AttributeComponent != nullptr)
 	{

@@ -63,7 +63,9 @@ void ASProjectileBase::ApplyHitFX() const
 void ASProjectileBase::Explode_Implementation()
 {
 	if (!ensure(IsValid(this)))
+	{
 		return;
+	}
 
 	ApplyHitFX();
 

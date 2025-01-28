@@ -22,15 +22,15 @@ public:
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-	TObjectPtr<USAttributeComponent> AttributeComponent;
+	TObjectPtr<USAttributeComponent> AttributeComponent{nullptr};
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
+	TObjectPtr<UStaticMeshComponent> StaticMeshComponent{nullptr};
 
 	UFUNCTION()
 	void OnHealthChanged(
 		AActor* InstigatorActor,
 		USAttributeComponent* OwningComponent,
-		float NewHealth,
-		float Delta);
+		const float NewHealth,
+		const float Delta);
 };
