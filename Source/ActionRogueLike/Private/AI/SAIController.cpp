@@ -3,6 +3,9 @@
 
 #include "AI/SAIController.h"
 
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Kismet/GameplayStatics.h"
+
 
 void ASAIController::BeginPlay()
 {
@@ -11,5 +14,13 @@ void ASAIController::BeginPlay()
 	if (ensureMsgf(BehaviorTree, TEXT("Invalid instance of BehaviourTree. Assign valid instance in AI Controller.")))
 	{
 		RunBehaviorTree(BehaviorTree);
+	}
+
+	auto* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
+	auto* BlackboardComponent = GetBlackboardComponent();
+	if (IsValid(PlayerPawn) && IsValid(BlackboardComponent))
+	{
+		BlackboardComponent->SetValueAsVector(TEXT("MoveToLocation"), PlayerPawn->GetActorLocation());
+		BlackboardComponent->SetValueAsObject(TEXT("TargetActor"), PlayerPawn);
 	}
 }
