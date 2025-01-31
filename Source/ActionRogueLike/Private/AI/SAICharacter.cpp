@@ -39,7 +39,7 @@ void ASAICharacter::PostInitializeComponents()
 
 bool ASAICharacter::SetNewTarget(AActor* NewTargetActor) const
 {
-	if (auto* AIController = Cast<ASAIController>(GetController()); AIController != nullptr)
+	if (auto* AIController = Cast<ASAIController>(GetController()); IsValid(AIController))
 	{
 		auto* BlackboardComponent = AIController->GetBlackboardComponent();
 		BlackboardComponent->SetValueAsObject(TEXT("TargetActor"), NewTargetActor);
@@ -69,7 +69,7 @@ void ASAICharacter::OnHealthChanged(
 		return;
 	}
 
-	if (InstigatorActor != this)
+	if (IsValid(InstigatorActor))
 	{
 		SetNewTarget(InstigatorActor);
 	}
@@ -94,7 +94,7 @@ void ASAICharacter::OnHealthChanged(
 
 	if (NewHealth <= 0.f)
 	{
-		if (const auto* AIController = Cast<ASAIController>(GetController()); AIController != nullptr)
+		if (const auto* AIController = Cast<ASAIController>(GetController()); IsValid(AIController))
 		{
 			AIController->GetBrainComponent()->StopLogic(TEXT("Killed"));
 		}
