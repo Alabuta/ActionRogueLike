@@ -8,6 +8,7 @@
 #include "SGameModeBase.generated.h"
 
 class UEnvQuery;
+
 /**
  * 
  */
@@ -18,8 +19,6 @@ class ACTIONROGUELIKE_API ASGameModeBase : public AGameModeBase
 
 public:
 
-	ASGameModeBase();
-
 	virtual void StartPlay() override;
 
 protected:
@@ -28,14 +27,14 @@ protected:
 	TObjectPtr<UCurveFloat> DifficultyCurve{nullptr};
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
-	TObjectPtr<UEnvQuery> SpawnBotQuery{nullptr};
+	TObjectPtr<UEnvQuery> FindBotSpawnQuery{nullptr};
 
 	UPROPERTY(EditAnywhere, Category="AI")
 	TSubclassOf<AActor> SpawnMinionBotClass{nullptr};
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	float SpawnTimeInterval{2.f};
-	
+
 	FTimerHandle TimerHandle_SpawnBots;
 
 private:
@@ -44,5 +43,7 @@ private:
 	void SpawnBot();
 
 	UFUNCTION()
-	void OnBotSpawnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+	void OnFindBotSpawnQueryComplete(
+		UEnvQueryInstanceBlueprintWrapper* QueryInstance,
+		EEnvQueryStatus::Type QueryStatus);
 };

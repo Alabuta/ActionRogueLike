@@ -32,7 +32,7 @@ void ASMagicProjectile::OnActorOverlap(
 		return;
 	}
 
-	if (auto* AttributeComponent = OtherActor->GetComponentByClass<USAttributeComponent>(); AttributeComponent != nullptr)
+	if (auto* AttributeComponent = OtherActor->GetComponentByClass<USAttributeComponent>(); IsValid(AttributeComponent))
 	{
 		AttributeComponent->ApplyHealthChange(GetInstigator(), -HealthDamageValue);
 	}

@@ -32,7 +32,7 @@ void ASPickUpItemBase::HideAndCooldown()
 			RespawnTime);
 }
 
-void ASPickUpItemBase::SetState(bool bNewIsActive)
+void ASPickUpItemBase::SetState(const bool bNewIsActive)
 {
 	SetActorEnableCollision(bNewIsActive);
 

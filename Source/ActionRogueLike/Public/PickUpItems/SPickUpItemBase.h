@@ -30,11 +30,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="PickUpItem|Config")
 	float RespawnTime{10.f};
-	
+
 	FTimerHandle TimerHandle_RespawnTimer;
 
 	UFUNCTION()
 	void Show();
 	void HideAndCooldown();
-	void SetState(bool bNewIsActive);
+	void SetState(const bool bNewIsActive);
 };

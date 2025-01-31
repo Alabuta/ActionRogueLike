@@ -9,10 +9,8 @@
 #include "AI/SAICharacter.h"
 #include "Components/SAttributeComponent.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
+#include "Logging/StructuredLog.h"
 
-ASGameModeBase::ASGameModeBase()
-{
-}
 
 void ASGameModeBase::StartPlay()
 {
@@ -30,54 +28,56 @@ void ASGameModeBase::StartPlay()
 void ASGameModeBase::SpawnBot()
 {
 	int32 AliveBotsNum = 0;
+
 	for (TActorIterator<ASAICharacter> It{GetWorld()}; It; ++It)
 	{
 		const auto* AttributeComponent = USAttributeComponent::GetAttributeComponent(*It);
-		if (ensure(AttributeComponent != nullptr) && AttributeComponent->IsAlive())
+		if (ensure(IsValid(AttributeComponent)) && AttributeComponent->IsAlive())
 		{
 			++AliveBotsNum;
 		}
 	}
 
 	int32 AliveBotsMaxCount = 0;
+
 	if (DifficultyCurve)
 	{
 		AliveBotsMaxCount = static_cast<int32>(DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds));
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("Found %i alive bots"), AliveBotsNum);
+	UE_LOGFMT(LogTemp, Log, "Found {0} alive bots", AliveBotsNum);
 
 	if (AliveBotsNum >= AliveBotsMaxCount)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Maximum bot capacity has reached."));
+		UE_LOGFMT(LogTemp, Log, "Maximum bot capacity has reached.");
 		return;
 	}
 
 	auto* QueryInstance = UEnvQueryManager::RunEQSQuery(
 		this,
-		SpawnBotQuery,
+		FindBotSpawnQuery,
 		this,
 		EEnvQueryRunMode::RandomBest5Pct,
 		nullptr);
 
-	if (ensure(QueryInstance != nullptr))
+	if (ensure(IsValid(QueryInstance)))
 	{
-		QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ASGameModeBase::OnBotSpawnQueryCompleted);
+		QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ASGameModeBase::OnFindBotSpawnQueryComplete);
 	}
 }
 
-void ASGameModeBase::OnBotSpawnQueryCompleted(
+void ASGameModeBase::OnFindBotSpawnQueryComplete(
 	UEnvQueryInstanceBlueprintWrapper* QueryInstance,
 	EEnvQueryStatus::Type QueryStatus)
 {
 	if (QueryStatus != EEnvQueryStatus::Success)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Spawn bot EQS query failed"));
+		UE_LOGFMT(LogTemp, Warning, "Spawn bot EQS query failed");
 		return;
 	}
 
 	auto Locations = QueryInstance->GetResultsAsLocations();
-	if (!Locations.IsValidIndex(0))
+	if (Locations.IsEmpty())
 	{
 		return;
 	}

@@ -6,6 +6,7 @@
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/SizeBox.h"
 #include "Kismet/GameplayStatics.h"
+#include "Logging/StructuredLog.h"
 
 
 void USWorldUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -15,7 +16,7 @@ void USWorldUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 	if (!IsValid(AttachedActor))
 	{
 		RemoveFromParent();
-		UE_LOG(LogTemp, Warning, TEXT("Attached actor is no longer valid, removing health widget."));
+		UE_LOGFMT(LogTemp, Warning, "Attached actor is no longer valid, removing health widget.");
 		return;
 	}
 

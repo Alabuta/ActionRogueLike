@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/CollisionProfile.h"
 #include "Engine/World.h"
+#include "Logging/StructuredLog.h"
 #include "PhysicsEngine/RadialForceComponent.h"
 
 
@@ -44,11 +45,11 @@ void ASExplosiveBarrel::OnActorHit(
 {
 	RadialForceComponent->FireImpulse();
 
-	UE_LOG(LogTemp, Log, TEXT("OnActorHit in Explosive Barrel"));
-	UE_LOG(
+	UE_LOGFMT(LogTemp, Log, "OnActorHit in Explosive Barrel");
+	UE_LOGFMT(
 		LogTemp,
 		Warning,
-		TEXT("OtherActor: %s, at game time: %f"),
+		"OtherActor: {0}, at game time: {1}",
 		*GetNameSafe(OtherActor),
 		GetWorld()->TimeSeconds);
 

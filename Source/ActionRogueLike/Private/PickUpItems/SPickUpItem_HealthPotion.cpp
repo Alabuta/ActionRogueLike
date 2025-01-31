@@ -18,15 +18,24 @@ ASPickUpItem_HealthPotion::ASPickUpItem_HealthPotion()
 
 void ASPickUpItem_HealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 {
-	if (!ensure(InstigatorPawn != nullptr))
+	if (!ensure(IsValid(InstigatorPawn)))
+	{
 		return;
+	}
 
 	auto* AttributeComponent = InstigatorPawn->GetComponentByClass<USAttributeComponent>();
-	if (ensure(IsValid(AttributeComponent)) && !AttributeComponent->IsFullHealth())
+	if (!ensure(IsValid(AttributeComponent)))
 	{
-		if (AttributeComponent->ApplyHealthChange(this, AttributeComponent->GetHealthMax()))
-		{
-			HideAndCooldown();
-		}
+		return;
+	}
+
+	if (AttributeComponent->IsFullHealth())
+	{
+		return;
+	}
+
+	if (AttributeComponent->ApplyHealthChange(this, AttributeComponent->GetHealthMax()))
+	{
+		HideAndCooldown();
 	}
 }
