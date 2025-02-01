@@ -16,13 +16,16 @@ void ASGameModeBase::StartPlay()
 {
 	Super::StartPlay();
 
-	GetWorldTimerManager()
-		.SetTimer(
-			TimerHandle_SpawnBots,
-			this,
-			&ASGameModeBase::SpawnBot,
-			SpawnTimeInterval,
-			true);
+	if (MinionBotClass)
+	{
+		GetWorldTimerManager()
+			.SetTimer(
+				TimerHandle_SpawnBots,
+				this,
+				&ASGameModeBase::SpawnBot,
+				SpawnTimeInterval,
+				true);
+	}
 }
 
 void ASGameModeBase::SpawnBot()
@@ -82,7 +85,10 @@ void ASGameModeBase::OnFindBotSpawnQueryComplete(
 		return;
 	}
 
-	auto* SpawnedBot = GetWorld()->SpawnActor<AActor>(SpawnMinionBotClass, Locations[0], FRotator::ZeroRotator);
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	auto* SpawnedBot = GetWorld()->SpawnActor<AActor>(MinionBotClass, Locations[0], FRotator::ZeroRotator, SpawnParameters);
 	if (ensure(IsValid(SpawnedBot)))
 	{
 		DrawDebugSphere(GetWorld(), SpawnedBot->GetActorLocation(), 50, 20, FColor::Blue, false, 60);

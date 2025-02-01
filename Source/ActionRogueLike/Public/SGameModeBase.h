@@ -30,7 +30,7 @@ protected:
 	TObjectPtr<UEnvQuery> FindBotSpawnQuery{nullptr};
 
 	UPROPERTY(EditAnywhere, Category="AI")
-	TSubclassOf<AActor> SpawnMinionBotClass{nullptr};
+	TSubclassOf<AActor> MinionBotClass{nullptr};
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	float SpawnTimeInterval{2.f};
