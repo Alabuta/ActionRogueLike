@@ -26,9 +26,19 @@ bool USAttributeComponent::IsFullHealth() const
 	return Health == HealthMax;
 }
 
+float USAttributeComponent::GetHealth() const
+{
+	return Health;
+}
+
 float USAttributeComponent::GetHealthMax() const
 {
 	return HealthMax;
+}
+
+float USAttributeComponent::GetHealthRatio() const
+{
+	return Health / HealthMax;
 }
 
 USAttributeComponent* USAttributeComponent::GetAttributeComponent(const AActor* FromActor)

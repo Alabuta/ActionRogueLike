@@ -36,7 +36,13 @@ public:
 	bool IsFullHealth() const;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Attributes")
+	float GetHealth() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Attributes")
 	float GetHealthMax() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Attributes")
+	float GetHealthRatio() const;
 
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	static USAttributeComponent* GetAttributeComponent(const AActor* FromActor);
