@@ -48,7 +48,7 @@ USAttributeComponent* USAttributeComponent::GetAttributeComponent(const AActor* 
 
 bool USAttributeComponent::IsActorAlive(const AActor* Actor)
 {
-	if (const auto* AttributeComponent = GetAttributeComponent(Actor); AttributeComponent != nullptr)
+	if (const auto* AttributeComponent = GetAttributeComponent(Actor); IsValid(AttributeComponent))
 	{
 		return AttributeComponent->IsAlive();
 	}

@@ -17,10 +17,10 @@ class ACTIONROGUELIKE_API USBTService_CheckAttackRange : public UBTService
 protected:
 
 	UPROPERTY(EditAnywhere, Category="AI")
-	float AttackRange{1500.f};
+	FBlackboardKeySelector AttackRangeKey;
 
 	UPROPERTY(EditAnywhere, Category="AI")
-	FBlackboardKeySelector AttackRangeKey;
+	float AttackRange{1500.f};
 
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 };
