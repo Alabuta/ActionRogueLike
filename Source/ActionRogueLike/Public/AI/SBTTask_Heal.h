@@ -18,11 +18,8 @@ class ACTIONROGUELIKE_API USBTTask_Heal : public UBTTaskNode
 
 protected:
 
-	UPROPERTY(EditAnywhere, Category="AI", meta=(Units="%", ClampMin="0", ClampMax="100", EditCondition="bHealToTargetValue"))
-	int32 TargetHealthPercentage{100};
-
-	UPROPERTY(EditAnywhere, Category="AI", meta=(Units="%", ClampMin="0", ClampMax="100", EditCondition="!bHealToTargetValue"))
-	int32 HealAmountPercentage{25};
+	UPROPERTY(EditAnywhere, Category="AI", meta=(Units="%", ClampMin="0", ClampMax="100"))
+	int32 HealValuePercentage{100};
 
 	// Flag that controls whether health should be healed to specific target level or increased by specific value
 	UPROPERTY(EditAnywhere, Category="AI")

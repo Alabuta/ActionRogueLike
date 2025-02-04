@@ -38,13 +38,13 @@ EBTNodeResult::Type USBTTask_Heal::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	if (bHealToTargetValue)
 	{
 		const auto TargetLevel = static_cast<float>(
-			FMath::CeilToInt(AIPawnAttributeComponent->GetHealthMax() * static_cast<float>(TargetHealthPercentage) * .01f));
+			FMath::CeilToInt(AIPawnAttributeComponent->GetHealthMax() * static_cast<float>(HealValuePercentage) * .01f));
 		Delta = TargetLevel - AIPawnAttributeComponent->GetHealth();
 	}
 	else
 	{
 		Delta = static_cast<float>(
-			FMath::CeilToInt(AIPawnAttributeComponent->GetHealthMax() * static_cast<float>(HealAmountPercentage) * .01f));
+			FMath::CeilToInt(AIPawnAttributeComponent->GetHealthMax() * static_cast<float>(HealValuePercentage) * .01f));
 	}
 
 	if (FMath::IsNearlyZero(Delta, .1f))
