@@ -40,7 +40,7 @@ protected:
 private:
 
 	UFUNCTION()
-	void SpawnBot();
+	void SpawnBotTimerElapsed();
 
 	UFUNCTION()
 	void OnFindBotSpawnQueryComplete(

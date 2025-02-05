@@ -46,7 +46,7 @@ protected:
 		const float NewHealth,
 		const float Delta);
 
-	bool SetNewTarget(AActor* NewTargetActor) const;
+	bool SetActorTarget(AActor* NewTargetActor) const;
 
 private:
 

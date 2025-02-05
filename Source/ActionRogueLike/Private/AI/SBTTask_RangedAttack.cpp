@@ -36,7 +36,7 @@ EBTNodeResult::Type USBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& O
 		return EBTNodeResult::Failed;
 	}
 
-	if (const auto IsTargetActorAlive = USAttributeComponent::IsActorAlive(TargetActor); !IsTargetActorAlive)
+	if (!USAttributeComponent::IsActorAlive(TargetActor))
 	{
 		return EBTNodeResult::Failed;
 	}

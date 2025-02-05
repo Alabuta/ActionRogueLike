@@ -22,13 +22,13 @@ void ASGameModeBase::StartPlay()
 			.SetTimer(
 				TimerHandle_SpawnBots,
 				this,
-				&ASGameModeBase::SpawnBot,
+				&ASGameModeBase::SpawnBotTimerElapsed,
 				SpawnTimeInterval,
 				true);
 	}
 }
 
-void ASGameModeBase::SpawnBot()
+void ASGameModeBase::SpawnBotTimerElapsed()
 {
 	int32 AliveBotsNum = 0;
 

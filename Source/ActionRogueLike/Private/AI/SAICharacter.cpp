@@ -37,22 +37,9 @@ void ASAICharacter::PostInitializeComponents()
 	}
 }
 
-bool ASAICharacter::SetNewTarget(AActor* NewTargetActor) const
-{
-	if (auto* AIController = Cast<ASAIController>(GetController()); IsValid(AIController))
-	{
-		auto* BlackboardComponent = AIController->GetBlackboardComponent();
-		BlackboardComponent->SetValueAsObject(TEXT("TargetActor"), NewTargetActor);
-
-		return true;
-	}
-
-	return false;
-}
-
 void ASAICharacter::OnPawnSeen(APawn* Pawn)
 {
-	if (SetNewTarget(Pawn))
+	if (SetActorTarget(Pawn))
 	{
 		DrawDebugString(GetWorld(),	GetActorLocation(), TEXT("PLAYER SPOTTED"), nullptr, FColor::Orange, 2.f, true);
 	}
@@ -69,9 +56,9 @@ void ASAICharacter::OnHealthChanged(
 		return;
 	}
 
-	if (IsValid(InstigatorActor))
+	if (InstigatorActor != this && IsValid(InstigatorActor))
 	{
-		SetNewTarget(InstigatorActor);
+		SetActorTarget(InstigatorActor);
 	}
 
 	if (!IsValid(ActiveHealthBarWidget) && IsValid(HealthBarWidgetClass))
@@ -104,4 +91,17 @@ void ASAICharacter::OnHealthChanged(
 
 		SetLifeSpan(10.f);
 	}
+}
+
+bool ASAICharacter::SetActorTarget(AActor* NewTargetActor) const
+{
+	if (auto* AIController = Cast<ASAIController>(GetController()); IsValid(AIController))
+	{
+		auto* BlackboardComponent = AIController->GetBlackboardComponent();
+		BlackboardComponent->SetValueAsObject(TEXT("TargetActor"), NewTargetActor);
+
+		return true;
+	}
+
+	return false;
 }
