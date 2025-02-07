@@ -17,10 +17,12 @@ class ACTIONROGUELIKE_API USWorldUserWidget : public UUserWidget
 
 public:
 
-	UPROPERTY(BlueprintReadOnly, Category="UI")
-	TObjectPtr<AActor> AttachedActor{nullptr};
+	void SetAttachedActor(const AActor* NewAttachedActor);
 
 protected:
+
+	UPROPERTY(BlueprintReadOnly, Category="UI")
+	TObjectPtr<const AActor> AttachedActor{nullptr};
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<USizeBox> ParentSizeBox{nullptr};

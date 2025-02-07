@@ -9,14 +9,24 @@
 #include "Logging/StructuredLog.h"
 
 
+void USWorldUserWidget::SetAttachedActor(const AActor* NewAttachedActor)
+{
+	AttachedActor = NewAttachedActor;
+}
+
 void USWorldUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
 	if (!IsValid(AttachedActor))
 	{
-		RemoveFromParent();
 		UE_LOGFMT(LogTemp, Warning, "Attached actor is no longer valid, removing health widget.");
+		RemoveFromParent();
+		return;
+	}
+
+	if (!ParentSizeBox)
+	{
 		return;
 	}
 
@@ -26,9 +36,6 @@ void USWorldUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 		const auto ViewportDPIScale = UWidgetLayoutLibrary::GetViewportScale(this);
 		ScreenPosition /= ViewportDPIScale;
 
-		if (ParentSizeBox)
-		{
-			ParentSizeBox->SetRenderTranslation(ScreenPosition);
-		}
+		ParentSizeBox->SetRenderTranslation(ScreenPosition);
 	}
 }

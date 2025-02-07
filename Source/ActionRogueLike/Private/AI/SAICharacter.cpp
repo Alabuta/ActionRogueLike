@@ -66,7 +66,7 @@ void ASAICharacter::OnHealthChanged(
 		ActiveHealthBarWidget = CreateWidget<USWorldUserWidget>(GetWorld(), HealthBarWidgetClass);
 		if (IsValid(ActiveHealthBarWidget))
 		{
-			ActiveHealthBarWidget->AttachedActor = this;
+			ActiveHealthBarWidget->SetAttachedActor(this);
 			ActiveHealthBarWidget->AddToViewport();
 		}
 	}
