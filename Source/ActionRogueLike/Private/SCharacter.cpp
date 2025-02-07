@@ -62,6 +62,14 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction(TEXT("Dash"), IE_Pressed, this, &ASCharacter::Dash);
 }
 
+void ASCharacter::HealSelf(const float Amount)
+{
+	if (IsValid(AttributeComponent))
+	{
+		AttributeComponent->ApplyHealthChange(this, Amount);
+	}
+}
+
 void ASCharacter::MoveForward(float Value)
 {
 	auto ControlRotation = GetControlRotation();

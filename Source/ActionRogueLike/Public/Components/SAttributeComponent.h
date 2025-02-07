@@ -21,7 +21,7 @@ class ACTIONROGUELIKE_API USAttributeComponent : public UActorComponent
 
 public:
 
-	USAttributeComponent() = default;
+	USAttributeComponent();
 
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthChange OnHealthChange;
@@ -45,6 +45,9 @@ public:
 	float GetHealthRatio() const;
 
 	UFUNCTION(BlueprintCallable, Category="Attributes")
+	void Kill(AActor* InstigatorActor);
+
+	UFUNCTION(BlueprintCallable, Category="Attributes")
 	static USAttributeComponent* GetAttributeComponent(const AActor* FromActor);
 
 	UFUNCTION(BlueprintCallable, Category="Attributes", meta=(DisplayName="IsAlive"))
@@ -56,5 +59,5 @@ protected:
 	float HealthMax{100.f};
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Config|Attributes")
-	float Health{HealthMax};
+	float Health{0.f};
 };

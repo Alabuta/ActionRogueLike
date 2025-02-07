@@ -24,6 +24,9 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(Exec)
+	void HealSelf(const float Amount);
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, Category="Config|FX")

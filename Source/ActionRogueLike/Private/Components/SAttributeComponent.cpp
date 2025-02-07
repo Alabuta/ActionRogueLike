@@ -6,8 +6,19 @@
 #include "GameFramework/Actor.h"
 
 
+USAttributeComponent::USAttributeComponent()
+{
+	PrimaryComponentTick.bCanEverTick = false;
+	Health = HealthMax;
+}
+
 bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
+	if (const auto* OwnerActor = GetOwner(); !OwnerActor->CanBeDamaged())
+	{
+		return false;
+	}
+	
 	Delta = FMath::Clamp(Health + Delta, 0, HealthMax) - Health;
 	Health += Delta;
 
@@ -39,6 +50,14 @@ float USAttributeComponent::GetHealthMax() const
 float USAttributeComponent::GetHealthRatio() const
 {
 	return Health / HealthMax;
+}
+
+void USAttributeComponent::Kill(AActor* InstigatorActor)
+{
+	if (IsAlive())
+	{
+		ApplyHealthChange(InstigatorActor, -Health);
+	}
 }
 
 USAttributeComponent* USAttributeComponent::GetAttributeComponent(const AActor* FromActor)

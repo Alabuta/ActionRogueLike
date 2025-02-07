@@ -28,6 +28,18 @@ void ASGameModeBase::StartPlay()
 	}
 }
 
+void ASGameModeBase::KillAll()
+{
+	for (TActorIterator<ASAICharacter> It{GetWorld()}; It; ++It)
+	{
+		auto* AttributeComponent = USAttributeComponent::GetAttributeComponent(*It);
+		if (ensure(IsValid(AttributeComponent)) && AttributeComponent->IsAlive())
+		{
+			AttributeComponent->Kill(this);
+		}
+	}
+}
+
 void ASGameModeBase::SpawnBotTimerElapsed()
 {
 	int32 AliveBotsNum = 0;
