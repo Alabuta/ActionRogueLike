@@ -3,6 +3,8 @@
 
 #include "Components/SAttributeComponent.h"
 
+#include "SGameModeBase.h"
+#include "Engine/World.h"
 #include "GameFramework/Actor.h"
 
 
@@ -23,6 +25,14 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	Health += Delta;
 
 	OnHealthChange.Broadcast(InstigatorActor, this, Health, Delta);
+
+	if (Delta < 0.f && Health == 0.f)
+    {
+	    if (auto* GameMode = GetWorld()->GetAuthGameMode<ASGameModeBase>(); IsValid(GameMode))
+		{
+			GameMode->OnActorKilled(GetOwner(), InstigatorActor);
+		}
+    }
 
 	return Delta != 0;
 }

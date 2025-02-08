@@ -5,6 +5,7 @@
 
 #include "DrawDebugHelpers.h"
 #include "EngineUtils.h"
+#include "SCharacter.h"
 #include "TimerManager.h"
 #include "AI/SAICharacter.h"
 #include "Components/SAttributeComponent.h"
@@ -25,6 +26,36 @@ void ASGameModeBase::StartPlay()
 				&ASGameModeBase::SpawnBotTimerElapsed,
 				SpawnTimeInterval,
 				true);
+	}
+}
+
+void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* KillerActor)
+{
+	if (const auto* PlayerCharacter = Cast<ASCharacter>(VictimActor); IsValid(PlayerCharacter))
+	{
+		FTimerDelegate TimerDelegate;
+		TimerDelegate.BindUFunction(this, TEXT("RespawnPlayerElapsed"), PlayerCharacter->GetController());
+
+		FTimerHandle TimerHandle_RespondDelay;
+		constexpr auto RespawnDelay = 2.f;
+		GetWorldTimerManager().SetTimer(TimerHandle_RespondDelay, TimerDelegate, RespawnDelay, false);
+	}
+
+	UE_LOGFMT(
+		LogTemp,
+		Log,
+		"OnActorKilled : victim {0} | killer {1}",
+		GetNameSafe(VictimActor),
+		GetNameSafe(KillerActor));
+}
+
+void ASGameModeBase::RespawnPlayerElapsed(AController* Controller)
+{
+	if (ensure(IsValid(Controller)))
+	{
+		Controller->UnPossess();
+
+		RestartPlayer(Controller);
 	}
 }
 
@@ -77,11 +108,11 @@ void ASGameModeBase::SpawnBotTimerElapsed()
 
 	if (ensure(IsValid(QueryInstance)))
 	{
-		QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ASGameModeBase::OnFindBotSpawnQueryComplete);
+		QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ASGameModeBase::OnFindBotSpawnQueryCompleted);
 	}
 }
 
-void ASGameModeBase::OnFindBotSpawnQueryComplete(
+void ASGameModeBase::OnFindBotSpawnQueryCompleted(
 	UEnvQueryInstanceBlueprintWrapper* QueryInstance,
 	EEnvQueryStatus::Type QueryStatus)
 {

@@ -21,6 +21,11 @@ public:
 
 	virtual void StartPlay() override;
 
+	virtual void OnActorKilled(AActor* VictimActor, AActor* KillerActor);
+
+	UFUNCTION()
+	void RespawnPlayerElapsed(AController* Controller);
+
 	UFUNCTION(Exec)
 	void KillAll();
 
@@ -46,7 +51,7 @@ private:
 	void SpawnBotTimerElapsed();
 
 	UFUNCTION()
-	void OnFindBotSpawnQueryComplete(
+	void OnFindBotSpawnQueryCompleted(
 		UEnvQueryInstanceBlueprintWrapper* QueryInstance,
 		EEnvQueryStatus::Type QueryStatus);
 };
