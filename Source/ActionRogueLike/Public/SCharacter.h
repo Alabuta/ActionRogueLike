@@ -24,6 +24,8 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+	virtual FVector GetPawnViewLocation() const override;
+
 	UFUNCTION(Exec)
 	void HealSelf(const float Amount);
 

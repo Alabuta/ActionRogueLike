@@ -13,6 +13,15 @@
 #include "GameFramework/Pawn.h"
 
 
+ namespace SConsoleVariables
+{
+	TAutoConsoleVariable CVarDebugDraw(
+		TEXT("su.Interaction.DebugDraw"),
+		false,
+		TEXT("Enable debug draw for `InteractionComponent`"),
+		ECVF_Cheat);
+}
+
 USInteractionComponent::USInteractionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -49,11 +58,21 @@ void USInteractionComponent::PrimaryInteract()
 
 	const auto LineColor = bBlockingHit ? FColor::Green : FColor::Red;
 
-	DrawDebugLine(World, EyeLocation, End, LineColor, false, 2.f, 0, 2.f);
+#if ENABLE_DRAW_DEBUG
+	if (SConsoleVariables::CVarDebugDraw.GetValueOnGameThread())
+	{
+		DrawDebugLine(World, EyeLocation, End, LineColor, false, 2.f, 0, 2.f);
+	}
+#endif
 
 	for (const FHitResult& Hit : Hits)
 	{
-		DrawDebugSphere(World, Hit.ImpactPoint, Radius, 32, LineColor, false, 2.f);
+#if ENABLE_DRAW_DEBUG
+		if (SConsoleVariables::CVarDebugDraw.GetValueOnGameThread())
+		{
+			DrawDebugSphere(World, Hit.ImpactPoint, Radius, 32, LineColor, false, 2.f);
+		}
+#endif
 
 		auto* HitActor = Hit.GetActor();
 		if (!IsValid(HitActor))

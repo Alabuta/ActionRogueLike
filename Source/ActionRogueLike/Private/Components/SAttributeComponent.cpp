@@ -8,6 +8,15 @@
 #include "GameFramework/Actor.h"
 
 
+namespace SConsoleVariables
+{
+	TAutoConsoleVariable CVarDamageMultiplier(
+		TEXT("su.DamageMultiplier"),
+		1.f,
+		TEXT("Global damage multiplier for `AttributeComponent`"),
+		ECVF_Cheat);
+}
+
 USAttributeComponent::USAttributeComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
@@ -16,11 +25,16 @@ USAttributeComponent::USAttributeComponent()
 
 bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
-	if (const auto* OwnerActor = GetOwner(); !OwnerActor->CanBeDamaged())
+	if (const auto* OwnerActor = GetOwner(); !OwnerActor->CanBeDamaged() && Delta < 0.f)
 	{
 		return false;
 	}
-	
+
+	if (Delta < 0.f)
+	{
+		Delta *= SConsoleVariables::CVarDamageMultiplier.GetValueOnGameThread();
+	}
+
 	Delta = FMath::Clamp(Health + Delta, 0, HealthMax) - Health;
 	Health += Delta;
 

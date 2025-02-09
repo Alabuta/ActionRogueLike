@@ -13,6 +13,15 @@
 #include "Logging/StructuredLog.h"
 
 
+namespace SConsoleVariables
+{
+	TAutoConsoleVariable CVarSpawnBots(
+        TEXT("su.SpawnBots"),
+        true,
+        TEXT("Enable bot spawning"),
+        ECVF_Cheat);
+}
+
 void ASGameModeBase::StartPlay()
 {
 	Super::StartPlay();
@@ -73,6 +82,12 @@ void ASGameModeBase::KillAll()
 
 void ASGameModeBase::SpawnBotTimerElapsed()
 {
+	if (!SConsoleVariables::CVarSpawnBots.GetValueOnGameThread())
+	{
+		UE_LOGFMT(LogTemp, Warning, "Bot spawning is disabled via cvar 'CVarSpawnBots'.");
+		return;
+	}
+
 	int32 AliveBotsNum = 0;
 
 	for (TActorIterator<ASAICharacter> It{GetWorld()}; It; ++It)

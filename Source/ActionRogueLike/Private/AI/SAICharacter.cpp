@@ -9,8 +9,10 @@
 #include "AI/SAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/SAttributeComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/PawnSensingComponent.h"
 
 
@@ -20,6 +22,16 @@ ASAICharacter::ASAICharacter()
 	AttributeComponent = CreateDefaultSubobject<USAttributeComponent>(TEXT("AttributeComponent"));
 
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	if (IsValid(GetCapsuleComponent()))
+	{
+		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
+	}
+
+	if (auto* SkeletalMeshComponent = GetMesh(); IsValid(SkeletalMeshComponent))
+	{
+		SkeletalMeshComponent->SetGenerateOverlapEvents(true);
+	}
 }
 
 void ASAICharacter::PostInitializeComponents()
@@ -72,12 +84,11 @@ void ASAICharacter::OnHealthChanged(
 	}
 
 	auto* SkeletalMeshComponent = GetMesh();
-	if (!IsValid(SkeletalMeshComponent))
-	{
-		return;
-	}
 
-	SkeletalMeshComponent->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
+	if (IsValid(SkeletalMeshComponent))
+	{
+		SkeletalMeshComponent->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
+	}
 
 	if (NewHealth <= 0.f)
 	{
@@ -86,8 +97,21 @@ void ASAICharacter::OnHealthChanged(
 			AIController->GetBrainComponent()->StopLogic(TEXT("Killed"));
 		}
 
-		SkeletalMeshComponent->SetAllBodiesSimulatePhysics(true);
-		SkeletalMeshComponent->SetCollisionProfileName(TEXT("Ragdoll"));
+		if (IsValid(SkeletalMeshComponent))
+		{
+			SkeletalMeshComponent->SetAllBodiesSimulatePhysics(true);
+			SkeletalMeshComponent->SetCollisionProfileName(TEXT("Ragdoll"));
+		}
+
+		if (IsValid(GetCapsuleComponent()))
+		{
+			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+
+		if (IsValid(GetCharacterMovement()))
+		{
+			GetCharacterMovement()->DisableMovement();
+		}
 
 		SetLifeSpan(10.f);
 	}

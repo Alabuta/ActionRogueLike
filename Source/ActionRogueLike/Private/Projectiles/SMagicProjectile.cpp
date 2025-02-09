@@ -3,6 +3,7 @@
 
 #include "Projectiles/SMagicProjectile.h"
 
+#include "SGameplayFunctionLibrary.h"
 #include "Components/SAttributeComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Pawn.h"
@@ -22,12 +23,7 @@ void ASMagicProjectile::OnActorOverlap(
 	bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	if (!IsValid(OtherActor))
-	{
-		return;
-	}
-
-	if (OtherActor == GetInstigator())
+	if (!IsValid(OtherActor) || OtherActor == GetInstigator())
 	{
 		return;
 	}
@@ -37,5 +33,14 @@ void ASMagicProjectile::OnActorOverlap(
 		AttributeComponent->ApplyHealthChange(GetInstigator(), -HealthDamageValue);
 	}
 
-	Explode();
+	const auto bApplyDirectionalDamage = USGameplayFunctionLibrary::ApplyDirectionalDamage(
+		GetInstigator(),
+		OtherActor,
+		HealthDamageValue,
+		SweepResult);
+
+	if (bApplyDirectionalDamage)
+	{
+		Explode();
+	}
 }
