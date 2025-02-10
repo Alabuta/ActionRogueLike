@@ -7,6 +7,7 @@
 #include "SCharacter.generated.h"
 
 
+class USActionComponent;
 class USAttributeComponent;
 class USInteractionComponent;
 class UCameraComponent;
@@ -76,6 +77,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config|Components")
 	TObjectPtr<USAttributeComponent> AttributeComponent{nullptr};
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config|Components")
+	TObjectPtr<USActionComponent> ActionComponent{nullptr};
+
 	UPROPERTY(EditDefaultsOnly, Category="Config|FX")
 	TObjectPtr<UParticleSystem> CastingVfx{nullptr};
 	
@@ -98,6 +102,9 @@ private:
 	
 	void Dash();
 	void Dash_TimeElapsed();
+
+	void SprintStart();
+	void SprintStop();
 
 	void StartAttackFXs(UAnimMontage* AttackAnimMontage);
 	

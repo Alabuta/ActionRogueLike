@@ -3,6 +3,7 @@
 
 #include "SCharacter.h"
 
+#include "Components/SActionComponent.h"
 #include "TimerManager.h"
 #include "Components/SAttributeComponent.h"
 #include "Components/SInteractionComponent.h"
@@ -29,6 +30,7 @@ ASCharacter::ASCharacter()
 	InteractionComponent = CreateDefaultSubobject<USInteractionComponent>(TEXT("InteractionComponent"));
 
 	AttributeComponent = CreateDefaultSubobject<USAttributeComponent>(TEXT("AttributeComponent"));
+	ActionComponent = CreateDefaultSubobject<USActionComponent>(TEXT("ActionComponent"));
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
@@ -60,6 +62,9 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ASCharacter::Jump);
 	PlayerInputComponent->BindAction(TEXT("Dash"), IE_Pressed, this, &ASCharacter::Dash);
+
+	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &ASCharacter::SprintStart);
+	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &ASCharacter::SprintStop);
 }
 
 FVector ASCharacter::GetPawnViewLocation() const
@@ -94,6 +99,22 @@ void ASCharacter::MoveRight(float Value)
 	const auto RightVector = FRotationMatrix(ControlRotation).GetScaledAxis(EAxis::Y);
 
 	AddMovementInput(RightVector, Value);
+}
+
+void ASCharacter::SprintStart()
+{
+	if (IsValid(ActionComponent))
+	{
+		ActionComponent->StartActionByName(this, TEXT("Sprint"));
+	}
+}
+
+void ASCharacter::SprintStop()
+{
+	if (IsValid(ActionComponent))
+	{
+		ActionComponent->StopActionByName(this, TEXT("Sprint"));
+	}
 }
 
 void ASCharacter::PrimaryAttack()
