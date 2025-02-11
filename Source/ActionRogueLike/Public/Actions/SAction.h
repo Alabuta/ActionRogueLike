@@ -25,4 +25,6 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, Category="Action")
 	void StopAction(AActor* Instigator);
+
+	UWorld* GetWorld() const;
 };

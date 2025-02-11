@@ -24,18 +24,20 @@ public:
 		ELevelTick TickType,
 		FActorComponentTickFunction* ThisTickFunction) override;
 
-	UFUNCTION(BlueprintCallable, Category="Action")
-	void AddAction(TSubclassOf<USAction> ActionClass);
+	UFUNCTION(BlueprintCallable, Category="Actions")
+	void AddAction(const TSubclassOf<USAction> ActionClass);
 
-	UFUNCTION(BlueprintCallable, Category="Action")
+	UFUNCTION(BlueprintCallable, Category="Actions")
 	bool StartActionByName(AActor* Instigator, FName ActionName);
 
-	UFUNCTION(BlueprintCallable, Category="Action")
+	UFUNCTION(BlueprintCallable, Category="Actions")
 	bool StopActionByName(AActor* Instigator, FName ActionName);
 
 protected:
 
-	// Called when the game starts
+	UPROPERTY(EditAnywhere, Category="Actions")
+	TArray<TSubclassOf<USAction>> GrantedActions;
+
 	virtual void BeginPlay() override;
 
 private:

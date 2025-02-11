@@ -31,21 +31,12 @@ public:
 	void HealSelf(const float Amount);
 
 protected:
-
+	
 	UPROPERTY(VisibleAnywhere, Category="Config|FX")
 	FName RightHandSocketName{TEXTVIEW("Muzzle_01")};
 
 	UPROPERTY(VisibleAnywhere, Category="Config|FX")
 	FName TimeToHitParamName{TEXTVIEW("TimeToHit")};
-
-	UPROPERTY(EditAnywhere, Category="Config|Primary Attack")
-	TSubclassOf<AActor> ProjectileClass{nullptr};
-
-	UPROPERTY(EditAnywhere, Category="Config|Primary Attack")
-	TObjectPtr<UAnimMontage> AttackAnim{nullptr};
-	
-	UPROPERTY(EditAnywhere, Category="Config|Primary Attack")
-	float PrimaryAttackDelay{.2f};
 
 	UPROPERTY(EditAnywhere, Category="Config|Black Hole Attack")
 	TSubclassOf<AActor> BlackHoleAttackProjectileClass{nullptr};
@@ -79,13 +70,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config|Components")
 	TObjectPtr<USActionComponent> ActionComponent{nullptr};
-
-	UPROPERTY(EditDefaultsOnly, Category="Config|FX")
-	TObjectPtr<UParticleSystem> CastingVfx{nullptr};
 	
 private:
 
-	FTimerHandle TimerHandle_PrimaryAttack;
 	FTimerHandle TimerHandle_BlackHoleAttack;
 	FTimerHandle TimerHandle_Dash;
 
@@ -93,7 +80,6 @@ private:
 	void MoveRight(float Value);
 
 	void PrimaryAttack();
-	void PrimaryAttack_TimeElapsed();
 
 	void BlackHoleAttack();
 	void BlackHoleAttack_TimeElapsed();
@@ -106,8 +92,6 @@ private:
 	void SprintStart();
 	void SprintStop();
 
-	void StartAttackFXs(UAnimMontage* AttackAnimMontage);
-	
 	void SpawnProjectile(TSubclassOf<AActor> ProjectileClassToSpawn);
 
 	UFUNCTION()

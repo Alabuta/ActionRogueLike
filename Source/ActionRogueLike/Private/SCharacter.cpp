@@ -119,18 +119,10 @@ void ASCharacter::SprintStop()
 
 void ASCharacter::PrimaryAttack()
 {
-	PlayAnimMontage(AttackAnim);
-	GetWorldTimerManager()
-		.SetTimer(
-			TimerHandle_PrimaryAttack,
-			this,
-			&ASCharacter::PrimaryAttack_TimeElapsed,
-			PrimaryAttackDelay); // :TODO: use animation events
-}
-
-void ASCharacter::PrimaryAttack_TimeElapsed()
-{
-	SpawnProjectile(ProjectileClass);
+	if (IsValid(ActionComponent))
+	{
+		ActionComponent->StartActionByName(this, TEXT("PrimaryAttack"));
+	}
 }
 
 void ASCharacter::BlackHoleAttack()
@@ -164,22 +156,9 @@ void ASCharacter::Dash_TimeElapsed()
 	SpawnProjectile(DashProjectileClass);
 }
 
-void ASCharacter::StartAttackFXs(UAnimMontage* AttackAnimMontage)
-{
-	PlayAnimMontage(AttackAnimMontage);
-
-	UGameplayStatics::SpawnEmitterAttached(
-		CastingVfx,
-		GetMesh(),
-		RightHandSocketName,
-		FVector::ZeroVector,
-		FRotator::ZeroRotator,
-		EAttachLocation::SnapToTarget);
-}
-
 void ASCharacter::PrimaryInteract()
 {
-	if (InteractionComponent != nullptr)
+	if (InteractionComponent)
 	{
 		InteractionComponent->PrimaryInteract();
 	}
@@ -188,7 +167,9 @@ void ASCharacter::PrimaryInteract()
 void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClassToSpawn)
 {
 	if (!ensureAlways(ProjectileClassToSpawn))
+	{
 		return;
+	}
 
 	auto* World = GetWorld();
 

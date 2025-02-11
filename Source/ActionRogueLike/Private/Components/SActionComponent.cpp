@@ -5,6 +5,7 @@
 
 #include <ranges>
 #include "Actions/SAction.h"
+#include "Algo/Find.h"
 
 
 USActionComponent::USActionComponent()
@@ -15,6 +16,11 @@ USActionComponent::USActionComponent()
 void USActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	for (auto&& ActionClass : GrantedActions)
+	{
+		AddAction(ActionClass);
+	}
 }
 
 void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -22,7 +28,7 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void USActionComponent::AddAction(TSubclassOf<USAction> ActionClass)
+void USActionComponent::AddAction(const TSubclassOf<USAction> ActionClass)
 {
 	if (!ensure(ActionClass))
 	{
@@ -37,13 +43,15 @@ void USActionComponent::AddAction(TSubclassOf<USAction> ActionClass)
 
 bool USActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 {
-	for (auto* Action : Actions)
+	const auto* ActionPtr = Algo::FindByPredicate(Actions, [ActionName](const USAction* Action)
 	{
-		if (IsValid(Action) && Action->ActionName == ActionName)
-		{
-			Action->StartAction(Instigator);
-			return true;
-		}
+		return IsValid(Action) && Action->ActionName == ActionName;
+	});
+
+	if (ActionPtr != nullptr)
+	{
+		(*ActionPtr)->StartAction(Instigator);
+		return true;
 	}
 
 	return false;
@@ -51,13 +59,15 @@ bool USActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 
 bool USActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
 {
-	for (auto* Action : Actions)
+	const auto* ActionPtr = Algo::FindByPredicate(Actions, [ActionName](const USAction* Action)
 	{
-		if (IsValid(Action) && Action->ActionName == ActionName)
-		{
-			Action->StopAction(Instigator);
-			return true;
-		}
+		return IsValid(Action) && Action->ActionName == ActionName;
+	});
+
+	if (ActionPtr != nullptr)
+	{
+		(*ActionPtr)->StopAction(Instigator);
+		return true;
 	}
 
 	return false;
