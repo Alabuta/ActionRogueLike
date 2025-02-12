@@ -3,9 +3,9 @@
 
 #include "Components/SActionComponent.h"
 
-#include <ranges>
 #include "Actions/SAction.h"
 #include "Algo/Find.h"
+#include "Engine/Engine.h"
 
 
 USActionComponent::USActionComponent()
@@ -26,6 +26,12 @@ void USActionComponent::BeginPlay()
 void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	auto DebugMessage = FString::Printf(
+		TEXT("Action Component Tick: %s | %s"),
+		*GetNameSafe(GetOwner()),
+		*ActiveGameplayTags.ToStringSimple()); 
+	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::White, MoveTemp(DebugMessage));
 }
 
 void USActionComponent::AddAction(const TSubclassOf<USAction> ActionClass)
@@ -43,9 +49,9 @@ void USActionComponent::AddAction(const TSubclassOf<USAction> ActionClass)
 
 bool USActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 {
-	const auto* ActionPtr = Algo::FindByPredicate(Actions, [ActionName](const USAction* Action)
+	const auto* ActionPtr = Algo::FindByPredicate(Actions, [Instigator, ActionName](const USAction* Action)
 	{
-		return IsValid(Action) && Action->ActionName == ActionName;
+		return IsValid(Action) && Action->ActionName == ActionName && Action->CanStartAction(Instigator);
 	});
 
 	if (ActionPtr != nullptr)
@@ -61,7 +67,7 @@ bool USActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
 {
 	const auto* ActionPtr = Algo::FindByPredicate(Actions, [ActionName](const USAction* Action)
 	{
-		return IsValid(Action) && Action->ActionName == ActionName;
+		return IsValid(Action) && Action->ActionName == ActionName && Action->IsRunning();
 	});
 
 	if (ActionPtr != nullptr)
