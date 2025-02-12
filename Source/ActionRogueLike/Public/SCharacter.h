@@ -31,30 +31,9 @@ public:
 	void HealSelf(const float Amount);
 
 protected:
-	
-	UPROPERTY(VisibleAnywhere, Category="Config|FX")
-	FName RightHandSocketName{TEXTVIEW("Muzzle_01")};
 
 	UPROPERTY(VisibleAnywhere, Category="Config|FX")
 	FName TimeToHitParamName{TEXTVIEW("TimeToHit")};
-
-	UPROPERTY(EditAnywhere, Category="Config|Black Hole Attack")
-	TSubclassOf<AActor> BlackHoleAttackProjectileClass{nullptr};
-
-	UPROPERTY(EditAnywhere, Category="Config|Black Hole Attack")
-	TObjectPtr<UAnimMontage> BlackHoleAttackAnim{nullptr};
-	
-	UPROPERTY(EditAnywhere, Category="Config|Black Hole Attack")
-	float BlackHoleAttackDelay{.2f};
-
-	UPROPERTY(EditAnywhere, Category="Config|Dash")
-	TSubclassOf<AActor> DashProjectileClass{nullptr};
-
-	UPROPERTY(EditAnywhere, Category="Config|Dash")
-	TObjectPtr<UAnimMontage> DashAttackAnim{nullptr};
-	
-	UPROPERTY(EditAnywhere, Category="Config|Dash")
-	float DashAttackDelay{.2f};
 
 	UPROPERTY(VisibleAnywhere, Category="Config|Components")
 	TObjectPtr<USpringArmComponent> SpringArmComponent{nullptr};
@@ -70,29 +49,23 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config|Components")
 	TObjectPtr<USActionComponent> ActionComponent{nullptr};
-	
+
 private:
 
-	FTimerHandle TimerHandle_BlackHoleAttack;
-	FTimerHandle TimerHandle_Dash;
+	virtual void PostInitializeComponents() override;
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
 	void PrimaryAttack();
-
 	void BlackHoleAttack();
-	void BlackHoleAttack_TimeElapsed();
+
+	void Dash();
 
 	void PrimaryInteract();
-	
-	void Dash();
-	void Dash_TimeElapsed();
 
 	void SprintStart();
 	void SprintStop();
-
-	void SpawnProjectile(TSubclassOf<AActor> ProjectileClassToSpawn);
 
 	UFUNCTION()
 	void OnHealthChanged(
@@ -100,6 +73,4 @@ private:
 		USAttributeComponent* OwningComponent,
 		const float NewHealth,
 		const float Delta);
-
-	virtual void PostInitializeComponents() override;
 };

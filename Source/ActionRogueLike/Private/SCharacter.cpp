@@ -127,33 +127,18 @@ void ASCharacter::PrimaryAttack()
 
 void ASCharacter::BlackHoleAttack()
 {
-	PlayAnimMontage(BlackHoleAttackAnim);
-	GetWorldTimerManager()
-		.SetTimer(
-			TimerHandle_BlackHoleAttack,
-			this,
-			&ASCharacter::BlackHoleAttack_TimeElapsed,
-			BlackHoleAttackDelay); // :TODO: use animation events
-}
-
-void ASCharacter::BlackHoleAttack_TimeElapsed()
-{
-	SpawnProjectile(BlackHoleAttackProjectileClass);
+	if (IsValid(ActionComponent))
+	{
+		ActionComponent->StartActionByName(this, TEXT("BlackHoleAttack"));
+	}
 }
 
 void ASCharacter::Dash()
 {
-	PlayAnimMontage(DashAttackAnim);
-	GetWorldTimerManager()
-		.SetTimer(TimerHandle_Dash,
-		          this,
-		          &ASCharacter::Dash_TimeElapsed,
-		          DashAttackDelay); // :TODO: use animation events
-}
-
-void ASCharacter::Dash_TimeElapsed()
-{
-	SpawnProjectile(DashProjectileClass);
+	if (IsValid(ActionComponent))
+	{
+		ActionComponent->StartActionByName(this, TEXT("Dash"));
+	}
 }
 
 void ASCharacter::PrimaryInteract()
@@ -162,54 +147,6 @@ void ASCharacter::PrimaryInteract()
 	{
 		InteractionComponent->PrimaryInteract();
 	}
-}
-
-void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClassToSpawn)
-{
-	if (!ensureAlways(ProjectileClassToSpawn))
-	{
-		return;
-	}
-
-	auto* World = GetWorld();
-
-	FCollisionObjectQueryParams ObjectQueryParams;
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
-
-	FCollisionShape Shape;
-	Shape.SetSphere(20.0f);
-
-	FCollisionQueryParams AdditionalQueryParams;
-	AdditionalQueryParams.AddIgnoredActor(this);
-
-	auto TraceStart = CameraComponent->GetComponentLocation();
-	auto TraceEnd = TraceStart + GetControlRotation().Vector() * 5'000;
-
-	const auto RightHandSocketLocation = GetMesh()->GetSocketLocation(RightHandSocketName);
-
-	FHitResult Hit;
-	auto bBlockingHit = World->SweepSingleByObjectType(
-		Hit,
-		TraceStart,
-		TraceEnd,
-		FQuat::Identity,
-		ObjectQueryParams,
-		Shape,
-		AdditionalQueryParams);
-
-	auto SpawnRotation = bBlockingHit
-		                     ? FRotationMatrix::MakeFromX(Hit.ImpactPoint - RightHandSocketLocation).Rotator()
-		                     : FRotationMatrix::MakeFromX(TraceEnd - RightHandSocketLocation).Rotator();
-
-	const auto SpawnTransform = FTransform(SpawnRotation, RightHandSocketLocation);
-
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParameters.Instigator = this;
-
-	World->SpawnActor<AActor>(ProjectileClassToSpawn, SpawnTransform, SpawnParameters);
 }
 
 void ASCharacter::OnHealthChanged(
