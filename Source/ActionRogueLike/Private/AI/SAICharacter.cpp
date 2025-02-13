@@ -10,6 +10,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SActionComponent.h"
 #include "Components/SAttributeComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -20,6 +21,7 @@ ASAICharacter::ASAICharacter()
 {
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComponent"));
 	AttributeComponent = CreateDefaultSubobject<USAttributeComponent>(TEXT("AttributeComponent"));
+	ActionComponent = CreateDefaultSubobject<USActionComponent>(TEXT("ActionComponent"));
 
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 

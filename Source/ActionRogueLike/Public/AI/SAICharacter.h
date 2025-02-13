@@ -7,6 +7,7 @@
 #include "SAICharacter.generated.h"
 
 
+class USActionComponent;
 class USWorldUserWidget;
 class USAttributeComponent;
 class UPawnSensingComponent;
@@ -32,6 +33,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<USWorldUserWidget> HealthBarWidgetClass{nullptr};
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config|Components")
+	TObjectPtr<USActionComponent> ActionComponent{nullptr};
 
 	UPROPERTY(VisibleAnywhere, Category="Config|FX")
 	FName TimeToHitParamName{TEXTVIEW("TimeToHit")};

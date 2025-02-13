@@ -4,9 +4,10 @@
 #include "Projectiles/SMagicProjectile.h"
 
 #include "SGameplayFunctionLibrary.h"
-#include "Components/SAttributeComponent.h"
+#include "Components/SActionComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Pawn.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 
 ASMagicProjectile::ASMagicProjectile()
@@ -28,15 +29,22 @@ void ASMagicProjectile::OnActorOverlap(
 		return;
 	}
 
-	if (auto* AttributeComponent = OtherActor->GetComponentByClass<USAttributeComponent>(); IsValid(AttributeComponent))
+	if (!bAlreadyReflected)
 	{
-		AttributeComponent->ApplyHealthChange(GetInstigator(), -HealthDamageValue);
+		if (const auto* ActionComponent = OtherActor->GetComponentByClass<USActionComponent>();
+		   IsValid(ActionComponent) && ActionComponent->ActiveGameplayTags.HasTag(ParryTag))
+		{
+			bAlreadyReflected = true;
+			MovementComponent->Velocity *= -1.f;
+			SetInstigator(Cast<APawn>(OtherActor));
+			return;
+		}
 	}
 
 	const auto bApplyDirectionalDamage = USGameplayFunctionLibrary::ApplyDirectionalDamage(
 		GetInstigator(),
 		OtherActor,
-		HealthDamageValue,
+		DamageValue,
 		SweepResult);
 
 	if (bApplyDirectionalDamage)

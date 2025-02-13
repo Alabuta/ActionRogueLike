@@ -21,6 +21,9 @@ public:
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	FVector WorldOffset;
+
 	UPROPERTY(BlueprintReadOnly, Category="UI")
 	TObjectPtr<const AActor> AttachedActor{nullptr};
 
