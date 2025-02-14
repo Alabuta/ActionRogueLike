@@ -19,6 +19,8 @@ class ACTIONROGUELIKE_API ASGameModeBase : public AGameModeBase
 
 public:
 
+	ASGameModeBase();
+
 	virtual void StartPlay() override;
 
 	virtual void OnActorKilled(AActor* VictimActor, AActor* KillerActor);
@@ -42,6 +44,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	float SpawnTimeInterval{2.f};
+
+	UPROPERTY(EditDefaultsOnly, Category="Credits")
+	int32 CreditsPerKill{200};
 
 	FTimerHandle TimerHandle_SpawnBots;
 

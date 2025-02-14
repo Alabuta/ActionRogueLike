@@ -11,6 +11,7 @@
 #include "Components/SAttributeComponent.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "Logging/StructuredLog.h"
+#include "Player/SPlayerState.h"
 
 
 namespace SConsoleVariables
@@ -20,6 +21,11 @@ namespace SConsoleVariables
         true,
         TEXT("Enable bot spawning"),
         ECVF_Cheat);
+}
+
+ASGameModeBase::ASGameModeBase()
+{
+	PlayerStateClass = ASPlayerState::StaticClass();
 }
 
 void ASGameModeBase::StartPlay()
@@ -50,12 +56,13 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* KillerActor)
 		GetWorldTimerManager().SetTimer(TimerHandle_RespondDelay, TimerDelegate, RespawnDelay, false);
 	}
 
-	UE_LOGFMT(
-		LogTemp,
-		Log,
-		"OnActorKilled : victim {0} | killer {1}",
-		GetNameSafe(VictimActor),
-		GetNameSafe(KillerActor));
+	if (const auto* KillerPawn = Cast<APawn>(KillerActor); IsValid(KillerPawn))
+	{
+		if (auto* PlayerState = KillerPawn->GetPlayerState<ASPlayerState>(); IsValid(PlayerState))
+		{
+			PlayerState->AddCredits(CreditsPerKill);
+		}
+	}
 }
 
 void ASGameModeBase::RespawnPlayerElapsed(AController* Controller)

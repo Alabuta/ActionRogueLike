@@ -7,6 +7,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/CollisionProfile.h"
 #include "GameFramework/Pawn.h"
+#include "Player/SPlayerState.h"
 
 
 ASPickUpItem_HealthPotion::ASPickUpItem_HealthPotion()
@@ -18,6 +19,11 @@ ASPickUpItem_HealthPotion::ASPickUpItem_HealthPotion()
 
 void ASPickUpItem_HealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	if (!ensure(IsValid(InstigatorPawn)))
 	{
 		return;
@@ -34,7 +40,14 @@ void ASPickUpItem_HealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 		return;
 	}
 
-	if (AttributeComponent->ApplyHealthChange(this, AttributeComponent->GetHealthMax()))
+	auto* PlayerState = InstigatorPawn->GetPlayerState<ASPlayerState>();
+	if (!ensure(IsValid(PlayerState)))
+	{
+		return;
+	}
+
+	if (PlayerState->TryRemoveCredits(CreditCost) &&
+		AttributeComponent->ApplyHealthChange(this, AttributeComponent->GetHealthMax()))
 	{
 		HideAndCooldown();
 	}
