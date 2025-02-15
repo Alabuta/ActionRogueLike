@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "EnvironmentQuery/EnvQueryInstanceBlueprintWrapper.h"
 #include "GameFramework/GameModeBase.h"
+#include "PickUpItems/SPickUpItemBase.h"
 #include "SGameModeBase.generated.h"
 
 class UEnvQuery;
@@ -42,8 +43,20 @@ protected:
 	UPROPERTY(EditAnywhere, Category="AI")
 	TSubclassOf<AActor> MinionBotClass{nullptr};
 
+	UPROPERTY(EditAnywhere, Category="PickUpItems")
+	TArray<TSubclassOf<ASPickUpItemBase>> PickUpItemClasses;
+
+	UPROPERTY(EditAnywhere, Category="PickUpItems")
+	TObjectPtr<UEnvQuery> PickUpItemSpawnQuery;
+
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	float SpawnTimeInterval{2.f};
+
+	UPROPERTY(EditDefaultsOnly, Category="PickUpItems")
+	int32 DesiredPickUpItemsCount{10};
+
+	UPROPERTY(EditDefaultsOnly, Category="PickUpItems", meta=(ClampMin="0.1", ClampMax="1000", Units="cm"))
+	float RequiredPickUpItemsDistance{500.f};
 
 	UPROPERTY(EditDefaultsOnly, Category="Credits")
 	int32 CreditsPerKill{200};
@@ -57,6 +70,11 @@ private:
 
 	UFUNCTION()
 	void OnFindBotSpawnQueryCompleted(
+		UEnvQueryInstanceBlueprintWrapper* QueryInstance,
+		EEnvQueryStatus::Type QueryStatus);
+
+	UFUNCTION()
+	void OnPickUpItemSpawnQueryCompleted(
 		UEnvQueryInstanceBlueprintWrapper* QueryInstance,
 		EEnvQueryStatus::Type QueryStatus);
 };

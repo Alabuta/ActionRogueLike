@@ -8,6 +8,7 @@
 #include "SCharacter.h"
 #include "TimerManager.h"
 #include "AI/SAICharacter.h"
+#include "Algo/AllOf.h"
 #include "Components/SAttributeComponent.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "Logging/StructuredLog.h"
@@ -41,6 +42,18 @@ void ASGameModeBase::StartPlay()
 				&ASGameModeBase::SpawnBotTimerElapsed,
 				SpawnTimeInterval,
 				true);
+	}
+
+	if (!PickUpItemClasses.IsEmpty() && ensure(PickUpItemSpawnQuery))
+	{
+		auto* EQSQueryInstance = UEnvQueryManager::RunEQSQuery(
+			this,
+			PickUpItemSpawnQuery,
+			this,
+			EEnvQueryRunMode::AllMatching,
+			nullptr);
+
+		EQSQueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ASGameModeBase::OnPickUpItemSpawnQueryCompleted);
 	}
 }
 
@@ -157,5 +170,80 @@ void ASGameModeBase::OnFindBotSpawnQueryCompleted(
 	if (ensure(IsValid(SpawnedBot)))
 	{
 		DrawDebugSphere(GetWorld(), SpawnedBot->GetActorLocation(), 50, 20, FColor::Blue, false, 60);
+	}
+}
+
+void ASGameModeBase::OnPickUpItemSpawnQueryCompleted(
+	UEnvQueryInstanceBlueprintWrapper* QueryInstance,
+	EEnvQueryStatus::Type QueryStatus)
+{
+	if (QueryStatus != EEnvQueryStatus::Success)
+	{
+		UE_LOGFMT(LogTemp, Warning, "Spawn pick up item EQS query failed");
+		return;
+	}
+
+	TArray<FVector> QueryResults;
+	QueryInstance->GetQueryResultsAsLocations(QueryResults);
+
+	if (QueryResults.IsEmpty())
+	{
+		return;
+	}
+
+	int32 SpawnCounter = 0;
+	int32 EndIndex = QueryResults.Num();
+
+	const float RequiredPickUpItemsDistanceSquared = FMath::Square(RequiredPickUpItemsDistance);
+
+	while (SpawnCounter < DesiredPickUpItemsCount && EndIndex > 0)
+	{
+		{
+			const int32 RandomIndex = FMath::RandRange(0, --EndIndex);
+			if (!ensure(QueryResults.IsValidIndex(RandomIndex)))
+			{
+				break;
+			}
+
+			if (RandomIndex != EndIndex)
+			{
+				QueryResults.Swap(RandomIndex, EndIndex);
+			}
+		}
+
+		const auto& SpawnLocation = QueryResults[EndIndex];
+
+		const TConstArrayView<FVector> PickedSpawnLocations{
+			QueryResults.GetData() + EndIndex + 1,
+			QueryResults.Num() - EndIndex - 1};
+
+		const auto bValidLocation = PickedSpawnLocations.IsEmpty() || Algo::AllOf(
+			PickedSpawnLocations,
+			[&SpawnLocation, RequiredPickUpItemsDistanceSquared](const FVector& Location)
+			{
+				const auto DistSquared = FVector::DistSquared(SpawnLocation, Location);
+				return DistSquared >= RequiredPickUpItemsDistanceSquared;
+			});
+
+		if (!bValidLocation)
+		{
+			continue;
+		}
+	
+		const int32 RandomPickUpItemIndex = FMath::RandRange(0, PickUpItemClasses.Num() - 1);
+		if (!ensure(PickUpItemClasses.IsValidIndex(RandomPickUpItemIndex)))
+		{
+			break;
+		}
+
+		const auto& PickUpItemClass = PickUpItemClasses[RandomPickUpItemIndex];
+		if (!ensure(PickUpItemClass))
+        {
+            break;
+        }
+
+		GetWorld()->SpawnActor<AActor>(PickUpItemClass, SpawnLocation, FRotator::ZeroRotator);
+
+		++SpawnCounter;
 	}
 }
