@@ -7,6 +7,9 @@
 #include "CollisionShape.h"
 #include "DrawDebugHelpers.h"
 #include "SGameplayInterface.h"
+#include "SWorldUserWidget.h"
+#include "Blueprint/UserWidget.h"
+#include "Engine/Engine.h"
 #include "Engine/HitResult.h"
 #include "Engine/World.h"
 #include "GameFramework/Actor.h"
@@ -28,66 +31,108 @@ USInteractionComponent::USInteractionComponent()
 }
 
 void USInteractionComponent::PrimaryInteract()
+ {
+ 	if (!IsValid(FocusedActor))
+    {
+ 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("No interactable actor found"));
+	    return;
+    }
+
+    auto* OwnerPawn = Cast<APawn>(GetOwner());
+    ISGameplayInterface::Execute_Interact(FocusedActor, OwnerPawn);
+ }
+
+void USInteractionComponent::TickComponent(
+	float DeltaTime,
+	ELevelTick TickType,
+	FActorComponentTickFunction* ThisTickFunction)
 {
-	FVector EyeLocation;
-	FRotator EyeRotation;
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	auto* OwnerActor = GetOwner();
-	OwnerActor->GetActorEyesViewPoint(EyeLocation, EyeRotation);
+ 	FindBestInteractable();
+}
 
-	const auto End = EyeLocation + EyeRotation.Vector() * 1000;
+void USInteractionComponent::FindBestInteractable()
+ {
+ 	FVector EyeLocation;
+ 	FRotator EyeRotation;
 
-	FCollisionObjectQueryParams ObjectQueryParams;
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+    GetOwner()->GetActorEyesViewPoint(EyeLocation, EyeRotation);
 
-	const auto* World = GetWorld();
+ 	const auto End = EyeLocation + EyeRotation.Vector() * TraceDistance;
 
-	TArray<FHitResult> Hits;
+ 	FCollisionObjectQueryParams ObjectQueryParams;
+ 	ObjectQueryParams.AddObjectTypesToQuery(CollisionChannel);
 
-	constexpr float Radius = 30.f;
+ 	const auto* World = GetWorld();
 
-	const auto Shape = FCollisionShape::MakeSphere(Radius);
+ 	TArray<FHitResult> Hits;
 
-	const auto bBlockingHit = World->SweepMultiByObjectType(
-		Hits,
-		EyeLocation,
-		End,
-		FQuat::Identity,
-		ObjectQueryParams,
-		Shape);
+ 	const auto Shape = FCollisionShape::MakeSphere(TraceRadius);
 
-	const auto LineColor = bBlockingHit ? FColor::Green : FColor::Red;
+ 	const auto bBlockingHit = World->SweepMultiByObjectType(
+		 Hits,
+		 EyeLocation,
+		 End,
+		 FQuat::Identity,
+		 ObjectQueryParams,
+		 Shape);
+
+ 	const auto LineColor = bBlockingHit ? FColor::Green : FColor::Red;
 
 #if ENABLE_DRAW_DEBUG
-	if (SConsoleVariables::CVarDebugDraw.GetValueOnGameThread())
-	{
-		DrawDebugLine(World, EyeLocation, End, LineColor, false, 2.f, 0, 2.f);
-	}
+ 	if (SConsoleVariables::CVarDebugDraw.GetValueOnGameThread())
+ 	{
+ 		DrawDebugLine(World, EyeLocation, End, LineColor, false, 2.f, 0, 2.f);
+ 	}
 #endif
 
-	for (const FHitResult& Hit : Hits)
-	{
+ 	FocusedActor = nullptr;
+
+ 	for (const FHitResult& Hit : Hits)
+ 	{
 #if ENABLE_DRAW_DEBUG
-		if (SConsoleVariables::CVarDebugDraw.GetValueOnGameThread())
-		{
-			DrawDebugSphere(World, Hit.ImpactPoint, Radius, 32, LineColor, false, 2.f);
-		}
+ 		if (SConsoleVariables::CVarDebugDraw.GetValueOnGameThread())
+ 		{
+ 			DrawDebugSphere(World, Hit.ImpactPoint, TraceRadius, 32, LineColor, false, 2.f);
+ 		}
 #endif
 
-		auto* HitActor = Hit.GetActor();
-		if (!IsValid(HitActor))
+ 		auto* HitActor = Hit.GetActor();
+ 		if (!IsValid(HitActor))
+ 		{
+ 			continue;
+ 		}
+
+ 		if (HitActor->Implements<USGameplayInterface>())
+ 		{
+ 			FocusedActor = HitActor;
+ 			break;
+ 		}
+ 	}
+
+ 	if (IsValid(FocusedActor))
+ 	{
+ 		if (!IsValid(DefaultWidgetInstance) && ensure(DefaultWidgetClass))
+ 		{
+ 			DefaultWidgetInstance = CreateWidget<USWorldUserWidget>(GetWorld(), DefaultWidgetClass);
+ 		}
+
+ 		if (IsValid(DefaultWidgetInstance))
+ 		{
+ 			DefaultWidgetInstance->SetAttachedActor(FocusedActor);
+
+ 			if (!DefaultWidgetInstance->IsInViewport())
+ 			{
+ 				DefaultWidgetInstance->AddToViewport();
+ 			}
+ 		}
+ 	}
+    else
+    {
+    	if (IsValid(DefaultWidgetInstance))
 		{
-			continue;
+			DefaultWidgetInstance->RemoveFromParent();
 		}
-
-		if (!HitActor->Implements<USGameplayInterface>())
-		{
-			continue;
-		}
-
-		auto* OwnerPawn = Cast<APawn>(OwnerActor);
-		ISGameplayInterface::Execute_Interact(HitActor, OwnerPawn);
-
-		break;
-	}
+    }
 }

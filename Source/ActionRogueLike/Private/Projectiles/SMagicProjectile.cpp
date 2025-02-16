@@ -29,10 +29,11 @@ void ASMagicProjectile::OnActorOverlap(
 		return;
 	}
 
+	auto* ActionComponent = OtherActor->GetComponentByClass<USActionComponent>();
+
 	if (!bAlreadyReflected)
 	{
-		if (const auto* ActionComponent = OtherActor->GetComponentByClass<USActionComponent>();
-		   IsValid(ActionComponent) && ActionComponent->ActiveGameplayTags.HasTag(ParryTag))
+		if (IsValid(ActionComponent) && ActionComponent->ActiveGameplayTags.HasTag(ParryTag))
 		{
 			bAlreadyReflected = true;
 			MovementComponent->Velocity *= -1.f;
@@ -50,5 +51,10 @@ void ASMagicProjectile::OnActorOverlap(
 	if (bApplyDirectionalDamage)
 	{
 		Explode();
+
+		if (IsValid(ActionComponent) && DamageEffect)
+		{
+			ActionComponent->AddAction(GetInstigator(), DamageEffect);
+		}
 	}
 }

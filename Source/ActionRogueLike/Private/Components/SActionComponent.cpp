@@ -19,7 +19,7 @@ void USActionComponent::BeginPlay()
 
 	for (auto&& ActionClass : GrantedActions)
 	{
-		AddAction(ActionClass);
+		AddAction(GetOwner(), ActionClass);
 	}
 }
 
@@ -34,7 +34,7 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::White, MoveTemp(DebugMessage));
 }
 
-void USActionComponent::AddAction(const TSubclassOf<USAction> ActionClass)
+void USActionComponent::AddAction(AActor* Instigator, const TSubclassOf<USAction> ActionClass)
 {
 	if (!ensure(ActionClass))
 	{
@@ -44,6 +44,11 @@ void USActionComponent::AddAction(const TSubclassOf<USAction> ActionClass)
 	if (auto* Action = NewObject<USAction>(this, ActionClass); ensure(IsValid(Action)))
 	{
 		Actions.Add(Action);
+
+		if (Action->bAutoStart && ensure(Action->CanStartAction(Instigator)))
+		{
+			Action->StartAction(Instigator);
+		}
 	}
 }
 
@@ -77,5 +82,15 @@ bool USActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
 	}
 
 	return false;
+}
+
+void USActionComponent::RemoveAction(USAction* Action)
+{
+	if (!ensure(IsValid(Action) && !Action->IsRunning()))
+	{
+		return;
+	}
+
+	Actions.Remove(Action);
 }
 

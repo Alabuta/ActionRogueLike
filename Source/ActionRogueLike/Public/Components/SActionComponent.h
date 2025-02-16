@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "Actions/SActionEffect.h"
 #include "Components/ActorComponent.h"
 #include "SActionComponent.generated.h"
 
@@ -29,13 +30,16 @@ public:
 		FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable, Category="Actions")
-	void AddAction(const TSubclassOf<USAction> ActionClass);
+	void AddAction(AActor* Instigator, const TSubclassOf<USAction> ActionClass);
 
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	bool StartActionByName(AActor* Instigator, FName ActionName);
 
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	bool StopActionByName(AActor* Instigator, FName ActionName);
+
+	UFUNCTION(BlueprintCallable, Category="Actions")
+	void RemoveAction(USAction* Action);
 
 protected:
 

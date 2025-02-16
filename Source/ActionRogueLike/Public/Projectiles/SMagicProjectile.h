@@ -9,6 +9,7 @@
 #include "SMagicProjectile.generated.h"
 
 
+class USActionEffect;
 class UProjectileMovementComponent;
 class USphereComponent;
 
@@ -23,6 +24,9 @@ public:
 	ASMagicProjectile();
 
 protected:
+
+	UPROPERTY(EditDefaultsOnly, Category="Damage")
+	TSubclassOf<USActionEffect> DamageEffect;
 
 	UPROPERTY(EditDefaultsOnly, Category="Damage")
 	FGameplayTag ParryTag;

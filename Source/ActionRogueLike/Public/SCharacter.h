@@ -32,22 +32,22 @@ public:
 
 protected:
 
-	UPROPERTY(VisibleAnywhere, Category="Config|FX")
+	UPROPERTY(VisibleAnywhere, Category="FX")
 	FName TimeToHitParamName{TEXTVIEW("TimeToHit")};
 
-	UPROPERTY(VisibleAnywhere, Category="Config|Components")
+	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<USpringArmComponent> SpringArmComponent{nullptr};
 
-	UPROPERTY(VisibleAnywhere, Category="Config|Components")
+	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<UCameraComponent> CameraComponent{nullptr};
 
-	UPROPERTY(VisibleAnywhere, Category="Config|Components")
+	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<USInteractionComponent> InteractionComponent{nullptr};
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config|Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<USAttributeComponent> AttributeComponent{nullptr};
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config|Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<USActionComponent> ActionComponent{nullptr};
 
 private:
