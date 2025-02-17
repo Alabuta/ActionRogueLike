@@ -14,6 +14,13 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(
 	const float, NewHealth,
 	const float, Delta);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(
+	FOnRageChange,
+	AActor*, InstigatorActor,
+	USAttributeComponent*, OwningComponent,
+	const float, NewRage,
+	const float, Delta);
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ACTIONROGUELIKE_API USAttributeComponent : public UActorComponent
 {
@@ -25,6 +32,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthChange OnHealthChange;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnRageChange OnRageChange;
 
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
@@ -47,6 +57,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	void Kill(AActor* InstigatorActor);
 
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Attributes")
+	float GetRage() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Attributes")
+	float GetRageMax() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Attributes")
+	float GetRageRatio() const;
+
+	UFUNCTION(BlueprintCallable, Category="Attributes")
+	bool ApplyRageChange(AActor* InstigatorActor, float Delta);
+
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	static USAttributeComponent* GetAttributeComponent(const AActor* FromActor);
 
@@ -55,9 +77,15 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Config|Attributes")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes|Health")
 	float HealthMax{100.f};
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Config|Attributes")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes|Health")
 	float Health{0.f};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes|Rage")
+	float RageMax{100.f};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes|Rage")
+	float Rage{0.f};
 };

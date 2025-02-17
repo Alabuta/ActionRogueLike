@@ -34,10 +34,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<USWorldUserWidget> HealthBarWidgetClass{nullptr};
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config|Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<USActionComponent> ActionComponent{nullptr};
 
-	UPROPERTY(VisibleAnywhere, Category="Config|FX")
+	UPROPERTY(VisibleAnywhere, Category="FX")
 	FName TimeToHitParamName{TEXTVIEW("TimeToHit")};
 
 	UFUNCTION()

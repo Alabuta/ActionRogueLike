@@ -84,6 +84,31 @@ void USAttributeComponent::Kill(AActor* InstigatorActor)
 	}
 }
 
+float USAttributeComponent::GetRage() const
+{
+	return Rage;
+}
+
+float USAttributeComponent::GetRageMax() const
+{
+	return RageMax;
+}
+
+float USAttributeComponent::GetRageRatio() const
+{
+	return Rage / RageMax;
+}
+
+bool USAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
+{
+	Delta = FMath::Clamp(Rage + Delta, 0, RageMax) - Rage;
+	Rage += Delta;
+
+	OnRageChange.Broadcast(InstigatorActor, this, Rage, Delta);
+
+	return Delta != 0;
+}
+
 USAttributeComponent* USAttributeComponent::GetAttributeComponent(const AActor* FromActor)
 {
 	return IsValid(FromActor) ? FromActor->GetComponentByClass<USAttributeComponent>() : nullptr;

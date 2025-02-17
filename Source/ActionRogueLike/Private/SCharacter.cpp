@@ -163,5 +163,12 @@ void ASCharacter::OnHealthChanged(
 		{
 			DisableInput(Cast<APlayerController>(GetController()));
 		}
+		else
+		{
+			if (IsValid(OwningComponent))
+			{
+				OwningComponent->ApplyRageChange(InstigatorActor, -Delta);
+			}
+		}
 	}
 }
