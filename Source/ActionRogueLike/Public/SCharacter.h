@@ -71,6 +71,6 @@ private:
 	void OnHealthChanged(
 		AActor* InstigatorActor,
 		USAttributeComponent* OwningComponent,
-		const float NewHealth,
+		const float NewValue,
 		const float Delta);
 };

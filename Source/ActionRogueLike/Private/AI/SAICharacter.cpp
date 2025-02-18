@@ -62,7 +62,7 @@ void ASAICharacter::OnPawnSeen(APawn* Pawn)
 void ASAICharacter::OnHealthChanged(
 	AActor* InstigatorActor,
 	USAttributeComponent* OwningComponent,
-	const float NewHealth,
+	const float NewValue,
 	const float Delta)
 {
 	if (Delta >= 0.f)
@@ -92,7 +92,7 @@ void ASAICharacter::OnHealthChanged(
 		SkeletalMeshComponent->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
 	}
 
-	if (NewHealth <= 0.f)
+	if (NewValue <= 0.f)
 	{
 		if (const auto* AIController = Cast<ASAIController>(GetController()); IsValid(AIController))
 		{

@@ -7,18 +7,12 @@
 #include "SAttributeComponent.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(
-	FOnHealthChange,
-	AActor*, InstigatorActor,
-	USAttributeComponent*, OwningComponent,
-	const float, NewHealth,
-	const float, Delta);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(
-	FOnRageChange,
+	FOnAttributeChange,
 	AActor*, InstigatorActor,
 	USAttributeComponent*, OwningComponent,
-	const float, NewRage,
+	const float, NewValue,
 	const float, Delta);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -31,10 +25,10 @@ public:
 	USAttributeComponent();
 
 	UPROPERTY(BlueprintAssignable)
-	FOnHealthChange OnHealthChange;
+	FOnAttributeChange OnHealthChange;
 
 	UPROPERTY(BlueprintAssignable)
-	FOnRageChange OnRageChange;
+	FOnAttributeChange OnRageChange;
 
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);

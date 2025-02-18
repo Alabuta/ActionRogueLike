@@ -152,14 +152,14 @@ void ASCharacter::PrimaryInteract()
 void ASCharacter::OnHealthChanged(
 	AActor* InstigatorActor,
 	USAttributeComponent* OwningComponent,
-	const float NewHealth,
+	const float NewValue,
 	const float Delta)
 {
 	if (Delta < 0.f)
 	{
 		GetMesh()->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
 
-		if (NewHealth <= 0.f)
+		if (NewValue <= 0.f)
 		{
 			DisableInput(Cast<APlayerController>(GetController()));
 		}
