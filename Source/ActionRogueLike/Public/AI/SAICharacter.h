@@ -31,14 +31,20 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<USAttributeComponent> AttributeComponent{nullptr};
 
-	UPROPERTY(EditDefaultsOnly, Category="UI")
-	TSubclassOf<USWorldUserWidget> HealthBarWidgetClass{nullptr};
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<USActionComponent> ActionComponent{nullptr};
 
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<USWorldUserWidget> HealthBarWidgetClass{nullptr};
+
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<USWorldUserWidget> SpottedWidgetClass{nullptr};
+
 	UPROPERTY(VisibleAnywhere, Category="FX")
 	FName TimeToHitParamName{TEXTVIEW("TimeToHit")};
+
+	UFUNCTION(BlueprintCallable)
+	AActor* GetTargetActor() const;
 
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
@@ -50,7 +56,7 @@ protected:
 		const float NewValue,
 		const float Delta);
 
-	bool SetActorTarget(AActor* NewTargetActor) const;
+	bool SetTargetActor(AActor* NewTargetActor) const;
 
 private:
 

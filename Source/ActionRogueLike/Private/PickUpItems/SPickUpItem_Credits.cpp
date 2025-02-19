@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PickUpItems/SPickUpItem_Coin.h"
+#include "PickUpItems/SPickUpItem_Credits.h"
 
 #include "Components/StaticMeshComponent.h"
 #include "Engine/CollisionProfile.h"
@@ -9,14 +9,14 @@
 #include "Player/SPlayerState.h"
 
 
-ASPickUpItem_Coin::ASPickUpItem_Coin()
+ASPickUpItem_Credits::ASPickUpItem_Credits()
 {
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	MeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	MeshComponent->SetupAttachment(RootComponent);
 }
 
-void ASPickUpItem_Coin::Interact_Implementation(APawn* InstigatorPawn)
+void ASPickUpItem_Credits::Interact_Implementation(APawn* InstigatorPawn)
 {
 	if (!HasAuthority())
 	{

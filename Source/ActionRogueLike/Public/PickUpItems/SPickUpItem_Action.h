@@ -4,27 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "PickUpItems/SPickUpItemBase.h"
-#include "SPickUpItem_Coin.generated.h"
+#include "SPickUpItem_Action.generated.h"
 
+class USAction;
 /**
  * 
  */
 UCLASS()
-class ACTIONROGUELIKE_API ASPickUpItem_Coin : public ASPickUpItemBase
+class ACTIONROGUELIKE_API ASPickUpItem_Action : public ASPickUpItemBase
 {
 	GENERATED_BODY()
 
 public:
-
-	ASPickUpItem_Coin();
 
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 
 protected:
 
 	UPROPERTY(EditAnywhere, Category="Components")
-	TObjectPtr<UStaticMeshComponent> MeshComponent{nullptr};
+	TObjectPtr<UStaticMeshComponent> StaticMeshComponent{nullptr};
 
 	UPROPERTY(EditAnywhere)
-	float CreditsAmount{80.f};
+	TSubclassOf<USAction> ActionClassToGrant;
 };

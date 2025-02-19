@@ -29,6 +29,8 @@ public:
 		ELevelTick TickType,
 		FActorComponentTickFunction* ThisTickFunction) override;
 
+	USAction* GetAction(TSubclassOf<USAction> ActionClass) const;
+
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	void AddAction(AActor* Instigator, const TSubclassOf<USAction> ActionClass);
 

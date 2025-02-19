@@ -5,7 +5,6 @@
 
 #include "SCharacter.h"
 #include "TimerManager.h"
-#include "Components/SAttributeComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
@@ -41,28 +40,6 @@ void USAction_ProjectileAttack::StartAction_Implementation(AActor* Instigator)
 		  TimerDelegate,
 		  AttackAnimDelay,
 		  false); // :TODO: use animation events
-}
-
-bool USAction_ProjectileAttack::CanStartAction_Implementation(AActor* Instigator) const
-{
-	if (const auto bCanStartAction = Super::CanStartAction_Implementation(Instigator);
-		!bCanStartAction || !bCostsRagePoints)
-	{
-		return bCanStartAction;
-	}
-
-	auto* AttributeComponent = USAttributeComponent::GetAttributeComponent(Instigator);
-	if (!IsValid(AttributeComponent))
-	{
-		return false;
-	}
-	
-	if (AttributeComponent->GetRage() < RagePointsCost)
-	{
-		return false;
-	}
-
-	return AttributeComponent->ApplyRageChange(Instigator, -RagePointsCost);
 }
 
 void USAction_ProjectileAttack::AttackDelay_Elapsed(ACharacter* InstigatorCharacter)

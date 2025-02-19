@@ -34,6 +34,16 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::White, MoveTemp(DebugMessage));
 }
 
+USAction* USActionComponent::GetAction(TSubclassOf<USAction> ActionClass) const
+{
+	auto* const* ActionPtr = Actions.FindByPredicate([ActionClass](const USAction* Action)
+	{
+		return IsValid(Action) && Action->GetClass() == ActionClass;
+	});
+
+	return ActionPtr != nullptr ? *ActionPtr : nullptr;
+}
+
 void USActionComponent::AddAction(AActor* Instigator, const TSubclassOf<USAction> ActionClass)
 {
 	if (!ensure(ActionClass))

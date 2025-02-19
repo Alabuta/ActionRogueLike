@@ -25,8 +25,6 @@ class ACTIONROGUELIKE_API USAction_ProjectileAttack : public USAction
 public:
 	
 	virtual void StartAction_Implementation(AActor* Instigator) override;
-
-	virtual bool CanStartAction_Implementation(AActor* Instigator) const override;
 	
 protected:
 
@@ -44,12 +42,6 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category="Attack")
 	float AttackAnimDelay{.2f};
-
-	UPROPERTY(EditAnywhere, Category="Start Cost", meta=(EditCondition="bCostsRagePoints"))
-	float RagePointsCost{50.f};
-
-	UPROPERTY(EditAnywhere, Category="Start Cost", meta=(InlineEditConditionToggle))
-	uint8 bCostsRagePoints : 1{false};
 
 private:
 

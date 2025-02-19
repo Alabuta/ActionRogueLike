@@ -24,12 +24,15 @@ void ASPickUpItemBase::HideAndCooldown()
 {
 	SetState(false);
 
-	GetWorldTimerManager()
-		.SetTimer(
-			TimerHandle_RespawnTimer,
-			this,
-			&ASPickUpItemBase::Show,
-			RespawnTime);
+	if (RespawnTime > 0.f)
+	{
+		GetWorldTimerManager()
+		   .SetTimer(
+			   TimerHandle_RespawnTimer,
+			   this,
+			   &ASPickUpItemBase::Show,
+			   RespawnTime);
+	}
 }
 
 void ASPickUpItemBase::SetState(const bool bNewIsActive)
