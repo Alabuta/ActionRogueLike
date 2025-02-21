@@ -39,6 +39,9 @@ protected:
 		ELevelTick TickType,
 		FActorComponentTickFunction* ThisTickFunction) override;
 
+	UFUNCTION(Server, Reliable)
+	void ServerInteract();
+
 	void FindBestInteractable();
 
 private:

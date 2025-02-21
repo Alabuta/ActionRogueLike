@@ -31,16 +31,9 @@ USInteractionComponent::USInteractionComponent()
 }
 
 void USInteractionComponent::PrimaryInteract()
- {
- 	if (!IsValid(FocusedActor))
-    {
- 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("No interactable actor found"));
-	    return;
-    }
-
-    auto* OwnerPawn = Cast<APawn>(GetOwner());
-    ISGameplayInterface::Execute_Interact(FocusedActor, OwnerPawn);
- }
+{
+ 	ServerInteract();
+}
 
 void USInteractionComponent::TickComponent(
 	float DeltaTime,
@@ -50,6 +43,18 @@ void USInteractionComponent::TickComponent(
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
  	FindBestInteractable();
+}
+
+void USInteractionComponent::ServerInteract_Implementation()
+{
+	if (!IsValid(FocusedActor))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("No interactable actor found"));
+		return;
+	}
+
+	auto* OwnerPawn = Cast<APawn>(GetOwner());
+	ISGameplayInterface::Execute_Interact(FocusedActor, OwnerPawn);
 }
 
 void USInteractionComponent::FindBestInteractable()
