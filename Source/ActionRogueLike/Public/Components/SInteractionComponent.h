@@ -40,7 +40,7 @@ protected:
 		FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(Server, Reliable)
-	void ServerInteract();
+	void ServerInteract(AActor* InFocusActor);
 
 	void FindBestInteractable();
 

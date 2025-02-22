@@ -13,7 +13,7 @@
 // Sets default values
 ASExplosiveBarrel::ASExplosiveBarrel()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMeshComponent->SetSimulatePhysics(true);

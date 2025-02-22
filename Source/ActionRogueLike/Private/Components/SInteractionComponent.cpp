@@ -32,7 +32,7 @@ USInteractionComponent::USInteractionComponent()
 
 void USInteractionComponent::PrimaryInteract()
 {
- 	ServerInteract();
+ 	ServerInteract(FocusedActor);
 }
 
 void USInteractionComponent::TickComponent(
@@ -42,19 +42,24 @@ void USInteractionComponent::TickComponent(
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
- 	FindBestInteractable();
+ 	if (const auto* OwnerPawn = Cast<APawn>(GetOwner()); IsValid(OwnerPawn) && OwnerPawn->IsLocallyControlled())
+ 	{
+ 		FindBestInteractable();
+ 	}
 }
 
-void USInteractionComponent::ServerInteract_Implementation()
+void USInteractionComponent::ServerInteract_Implementation(AActor* InFocusActor)
 {
-	if (!IsValid(FocusedActor))
+	if (!IsValid(InFocusActor))
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("No interactable actor found"));
 		return;
 	}
 
-	auto* OwnerPawn = Cast<APawn>(GetOwner());
-	ISGameplayInterface::Execute_Interact(FocusedActor, OwnerPawn);
+	if (auto* OwnerPawn = Cast<APawn>(GetOwner()); IsValid(OwnerPawn))
+ 	{
+ 		ISGameplayInterface::Execute_Interact(InFocusActor, OwnerPawn);
+ 	}
 }
 
 void USInteractionComponent::FindBestInteractable()
@@ -88,7 +93,7 @@ void USInteractionComponent::FindBestInteractable()
 #if ENABLE_DRAW_DEBUG
  	if (SConsoleVariables::CVarDebugDraw.GetValueOnGameThread())
  	{
- 		DrawDebugLine(World, EyeLocation, End, LineColor, false, 2.f, 0, 2.f);
+ 		DrawDebugLine(World, EyeLocation, End, LineColor, false, 0.f, 0, 2.f);
  	}
 #endif
 
@@ -99,7 +104,7 @@ void USInteractionComponent::FindBestInteractable()
 #if ENABLE_DRAW_DEBUG
  		if (SConsoleVariables::CVarDebugDraw.GetValueOnGameThread())
  		{
- 			DrawDebugSphere(World, Hit.ImpactPoint, TraceRadius, 32, LineColor, false, 2.f);
+ 			DrawDebugSphere(World, Hit.ImpactPoint, TraceRadius, 32, LineColor, false, 0.f);
  		}
 #endif
 

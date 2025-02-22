@@ -4,6 +4,7 @@
 #include "Props/SItemChest.h"
 
 #include "Components/StaticMeshComponent.h"
+#include "Net/UnrealNetwork.h"
 
 
 ASItemChest::ASItemChest()
@@ -15,9 +16,25 @@ ASItemChest::ASItemChest()
 
 	LidMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LidStaticMesh"));
 	LidMeshComponent->SetupAttachment(RootComponent);
+
+	bReplicates = true;
+}
+
+void ASItemChest::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, bLidOpened);
 }
 
 void ASItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
-	LidMeshComponent->SetRelativeRotation(FRotator{TargetPitch, 0, 0});
+	bLidOpened = !bLidOpened;
+	OnRep_LidOpened();
+}
+
+void ASItemChest::OnRep_LidOpened()
+{
+ 	const auto CurrentPitch = bLidOpened ? TargetPitch : 0.f;
+	LidMeshComponent->SetRelativeRotation(FRotator{CurrentPitch, 0, 0});
 }
