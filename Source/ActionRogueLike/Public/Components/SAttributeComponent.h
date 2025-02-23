@@ -30,9 +30,6 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChange OnRageChange;
 
-	UFUNCTION(BlueprintCallable, Category="Attributes")
-	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
-
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Attributes")
 	bool IsAlive() const;
 
@@ -49,6 +46,9 @@ public:
 	float GetHealthRatio() const;
 
 	UFUNCTION(BlueprintCallable, Category="Attributes")
+	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
+
+	UFUNCTION(BlueprintCallable, Category="Attributes")
 	void Kill(AActor* InstigatorActor);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Attributes")
@@ -63,6 +63,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	bool ApplyRageChange(AActor* InstigatorActor, float Delta);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastHealthChange(AActor* InstigatorActor, const float NewValue, const float Delta);
+
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	static USAttributeComponent* GetAttributeComponent(const AActor* FromActor);
 
@@ -71,10 +74,10 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes|Health")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category="Attributes|Health")
 	float HealthMax{100.f};
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes|Health")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category="Attributes|Health")
 	float Health{0.f};
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes|Rage")

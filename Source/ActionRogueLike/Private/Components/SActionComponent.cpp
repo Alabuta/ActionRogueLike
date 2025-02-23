@@ -11,16 +11,8 @@
 USActionComponent::USActionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-}
 
-void USActionComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	for (auto&& ActionClass : GrantedActions)
-	{
-		AddAction(GetOwner(), ActionClass);
-	}
+	SetIsReplicatedByDefault(true);
 }
 
 void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -71,6 +63,11 @@ bool USActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 
 	if (ActionPtr != nullptr)
 	{
+		if (!GetOwner()->HasAuthority())
+		{
+			ServerStartAction(Instigator, ActionName);
+		}
+
 		(*ActionPtr)->StartAction(Instigator);
 		return true;
 	}
@@ -102,5 +99,20 @@ void USActionComponent::RemoveAction(USAction* Action)
 	}
 
 	Actions.Remove(Action);
+}
+
+void USActionComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	for (auto&& ActionClass : GrantedActions)
+	{
+		AddAction(GetOwner(), ActionClass);
+	}
+}
+
+void USActionComponent::ServerStartAction_Implementation(AActor* Instigator, FName ActionName)
+{
+	StartActionByName(Instigator, ActionName);
 }
 

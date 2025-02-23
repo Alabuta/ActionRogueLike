@@ -13,6 +13,8 @@ ASPickUpItemBase::ASPickUpItemBase()
 	ColliderComponent->SetCollisionProfileName(TEXT("PickUpItem"));
 
 	SetRootComponent(ColliderComponent);
+
+	bReplicates = true;
 }
 
 void ASPickUpItemBase::Show()

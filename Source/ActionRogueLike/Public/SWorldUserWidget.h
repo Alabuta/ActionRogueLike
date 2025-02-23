@@ -24,7 +24,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	FVector WorldOffset;
 
-	UPROPERTY(BlueprintReadOnly, Category="UI")
+	UPROPERTY(BlueprintReadWrite, Category="UI", meta=(ExposeOnSpawn=true))
 	TObjectPtr<const AActor> AttachedActor{nullptr};
 
 	UPROPERTY(meta=(BindWidget))
