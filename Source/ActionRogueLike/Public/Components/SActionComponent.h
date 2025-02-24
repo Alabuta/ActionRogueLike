@@ -24,6 +24,8 @@ public:
 
 	USActionComponent();
 
+	virtual bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
+
 	virtual void TickComponent(
 		float DeltaTime,
 		ELevelTick TickType,
@@ -55,6 +57,6 @@ protected:
 
 private:
 
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, Replicated)
 	TArray<USAction*> Actions;
 };

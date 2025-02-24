@@ -25,6 +25,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Action")
 	uint8 bAutoStart : 1{false};
 
+	void Initialize(USActionComponent* NewActionComponent);
+
 	UFUNCTION(BlueprintNativeEvent, Category="Action")
 	bool CanStartAction(AActor* Instigator) const;
 
@@ -39,6 +41,11 @@ public:
 
 	virtual UWorld* GetWorld() const override;
 
+	virtual bool IsSupportedForNetworking() const override
+	{
+		return true;
+	}
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Tags")
@@ -52,5 +59,12 @@ protected:
 
 private:
 
+	UPROPERTY(Transient, Replicated)
+	USActionComponent* OwningActionComponent;
+
+	UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
 	uint8 bIsRunning : 1{false};
+
+	UFUNCTION()
+	void OnRep_IsRunning();
 };
