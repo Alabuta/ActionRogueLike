@@ -12,20 +12,19 @@
 
 void USAction::StartAction_Implementation(AActor* Instigator)
 {
-	// UE_LOGFMT(LogTemp, Log, "Started action {0}", ActionName);
-	LogOnScreen(this, FString::Printf(TEXT("Started: %s"), *ActionName.ToString()), FColor::Green);
+	UE_LOGFMT(LogTemp, Log, "Started action {0}", ActionName);
 
 	if (auto* ActionComponent = GetOwningComponent(); ensureAlways(IsValid(ActionComponent)))
 	{
 		ActionComponent->ActiveGameplayTags.AppendTags(GrantsTags);
-		bIsRunning = true;
+		RepData.Instigator = Instigator;
+		RepData.bIsRunning = true;
 	}
 }
 
 void USAction::StopAction_Implementation(AActor* Instigator)
 {
-	// UE_LOGFMT(LogTemp, Log, "Stopped action {0}", ActionName);
-	LogOnScreen(this, FString::Printf(TEXT("Stopped: %s"), *ActionName.ToString()), FColor::White);
+	UE_LOGFMT(LogTemp, Log, "Stopped action {0}", ActionName);
 
 	// ensureAlways(bIsRunning);
 
@@ -34,7 +33,8 @@ void USAction::StopAction_Implementation(AActor* Instigator)
 		ActionComponent->ActiveGameplayTags.RemoveTags(GrantsTags);
 	}
 
-	bIsRunning = false;
+	RepData.Instigator = Instigator;
+	RepData.bIsRunning = false;
 }
 
 bool USAction::CanStartAction_Implementation(AActor* Instigator) const
@@ -56,7 +56,7 @@ bool USAction::CanStartAction_Implementation(AActor* Instigator) const
 
 bool USAction::IsRunning_Implementation() const
 {
-	return bIsRunning;	
+	return RepData.bIsRunning;	
 }
 
 void USAction::Initialize(USActionComponent* NewActionComponent)
@@ -76,15 +76,15 @@ USActionComponent* USAction::GetOwningComponent() const
 	return OwningActionComponent;
 }
 
-void USAction::OnRep_IsRunning()
+void USAction::OnRep_RepData()
 {
-	if (bIsRunning)
+	if (RepData.bIsRunning)
 	{
-		StartAction(nullptr);
+		StartAction(RepData.Instigator);
 	}
 	else
 	{
-		StopAction(nullptr);
+		StopAction(RepData.Instigator);
 	}
 }
 
@@ -93,5 +93,5 @@ void USAction::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, OwningActionComponent);
-	DOREPLIFETIME(ThisClass, bIsRunning);
+	DOREPLIFETIME(ThisClass, RepData);
 }

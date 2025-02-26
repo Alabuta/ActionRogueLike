@@ -53,7 +53,13 @@ float USAttributeComponent::GetHealthRatio() const
 
 bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
-	if (const auto* OwnerActor = GetOwner(); !OwnerActor->CanBeDamaged() && Delta < 0.f)
+	const auto* OwnerActor = GetOwner();
+	if (!IsValid(OwnerActor))
+	{
+		return false;
+	}
+	
+	if (!OwnerActor->CanBeDamaged() && Delta < 0.f)
 	{
 		return false;
 	}
@@ -64,18 +70,22 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	}
 
 	Delta = FMath::Clamp(Health + Delta, 0.f, HealthMax) - Health;
-	Health += Delta;
 
-	if (Delta != 0.f)
+	if (OwnerActor->HasAuthority())
 	{
-		MulticastHealthChange(InstigatorActor, Health, Delta);
-	}
+		Health += Delta;
 
-	if (Delta < 0.f && Health == 0.f)
-	{
-		if (auto* GameMode = GetWorld()->GetAuthGameMode<ASGameModeBase>(); IsValid(GameMode))
+		if (Delta != 0.f)
 		{
-			GameMode->OnActorKilled(GetOwner(), InstigatorActor);
+			MulticastHealthChange(InstigatorActor, Health, Delta);
+		}
+
+		if (Delta < 0.f && Health == 0.f)
+		{
+			if (auto* GameMode = GetWorld()->GetAuthGameMode<ASGameModeBase>(); IsValid(GameMode))
+			{
+				GameMode->OnActorKilled(GetOwner(), InstigatorActor);
+			}
 		}
 	}
 

@@ -8,6 +8,7 @@
 #include "Algo/Find.h"
 #include "Engine/ActorChannel.h"
 #include "Engine/Engine.h"
+#include "Logging/StructuredLog.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -48,11 +49,9 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 		const auto Color = Action->IsRunning() ? FColor::Blue : FColor::White;
 
 		const auto Message = FString::Printf(
-			TEXT("[%s] Action: %s | IsRunning: %s | Outer: %s"),
+			TEXT("[%s] Action: %s"),
 			*GetNameSafe(GetOwner()),
-			*Action->ActionName.ToString(),
-			Action->IsRunning() ? TEXT("true") : TEXT("false"),
-			*GetNameSafe(Action->GetOuter()));
+			*GetNameSafe(Action));
 
 		LogOnScreen(this, Message, Color, 0.f);
 	}
@@ -75,7 +74,19 @@ void USActionComponent::AddAction(AActor* Instigator, const TSubclassOf<USAction
 		return;
 	}
 
-	if (auto* Action = NewObject<USAction>(GetOwner(), ActionClass); ensure(IsValid(Action)))
+	auto* OwnerActor = GetOwner();
+	if (!IsValid(OwnerActor))
+	{
+		return;
+	}
+
+	if (!OwnerActor->HasAuthority())
+	{
+		UE_LOGFMT(LogTemp, Warning, "client attempting to add action : [{0}]", GetNameSafe(ActionClass));
+	    return;
+	}
+
+	if (auto* Action = NewObject<USAction>(OwnerActor, ActionClass); ensure(IsValid(Action)))
 	{
 		Action->Initialize(this);
 
@@ -118,6 +129,11 @@ bool USActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
 
 	if (ActionPtr != nullptr)
 	{
+		if (!GetOwner()->HasAuthority())
+		{
+			ServerStopAction(Instigator, ActionName);
+		}
+
 		(*ActionPtr)->StopAction(Instigator);
 		return true;
 	}
@@ -139,18 +155,27 @@ void USActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (GetOwner()->HasAuthority())
+	auto* Owner = GetOwner();
+
+	if (!Owner->HasAuthority())
 	{
-		for (auto&& ActionClass : GrantedActions)
-		{
-			AddAction(GetOwner(), ActionClass);
-		}
+		return;
+	}
+
+	for (auto&& ActionClass : GrantedActions)
+	{
+		AddAction(Owner, ActionClass);
 	}
 }
 
 void USActionComponent::ServerStartAction_Implementation(AActor* Instigator, FName ActionName)
 {
 	StartActionByName(Instigator, ActionName);
+}
+
+void USActionComponent::ServerStopAction_Implementation(AActor* Instigator, FName ActionName)
+{
+    StopActionByName(Instigator, ActionName);
 }
 
 void USActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

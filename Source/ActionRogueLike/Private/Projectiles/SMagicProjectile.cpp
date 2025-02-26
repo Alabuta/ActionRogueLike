@@ -52,7 +52,7 @@ void ASMagicProjectile::OnActorOverlap(
 	{
 		Explode();
 
-		if (IsValid(ActionComponent) && DamageEffect)
+		if (IsValid(ActionComponent) && DamageEffect && HasAuthority())
 		{
 			ActionComponent->AddAction(GetInstigator(), DamageEffect);
 		}

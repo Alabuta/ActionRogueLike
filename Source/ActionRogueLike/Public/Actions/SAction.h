@@ -9,6 +9,21 @@
 
 
 class USActionComponent;
+
+
+USTRUCT()
+struct FActionRepData
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	AActor* Instigator{nullptr};
+
+	UPROPERTY()
+	uint8 bIsRunning : 1{false};
+};
+
+
 /**
  * 
  */
@@ -62,9 +77,9 @@ private:
 	UPROPERTY(Transient, Replicated)
 	USActionComponent* OwningActionComponent;
 
-	UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
-	uint8 bIsRunning : 1{false};
+	UPROPERTY(ReplicatedUsing="OnRep_RepData")
+	FActionRepData RepData;
 
 	UFUNCTION()
-	void OnRep_IsRunning();
+	void OnRep_RepData();
 };

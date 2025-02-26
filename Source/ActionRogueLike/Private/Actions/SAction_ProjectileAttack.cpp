@@ -30,16 +30,19 @@ void USAction_ProjectileAttack::StartAction_Implementation(AActor* Instigator)
 		FRotator::ZeroRotator,
 		EAttachLocation::SnapToTarget);
 
-	FTimerHandle TimerHandle_AttackDelay;
-	FTimerDelegate TimerDelegate;
-	TimerDelegate.BindUFunction(this, TEXT("AttackDelay_Elapsed"), InstigatorCharacter);
+	if (InstigatorCharacter->HasAuthority())
+	{
+		FTimerHandle TimerHandle_AttackDelay;
+		FTimerDelegate TimerDelegate;
+		TimerDelegate.BindUFunction(this, TEXT("AttackDelay_Elapsed"), InstigatorCharacter);
 
-	GetWorld()->GetTimerManager()
-		.SetTimer(
-		  TimerHandle_AttackDelay,
-		  TimerDelegate,
-		  AttackAnimDelay,
-		  false); // :TODO: use animation events
+		GetWorld()->GetTimerManager()
+		          .SetTimer(
+			          TimerHandle_AttackDelay,
+			          TimerDelegate,
+			          AttackAnimDelay,
+			          false); // :TODO: use animation events
+	}
 }
 
 void USAction_ProjectileAttack::AttackDelay_Elapsed(ACharacter* InstigatorCharacter)

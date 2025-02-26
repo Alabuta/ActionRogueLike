@@ -162,6 +162,7 @@ void ASCharacter::OnHealthChanged(
 		if (NewValue <= 0.f)
 		{
 			DisableInput(Cast<APlayerController>(GetController()));
+			SetLifeSpan(5.f);
 		}
 		else
 		{
