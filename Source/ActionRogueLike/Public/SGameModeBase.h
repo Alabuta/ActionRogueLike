@@ -8,6 +8,7 @@
 #include "PickUpItems/SPickUpItemBase.h"
 #include "SGameModeBase.generated.h"
 
+class USSaveGame;
 class UEnvQuery;
 
 /**
@@ -22,9 +23,17 @@ public:
 
 	ASGameModeBase();
 
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	virtual void StartPlay() override;
 
+	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
+
 	virtual void OnActorKilled(AActor* VictimActor, AActor* KillerActor);
+
+	UFUNCTION(BlueprintCallable, Category="SaveGame")
+	void WriteSaveGame();
+
+	void LoadSaveGame();
 
 	UFUNCTION()
 	void RespawnPlayerElapsed(AController* Controller);
@@ -64,6 +73,11 @@ protected:
 	FTimerHandle TimerHandle_SpawnBots;
 
 private:
+
+	UPROPERTY()
+	USSaveGame* CurrentSaveGame{nullptr};
+
+	FString SlotName{TEXTVIEW("SaveGame01")};
 
 	UFUNCTION()
 	void SpawnBotTimerElapsed();

@@ -7,6 +7,9 @@
 #include "SPlayerState.generated.h"
 
 
+class USSaveGame;
+
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(
 	FOnCreditsChangedDelegate,
 	ASPlayerState*, PlayerState,
@@ -34,6 +37,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Credits")
 	bool TryRemoveCredits(const int32 Value);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void SaveState(USSaveGame* SaveGameObject);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void LoadState(const USSaveGame* SaveGameObject);
 
 protected:
 

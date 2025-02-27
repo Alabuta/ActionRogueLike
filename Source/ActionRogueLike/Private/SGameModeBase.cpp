@@ -6,11 +6,14 @@
 #include "DrawDebugHelpers.h"
 #include "EngineUtils.h"
 #include "SCharacter.h"
+#include "SSaveGame.h"
 #include "TimerManager.h"
 #include "AI/SAICharacter.h"
 #include "Algo/AllOf.h"
 #include "Components/SAttributeComponent.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
+#include "GameFramework/GameStateBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "Logging/StructuredLog.h"
 #include "Player/SPlayerState.h"
 
@@ -27,6 +30,13 @@ namespace SConsoleVariables
 ASGameModeBase::ASGameModeBase()
 {
 	PlayerStateClass = ASPlayerState::StaticClass();
+}
+
+void ASGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+	Super::InitGame(MapName, Options, ErrorMessage);
+
+	LoadSaveGame();
 }
 
 void ASGameModeBase::StartPlay()
@@ -57,6 +67,16 @@ void ASGameModeBase::StartPlay()
 	}
 }
 
+void ASGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
+{
+	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
+
+	if (auto* PlayerState = NewPlayer->GetPlayerState<ASPlayerState>(); IsValid(PlayerState))
+	{
+		PlayerState->LoadState(CurrentSaveGame);
+	}
+}
+
 void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* KillerActor)
 {
 	if (const auto* PlayerCharacter = Cast<ASCharacter>(VictimActor); IsValid(PlayerCharacter))
@@ -74,6 +94,78 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* KillerActor)
 		if (auto* PlayerState = KillerPawn->GetPlayerState<ASPlayerState>(); IsValid(PlayerState))
 		{
 			PlayerState->AddCredits(CreditsPerKill);
+		}
+	}
+}
+
+void ASGameModeBase::WriteSaveGame()
+{
+	for (APlayerState* PlayerState : GameState->PlayerArray)
+	{
+		if (auto* PS = Cast<ASPlayerState>(PlayerState); IsValid(PS))
+		{
+			PS->SaveState(CurrentSaveGame);
+			break; // Save only first player state
+		}
+	}
+
+	CurrentSaveGame->SavedActors.Reset();
+
+	for (FActorIterator It{GetWorld()}; It; ++It)
+	{
+		if (!It->Implements<USGameplayInterface>())
+		{
+			continue;
+		}
+
+		CurrentSaveGame->SavedActors.Emplace(
+			FSActorSaveData{
+				.ActorName = It->GetName(),
+				.Transform = It->GetActorTransform()
+			});
+	}
+	
+	UGameplayStatics::SaveGameToSlot(CurrentSaveGame, SlotName, 0);
+}
+
+void ASGameModeBase::LoadSaveGame()
+{
+	if (UGameplayStatics::DoesSaveGameExist(SlotName, 0))
+	{
+		CurrentSaveGame = Cast<USSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
+		if (!IsValid(CurrentSaveGame))
+		{
+			UE_LOGFMT(LogTemp, Error, "Failed to load save game from slot {0}", *SlotName);
+			return;
+		}
+
+		UE_LOGFMT(LogTemp, Log, "Loaded save game from slot {0}", *SlotName);
+
+		for (FActorIterator It{GetWorld()}; It; ++It)
+		{
+			if (!It->Implements<USGameplayInterface>())
+			{
+				continue;
+			}
+
+			const auto* SavedData = CurrentSaveGame->SavedActors.FindByPredicate(
+				[It](const FSActorSaveData& Data)
+				{
+					return Data.ActorName == It->GetName();
+				});
+
+			if (SavedData != nullptr)
+			{
+				It->SetActorTransform(SavedData->Transform);
+			}
+		}
+	}
+	else
+	{
+		CurrentSaveGame = Cast<USSaveGame>(UGameplayStatics::CreateSaveGameObject(USSaveGame::StaticClass()));
+		if (IsValid(CurrentSaveGame))
+		{
+			UE_LOGFMT(LogTemp, Log, "Created new save game object");
 		}
 	}
 }
