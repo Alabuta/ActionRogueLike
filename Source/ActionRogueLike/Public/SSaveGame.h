@@ -17,6 +17,9 @@ struct FSActorSaveData
 
 	UPROPERTY(EditAnywhere)
 	FTransform Transform;
+
+	UPROPERTY(EditAnywhere)
+	TArray<uint8> ByteData;
 };
 
 /**

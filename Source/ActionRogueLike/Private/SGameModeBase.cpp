@@ -16,6 +16,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Logging/StructuredLog.h"
 #include "Player/SPlayerState.h"
+#include "Serialization/MemoryReader.h"
+#include "Serialization/MemoryWriter.h"
+#include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 
 
 namespace SConsoleVariables
@@ -100,6 +103,7 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* KillerActor)
 
 void ASGameModeBase::WriteSaveGame()
 {
+	
 	for (APlayerState* PlayerState : GameState->PlayerArray)
 	{
 		if (auto* PS = Cast<ASPlayerState>(PlayerState); IsValid(PS))
@@ -118,11 +122,20 @@ void ASGameModeBase::WriteSaveGame()
 			continue;
 		}
 
-		CurrentSaveGame->SavedActors.Emplace(
-			FSActorSaveData{
-				.ActorName = It->GetName(),
-				.Transform = It->GetActorTransform()
-			});
+		FSActorSaveData ActorSaveData{
+			.ActorName = It->GetName(),
+			.Transform = It->GetActorTransform()
+		};
+
+		{
+			FMemoryWriter Writer{ActorSaveData.ByteData};
+			FObjectAndNameAsStringProxyArchive Archive{Writer, true};
+			Archive.ArIsSaveGame = true;
+
+			It->Serialize(Archive);
+		}
+
+		CurrentSaveGame->SavedActors.Emplace(ActorSaveData);
 	}
 	
 	UGameplayStatics::SaveGameToSlot(CurrentSaveGame, SlotName, 0);
@@ -148,15 +161,25 @@ void ASGameModeBase::LoadSaveGame()
 				continue;
 			}
 
-			const auto* SavedData = CurrentSaveGame->SavedActors.FindByPredicate(
+			const auto* ActorSaveData = CurrentSaveGame->SavedActors.FindByPredicate(
 				[It](const FSActorSaveData& Data)
 				{
 					return Data.ActorName == It->GetName();
 				});
 
-			if (SavedData != nullptr)
+			if (ActorSaveData != nullptr)
 			{
-				It->SetActorTransform(SavedData->Transform);
+				It->SetActorTransform(ActorSaveData->Transform);
+
+				{
+					FMemoryReader Reader{ActorSaveData->ByteData};
+					FObjectAndNameAsStringProxyArchive Archive{Reader, true};
+					Archive.ArIsSaveGame = true;
+
+					It->Serialize(Archive);
+				}
+
+				ISGameplayInterface::Execute_OnActorLoaded(*It);
 			}
 		}
 	}
