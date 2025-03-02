@@ -58,7 +58,7 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	{
 		return false;
 	}
-	
+
 	if (!OwnerActor->CanBeDamaged() && Delta < 0.f)
 	{
 		return false;
@@ -117,10 +117,23 @@ float USAttributeComponent::GetRageRatio() const
 
 bool USAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
 {
-	Delta = FMath::Clamp(Rage + Delta, 0, RageMax) - Rage;
-	Rage += Delta;
+	const auto* OwnerActor = GetOwner();
+	if (!IsValid(OwnerActor))
+	{
+		return false;
+	}
 
-	OnRageChange.Broadcast(InstigatorActor, this, Rage, Delta);
+	Delta = FMath::Clamp(Rage + Delta, 0, RageMax) - Rage;
+
+	if (OwnerActor->HasAuthority())
+	{
+		Rage += Delta;
+
+		if (Delta != 0.f)
+		{
+			MulticastRageChange(InstigatorActor, Rage, Delta);
+		}
+	}
 
 	return Delta != 0;
 }
@@ -131,6 +144,14 @@ void USAttributeComponent::MulticastHealthChange_Implementation(
 	const float Delta)
 {
 	OnHealthChange.Broadcast(InstigatorActor, this, NewValue, Delta);
+}
+
+void USAttributeComponent::MulticastRageChange_Implementation(
+	AActor* InstigatorActor,
+	const float NewValue,
+	const float Delta)
+{
+	OnRageChange.Broadcast(InstigatorActor, this, NewValue, Delta);
 }
 
 USAttributeComponent* USAttributeComponent::GetAttributeComponent(const AActor* FromActor)
@@ -153,5 +174,5 @@ void USAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, Health);
-	DOREPLIFETIME(ThisClass, HealthMax);
+	DOREPLIFETIME(ThisClass, Rage);
 }

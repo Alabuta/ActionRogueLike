@@ -44,8 +44,11 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void LoadState(const USSaveGame* SaveGameObject);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastCreditsChange(AActor* InstigatorActor, const int32 NewValue, const int32 Delta);
+
 protected:
 
-	UPROPERTY(EditDefaultsOnly, Category="Credits")
+	UPROPERTY(EditDefaultsOnly, Replicated, Category="Credits")
 	int32 Credits{0};
 };
