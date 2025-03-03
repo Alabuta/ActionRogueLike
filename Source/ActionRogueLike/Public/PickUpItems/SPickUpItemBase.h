@@ -31,10 +31,17 @@ protected:
 	UPROPERTY(EditAnywhere, Category="")
 	float RespawnTime{10.f};
 
+	UPROPERTY(ReplicatedUsing="OnRep_IsActive")
+	bool bIsActive{false};
+
 	FTimerHandle TimerHandle_RespawnTimer;
+
+	UFUNCTION()
+	void OnRep_IsActive();
 
 	UFUNCTION()
 	void Show();
 	void HideAndCooldown();
+
 	void SetState(const bool bNewIsActive);
 };

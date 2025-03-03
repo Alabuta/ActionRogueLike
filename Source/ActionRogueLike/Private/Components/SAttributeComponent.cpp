@@ -174,5 +174,7 @@ void USAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, Health);
+	DOREPLIFETIME(ThisClass, HealthMax);
 	DOREPLIFETIME(ThisClass, Rage);
+	DOREPLIFETIME(ThisClass, RageMax);
 }

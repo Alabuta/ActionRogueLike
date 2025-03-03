@@ -70,16 +70,7 @@ void ASAICharacter::OnPawnSeen(APawn* Pawn)
 	}
 
 	SetTargetActor(Pawn);
-
-	if (IsValid(SpottedWidgetClass))
-	{
-		if (auto* SpottedWidget = CreateWidget<USWorldUserWidget>(GetWorld(), SpottedWidgetClass);
-			IsValid(SpottedWidget))
-		{
-			SpottedWidget->SetAttachedActor(this);
-			SpottedWidget->AddToViewport(10);
-		}
-	}
+	MulticastPawnSeen();
 }
 
 void ASAICharacter::OnHealthChanged(
@@ -139,6 +130,19 @@ void ASAICharacter::OnHealthChanged(
 		}
 
 		SetLifeSpan(10.f);
+	}
+}
+
+void ASAICharacter::MulticastPawnSeen_Implementation()
+{
+	if (IsValid(SpottedWidgetClass))
+	{
+		if (auto* SpottedWidget = CreateWidget<USWorldUserWidget>(GetWorld(), SpottedWidgetClass);
+			IsValid(SpottedWidget))
+		{
+			SpottedWidget->SetAttachedActor(this);
+			SpottedWidget->AddToViewport(10);
+		}
 	}
 }
 

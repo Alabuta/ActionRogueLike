@@ -5,6 +5,7 @@
 
 #include "TimerManager.h"
 #include "Components/SphereComponent.h"
+#include "Net/UnrealNetwork.h"
 
 
 ASPickUpItemBase::ASPickUpItemBase()
@@ -15,6 +16,14 @@ ASPickUpItemBase::ASPickUpItemBase()
 	SetRootComponent(ColliderComponent);
 
 	bReplicates = true;
+}
+
+void ASPickUpItemBase::OnRep_IsActive()
+{
+	SetActorEnableCollision(bIsActive);
+
+	// Set visibility on root and all children
+	RootComponent->SetVisibility(bIsActive, true);
 }
 
 void ASPickUpItemBase::Show()
@@ -39,8 +48,13 @@ void ASPickUpItemBase::HideAndCooldown()
 
 void ASPickUpItemBase::SetState(const bool bNewIsActive)
 {
-	SetActorEnableCollision(bNewIsActive);
+	bIsActive = bNewIsActive;
+	OnRep_IsActive();
+}
 
-	// Set visibility on root and all children
-	RootComponent->SetVisibility(bNewIsActive, true);
+void ASPickUpItemBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, bIsActive);
 }

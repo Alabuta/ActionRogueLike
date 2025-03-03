@@ -21,8 +21,9 @@ void ASPlayerState::AddCredits(const int32 Value)
 
 	if (HasAuthority())
 	{
+		const auto OldCredits = Credits;
 		Credits += Value;
-		MulticastCreditsChange_Implementation(this, Credits, Value);
+		OnRep_Credits(OldCredits);
 	}
 }
 
@@ -40,8 +41,9 @@ bool ASPlayerState::TryRemoveCredits(const int32 Value)
 
 	if (HasAuthority())
 	{
+		const auto OldCredits = Credits;
 		Credits -= Value;
-		MulticastCreditsChange_Implementation(this, Credits, -Value);
+		OnRep_Credits(OldCredits);
 	}
 
 	return true;
@@ -59,16 +61,8 @@ void ASPlayerState::LoadState_Implementation(const USSaveGame* SaveGameObject)
 {
 	if (IsValid(SaveGameObject))
 	{
-		Credits = SaveGameObject->Credits;
+		AddCredits(SaveGameObject->Credits);
 	}
-}
-
-void ASPlayerState::MulticastCreditsChange_Implementation(
-	AActor* InstigatorActor,
-	const int32 NewValue,
-	const int32 Delta)
-{
-	OnCreditsChanged.Broadcast(this, Credits, Delta);
 }
 
 void ASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -76,4 +70,9 @@ void ASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, Credits);
+}
+
+void ASPlayerState::OnRep_Credits(const int32 OldCredits)
+{
+	OnCreditsChanged.Broadcast(this, Credits, Credits - OldCredits);
 }

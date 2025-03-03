@@ -56,6 +56,9 @@ protected:
 		const float NewValue,
 		const float Delta);
 
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastPawnSeen();
+
 	bool SetTargetActor(AActor* NewTargetActor) const;
 
 private:

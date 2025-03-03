@@ -66,7 +66,7 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastHealthChange(AActor* InstigatorActor, const float NewValue, const float Delta);
 
-	UFUNCTION(NetMulticast, Reliable)
+	UFUNCTION(NetMulticast, Unreliable)
 	void MulticastRageChange(AActor* InstigatorActor, const float NewValue, const float Delta);
 
 	UFUNCTION(BlueprintCallable, Category="Attributes")
@@ -77,15 +77,15 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes|Health")
-	float HealthMax{100.f};
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category="Attributes|Health")
 	float Health{0.f};
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes|Rage")
-	float RageMax{100.f};
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category="Attributes|Health")
+	float HealthMax{100.f};
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category="Attributes|Rage")
 	float Rage{0.f};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category="Attributes|Rage")
+	float RageMax{100.f};
 };
