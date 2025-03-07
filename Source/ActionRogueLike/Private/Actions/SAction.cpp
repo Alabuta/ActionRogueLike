@@ -17,6 +17,8 @@ void USAction::StartAction_Implementation(AActor* Instigator)
 	if (auto* ActionComponent = GetOwningComponent(); ensureAlways(IsValid(ActionComponent)))
 	{
 		ActionComponent->ActiveGameplayTags.AppendTags(GrantsTags);
+		ActionComponent->OnActionStarted.Broadcast(ActionComponent, this);
+
 		RepData.Instigator = Instigator;
 		RepData.bIsRunning = true;
 	}
@@ -31,10 +33,11 @@ void USAction::StopAction_Implementation(AActor* Instigator)
 	if (auto* ActionComponent = GetOwningComponent(); ensureAlways(IsValid(ActionComponent)))
 	{
 		ActionComponent->ActiveGameplayTags.RemoveTags(GrantsTags);
-	}
+		ActionComponent->OnActionStopped.Broadcast(ActionComponent, this);
 
-	RepData.Instigator = Instigator;
-	RepData.bIsRunning = false;
+		RepData.Instigator = Instigator;
+		RepData.bIsRunning = false;
+	}
 }
 
 bool USAction::CanStartAction_Implementation(AActor* Instigator) const

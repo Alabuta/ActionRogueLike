@@ -11,6 +11,8 @@
 
 class USAction;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionStateChanged, USActionComponent*, OwningComponent, USAction*, Action);
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONROGUELIKE_API USActionComponent : public UActorComponent
@@ -21,6 +23,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Tags")
 	FGameplayTagContainer ActiveGameplayTags;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnActionStateChanged OnActionStarted;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnActionStateChanged OnActionStopped;
 
 	USActionComponent();
 
@@ -50,6 +58,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Actions")
 	TArray<TSubclassOf<USAction>> GrantedActions;
 
+	UPROPERTY(BlueprintReadOnly, Transient, Replicated)
+	TArray<USAction*> Actions;
+
 	virtual void BeginPlay() override;
 
 	UFUNCTION(Server, Reliable)
@@ -57,9 +68,4 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void ServerStopAction(AActor* Instigator, FName ActionName);
-
-private:
-
-	UPROPERTY(Transient, Replicated)
-	TArray<USAction*> Actions;
 };
