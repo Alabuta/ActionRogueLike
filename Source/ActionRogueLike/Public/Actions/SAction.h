@@ -8,6 +8,7 @@
 #include "SAction.generated.h"
 
 
+class UTexture2D;
 class USActionComponent;
 
 
@@ -56,10 +57,7 @@ public:
 
 	virtual UWorld* GetWorld() const override;
 
-	virtual bool IsSupportedForNetworking() const override
-	{
-		return true;
-	}
+	virtual bool IsSupportedForNetworking() const override;
 
 protected:
 
@@ -68,6 +66,11 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Tags")
 	FGameplayTagContainer BlockedTags;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="UI")
+	TObjectPtr<UTexture2D> Icon;
+
+	float TimeStarted{0.f};
 
 	UFUNCTION(BlueprintCallable, Category="Action")
 	USActionComponent* GetOwningComponent() const;
@@ -83,3 +86,8 @@ private:
 	UFUNCTION()
 	void OnRep_RepData();
 };
+
+inline bool USAction::IsSupportedForNetworking() const
+{
+	return true;
+}

@@ -4,7 +4,9 @@
 #include "Actions/SAction.h"
 
 #include "ActionRogueLike/ActionRogueLike.h"
+#include "Animation/AnimInstance.h"
 #include "Components/SActionComponent.h"
+#include "Engine/World.h"
 #include "GameFramework/Actor.h"
 #include "Logging/StructuredLog.h"
 #include "Net/UnrealNetwork.h"
@@ -21,6 +23,8 @@ void USAction::StartAction_Implementation(AActor* Instigator)
 
 		RepData.Instigator = Instigator;
 		RepData.bIsRunning = true;
+
+		TimeStarted = GetWorld()->GetTimeSeconds();
 	}
 }
 
