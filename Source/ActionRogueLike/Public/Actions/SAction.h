@@ -70,6 +70,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="UI")
 	TObjectPtr<UTexture2D> Icon;
 
+	UPROPERTY(Transient, Replicated)
 	float TimeStarted{0.f};
 
 	UFUNCTION(BlueprintCallable, Category="Action")
