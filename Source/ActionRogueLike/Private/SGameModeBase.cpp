@@ -10,6 +10,7 @@
 #include "TimerManager.h"
 #include "AI/SAICharacter.h"
 #include "Algo/AllOf.h"
+#include "AssetsData/SMonsterData.h"
 #include "Components/SAttributeComponent.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/GameStateBase.h"
@@ -46,7 +47,7 @@ void ASGameModeBase::StartPlay()
 {
 	Super::StartPlay();
 
-	if (MinionBotClass)
+	if (ensure(IsValid(MonsterDataTable)))
 	{
 		GetWorldTimerManager()
 			.SetTimer(
@@ -278,14 +279,41 @@ void ASGameModeBase::OnFindBotSpawnQueryCompleted(
 		return;
 	}
 
+	if (!ensure(IsValid(MonsterDataTable)))
+	{
+		return;
+	}
+
+	TArray<FSMonsterInfoEntry*> Monsters;
+	MonsterDataTable->GetAllRows("", Monsters);
+
+	const int32 Index = FMath::RandRange(0, Monsters.Num() - 1);
+	if (!ensure(Monsters.IsValidIndex(Index)))
+	{
+		return;
+	}
+
+	const auto MonsterData = Monsters[Index]->MonsterData;
+	if (!ensure(IsValid(MonsterData)))
+	{
+		return;
+	}
+
+	const auto MonsterClass = MonsterData->MonsterClass;
+	if (!ensure(IsValid(MonsterClass)))
+	{
+		return;
+	}
+
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	auto* SpawnedBot = GetWorld()->SpawnActor<AActor>(MinionBotClass, Locations[0], FRotator::ZeroRotator, SpawnParameters);
-	if (ensure(IsValid(SpawnedBot)))
-	{
-		DrawDebugSphere(GetWorld(), SpawnedBot->GetActorLocation(), 50, 20, FColor::Blue, false, 60);
-	}
+	GetWorld()->SpawnActor<AActor>(MonsterClass, Locations[0], FRotator::ZeroRotator, SpawnParameters);
+	// auto* SpawnedBot = GetWorld()->SpawnActor<AActor>(MinionBotClass, Locations[0], FRotator::ZeroRotator, SpawnParameters);
+	// if (ensure(IsValid(SpawnedBot)))
+	// {
+	// 	DrawDebugSphere(GetWorld(), SpawnedBot->GetActorLocation(), 50, 20, FColor::Blue, false, 60);
+	// }
 }
 
 void ASGameModeBase::OnPickUpItemSpawnQueryCompleted(

@@ -3,13 +3,35 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/DataTable.h"
 #include "EnvironmentQuery/EnvQueryInstanceBlueprintWrapper.h"
 #include "GameFramework/GameModeBase.h"
 #include "PickUpItems/SPickUpItemBase.h"
 #include "SGameModeBase.generated.h"
 
+class UDataTable;
 class USSaveGame;
+class USMonsterData;
 class UEnvQuery;
+
+
+USTRUCT(BlueprintType)
+struct FSMonsterInfoEntry : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<USMonsterData> MonsterData{nullptr};
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Weight{1.f};
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float SpawnCost{5.f};
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float KillReward{20.f};
+};
 
 /**
  * 
@@ -43,14 +65,14 @@ public:
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly, Category="AI")
+	TObjectPtr<UDataTable> MonsterDataTable{nullptr};
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="AI")
 	TObjectPtr<UCurveFloat> DifficultyCurve{nullptr};
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	TObjectPtr<UEnvQuery> FindBotSpawnQuery{nullptr};
-
-	UPROPERTY(EditAnywhere, Category="AI")
-	TSubclassOf<AActor> MinionBotClass{nullptr};
 
 	UPROPERTY(EditAnywhere, Category="PickUpItems")
 	TArray<TSubclassOf<ASPickUpItemBase>> PickUpItemClasses;
