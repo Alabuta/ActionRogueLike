@@ -20,6 +20,8 @@ public:
 
 	ASPickUpItemBase();
 
+	virtual FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
+
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override
 	PURE_VIRTUAL(ISGameplayInterface::Interact, ensureMsgf(false && "NotImplemented", TEXT("NotImplemented")););
 

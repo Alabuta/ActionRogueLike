@@ -10,11 +10,31 @@
 #include "Player/SPlayerState.h"
 
 
+#define LOCTEXT_NAMESPACE "InteractableActors"
+
 ASPickUpItem_HealthPotion::ASPickUpItem_HealthPotion()
 {
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	StaticMeshComponent->SetupAttachment(RootComponent);
+}
+
+FText ASPickUpItem_HealthPotion::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+	const auto* AttributeComponent = USAttributeComponent::GetAttributeComponent(InstigatorPawn);
+	if (!ensure(IsValid(AttributeComponent)))
+	{
+		return FText::GetEmpty();
+	}
+
+	if (AttributeComponent->IsFullHealth())
+	{
+		return LOCTEXT("HealthPotion_FullHealth", "Health is full");
+	}
+
+	return FText::Format(
+		LOCTEXT("HealthPotion_InteractMessage", "Cost {0} Credits. Restore health to full."),
+		CreditCost);
 }
 
 void ASPickUpItem_HealthPotion::Interact_Implementation(APawn* InstigatorPawn)
@@ -29,7 +49,7 @@ void ASPickUpItem_HealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 		return;
 	}
 
-	auto* AttributeComponent = InstigatorPawn->GetComponentByClass<USAttributeComponent>();
+	auto* AttributeComponent = USAttributeComponent::GetAttributeComponent(InstigatorPawn);
 	if (!ensure(IsValid(AttributeComponent)))
 	{
 		return;
@@ -52,3 +72,5 @@ void ASPickUpItem_HealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 		HideAndCooldown();
 	}
 }
+
+#undef NSLOCTEXT_NAMESPACE

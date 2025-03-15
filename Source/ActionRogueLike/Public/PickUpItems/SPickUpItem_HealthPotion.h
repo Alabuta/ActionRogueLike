@@ -16,6 +16,7 @@ public:
 
 	ASPickUpItem_HealthPotion();
 
+	virtual FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 
 protected:

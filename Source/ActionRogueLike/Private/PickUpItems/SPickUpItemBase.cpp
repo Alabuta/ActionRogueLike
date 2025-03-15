@@ -18,6 +18,11 @@ ASPickUpItemBase::ASPickUpItemBase()
 	bReplicates = true;
 }
 
+FText ASPickUpItemBase::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+	return FText::GetEmpty();
+}
+
 void ASPickUpItemBase::OnRep_IsActive()
 {
 	SetActorEnableCollision(bIsActive);
