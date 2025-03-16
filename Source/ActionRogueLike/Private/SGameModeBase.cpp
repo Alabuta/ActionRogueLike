@@ -52,6 +52,8 @@ void ASGameModeBase::StartPlay()
 
 	if (ensure(IsValid(MonsterDataTable)))
 	{
+		LogOnScreen(this, TEXT("Starting bots spawner timer"));
+
 		GetWorldTimerManager()
 			.SetTimer(
 				TimerHandle_SpawnBots,
@@ -59,6 +61,10 @@ void ASGameModeBase::StartPlay()
 				&ASGameModeBase::SpawnBotTimerElapsed,
 				SpawnTimeInterval,
 				true);
+	}
+	else
+	{
+		LogOnScreen(this, TEXT("Invalid monsters table reference"));
 	}
 
 	if (!PickUpItemClasses.IsEmpty() && ensure(PickUpItemSpawnQuery))
@@ -223,6 +229,8 @@ void ASGameModeBase::SpawnBotTimerElapsed()
 {
 	if (!SConsoleVariables::CVarSpawnBots.GetValueOnGameThread())
 	{
+		LogOnScreen(this, TEXT("Bot spawning is disabled via cvar 'CVarSpawnBots'."), FColor::Red);
+
 		UE_LOGFMT(LogTemp, Warning, "Bot spawning is disabled via cvar 'CVarSpawnBots'.");
 		return;
 	}
@@ -249,6 +257,11 @@ void ASGameModeBase::SpawnBotTimerElapsed()
 
 	if (AliveBotsNum >= AliveBotsMaxCount)
 	{
+		LogOnScreen(
+			this,
+			FString::Printf(TEXT("Maximum bot capacity has reached %d"), AliveBotsNum),
+			FColor::Red);
+
 		UE_LOGFMT(LogTemp, Log, "Maximum bot capacity has reached.");
 		return;
 	}
@@ -272,6 +285,12 @@ void ASGameModeBase::OnFindBotSpawnQueryCompleted(
 {
 	if (QueryStatus != EEnvQueryStatus::Success)
 	{
+		LogOnScreen(
+			this,
+			FString::Printf(
+				TEXT("Spawn bot EQS query failed. Query status is: %s"),
+				*UEnum::GetValueAsString(QueryStatus)),
+			FColor::Red);
 		UE_LOGFMT(LogTemp, Warning, "Spawn bot EQS query failed");
 		return;
 	}
@@ -279,26 +298,34 @@ void ASGameModeBase::OnFindBotSpawnQueryCompleted(
 	auto Locations = QueryInstance->GetResultsAsLocations();
 	if (Locations.IsEmpty())
 	{
+		LogOnScreen(this, TEXT("Locations are empty."), FColor::Red);
 		return;
 	}
 
 	if (!ensure(IsValid(MonsterDataTable)))
 	{
+		LogOnScreen(this, TEXT("Invalid monsters table reference #2"), FColor::Red);
 		return;
 	}
 
 	TArray<FSMonsterInfoEntry*> Monsters;
 	MonsterDataTable->GetAllRows("", Monsters);
 
+	LogOnScreen(
+		this,
+		FString::Printf(TEXT("Monsters count: %d"), Monsters.Num()));
+
 	const int32 Index = FMath::RandRange(0, Monsters.Num() - 1);
 	if (!ensure(Monsters.IsValidIndex(Index)))
 	{
+		LogOnScreen(this, TEXT("Monsters table are empty"), FColor::Red);
 		return;
 	}
 
 	const auto MonsterAssetId = Monsters[Index]->MonsterAssetId;
 	if (!ensure(MonsterAssetId.IsValid()))
 	{
+		LogOnScreen(this, TEXT("MonsterAssetId is invalid"), FColor::Red);
 		return;
 	}
 
