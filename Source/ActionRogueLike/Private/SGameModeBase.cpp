@@ -8,10 +8,13 @@
 #include "SCharacter.h"
 #include "SSaveGame.h"
 #include "TimerManager.h"
+#include "ActionRogueLike/ActionRogueLike.h"
 #include "AI/SAICharacter.h"
 #include "Algo/AllOf.h"
 #include "AssetsData/SMonsterData.h"
+#include "Components/SActionComponent.h"
 #include "Components/SAttributeComponent.h"
+#include "Engine/AssetManager.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/GameStateBase.h"
 #include "Kismet/GameplayStatics.h"
@@ -293,27 +296,25 @@ void ASGameModeBase::OnFindBotSpawnQueryCompleted(
 		return;
 	}
 
-	const auto MonsterData = Monsters[Index]->MonsterData;
-	if (!ensure(IsValid(MonsterData)))
+	const auto MonsterAssetId = Monsters[Index]->MonsterAssetId;
+	if (!ensure(MonsterAssetId.IsValid()))
 	{
 		return;
 	}
 
-	const auto MonsterClass = MonsterData->MonsterClass;
-	if (!ensure(IsValid(MonsterClass)))
-	{
-		return;
-	}
+	LogOnScreen(this, TEXT("Starting loading monster asset"), FColor::Orange);
 
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	auto& AssetManager = UAssetManager::Get();
 
-	GetWorld()->SpawnActor<AActor>(MonsterClass, Locations[0], FRotator::ZeroRotator, SpawnParameters);
-	// auto* SpawnedBot = GetWorld()->SpawnActor<AActor>(MinionBotClass, Locations[0], FRotator::ZeroRotator, SpawnParameters);
-	// if (ensure(IsValid(SpawnedBot)))
-	// {
-	// 	DrawDebugSphere(GetWorld(), SpawnedBot->GetActorLocation(), 50, 20, FColor::Blue, false, 60);
-	// }
+	TArray<FName> Bundles;
+	AssetManager.LoadPrimaryAsset(
+		MonsterAssetId,
+		Bundles,
+		FStreamableDelegate::CreateUObject(
+			this,
+			&ThisClass::OnMonsterAssetLoaded,
+			MonsterAssetId,
+			Locations[0]));
 }
 
 void ASGameModeBase::OnPickUpItemSpawnQueryCompleted(
@@ -388,5 +389,45 @@ void ASGameModeBase::OnPickUpItemSpawnQueryCompleted(
 		GetWorld()->SpawnActor<AActor>(PickUpItemClass, SpawnLocation, FRotator::ZeroRotator);
 
 		++SpawnCounter;
+	}
+}
+
+void ASGameModeBase::OnMonsterAssetLoaded(FPrimaryAssetId PrimaryAssetId, FVector SpawnLocation)
+{
+	LogOnScreen(this, TEXT("Finished loading monster asset"), FColor::Green);
+
+	const auto& AssetManager = UAssetManager::Get();
+
+	auto* MonsterData = Cast<USMonsterData>(AssetManager.GetPrimaryAssetObject(PrimaryAssetId));
+	if (!ensure(IsValid(MonsterData)))
+	{
+		return;
+	}
+
+	const auto MonsterClass = MonsterData->MonsterClass;
+	if (!ensure(IsValid(MonsterClass)))
+	{
+		return;
+	}
+
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	auto* SpawnedBot = GetWorld()->SpawnActor<AActor>(MonsterClass, SpawnLocation, FRotator::ZeroRotator, SpawnParameters);
+	if (!(ensure(IsValid(SpawnedBot))))
+	{
+		return;
+	}
+
+	LogOnScreen(
+		this,
+		FString::Printf(TEXT("Spawned enemy: %s (%s)"), *GetNameSafe(SpawnedBot), *GetNameSafe(MonsterData)));
+
+	if (auto* ActionComponent = SpawnedBot->GetComponentByClass<USActionComponent>(); IsValid(ActionComponent))
+	{
+		for (const auto GrantedAction : MonsterData->GrantedActions)
+		{
+			ActionComponent->AddAction(this, GrantedAction);
+		} 
 	}
 }

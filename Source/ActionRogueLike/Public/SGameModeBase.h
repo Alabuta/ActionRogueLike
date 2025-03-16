@@ -21,7 +21,7 @@ struct FSMonsterInfoEntry : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<USMonsterData> MonsterData{nullptr};
+	FPrimaryAssetId MonsterAssetId;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float Weight{1.f};
@@ -113,4 +113,6 @@ private:
 	void OnPickUpItemSpawnQueryCompleted(
 		UEnvQueryInstanceBlueprintWrapper* QueryInstance,
 		EEnvQueryStatus::Type QueryStatus);
+
+	void OnMonsterAssetLoaded(FPrimaryAssetId PrimaryAssetId, FVector SpawnLocation);
 };

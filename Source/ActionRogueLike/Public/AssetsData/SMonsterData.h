@@ -29,4 +29,11 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="UI")
 	TObjectPtr<UTexture2D> Icon;
+
+	virtual FPrimaryAssetId GetPrimaryAssetId() const override;
 };
+
+inline FPrimaryAssetId USMonsterData::GetPrimaryAssetId() const
+{
+	return FPrimaryAssetId{TEXT("MonsterData"), GetFName()};
+}
