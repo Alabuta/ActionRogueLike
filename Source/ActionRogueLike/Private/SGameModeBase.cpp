@@ -15,6 +15,7 @@
 #include "Components/SActionComponent.h"
 #include "Components/SAttributeComponent.h"
 #include "Engine/AssetManager.h"
+#include "EnvironmentQuery/EnvQuery.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/GameStateBase.h"
 #include "Kismet/GameplayStatics.h"
@@ -69,14 +70,8 @@ void ASGameModeBase::StartPlay()
 
 	if (!PickUpItemClasses.IsEmpty() && ensure(PickUpItemSpawnQuery))
 	{
-		auto* EQSQueryInstance = UEnvQueryManager::RunEQSQuery(
-			this,
-			PickUpItemSpawnQuery,
-			this,
-			EEnvQueryRunMode::AllMatching,
-			nullptr);
-
-		EQSQueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ASGameModeBase::OnPickUpItemSpawnQueryCompleted);
+		FEnvQueryRequest Request{PickUpItemSpawnQuery, this};
+		Request.Execute(EEnvQueryRunMode::AllMatching, this, &ThisClass::OnPickUpItemSpawnQueryCompleted);
 	}
 }
 
@@ -266,36 +261,22 @@ void ASGameModeBase::SpawnBotTimerElapsed()
 		return;
 	}
 
-	auto* QueryInstance = UEnvQueryManager::RunEQSQuery(
-		this,
-		FindBotSpawnQuery,
-		this,
-		EEnvQueryRunMode::RandomBest5Pct,
-		nullptr);
-
-	if (ensure(IsValid(QueryInstance)))
-	{
-		QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ASGameModeBase::OnFindBotSpawnQueryCompleted);
-	}
+	FEnvQueryRequest Request{FindBotSpawnQuery, this};
+	Request.Execute(EEnvQueryRunMode::RandomBest5Pct, this, &ThisClass::OnFindBotSpawnQueryCompleted);
 }
 
-void ASGameModeBase::OnFindBotSpawnQueryCompleted(
-	UEnvQueryInstanceBlueprintWrapper* QueryInstance,
-	EEnvQueryStatus::Type QueryStatus)
+void ASGameModeBase::OnFindBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> QueryResult)
 {
-	if (QueryStatus != EEnvQueryStatus::Success)
+	const auto* QueryResultPrr = QueryResult.Get();
+	if (QueryResultPrr == nullptr || !QueryResultPrr->IsSuccessful())
 	{
-		LogOnScreen(
-			this,
-			FString::Printf(
-				TEXT("Spawn bot EQS query failed. Query status is: %s"),
-				*UEnum::GetValueAsString(QueryStatus)),
-			FColor::Red);
 		UE_LOGFMT(LogTemp, Warning, "Spawn bot EQS query failed");
 		return;
 	}
 
-	auto Locations = QueryInstance->GetResultsAsLocations();
+	TArray<FVector> Locations;
+	QueryResultPrr->GetAllAsLocations(Locations);
+
 	if (Locations.IsEmpty())
 	{
 		LogOnScreen(this, TEXT("Locations are empty."), FColor::Red);
@@ -344,18 +325,17 @@ void ASGameModeBase::OnFindBotSpawnQueryCompleted(
 			Locations[0]));
 }
 
-void ASGameModeBase::OnPickUpItemSpawnQueryCompleted(
-	UEnvQueryInstanceBlueprintWrapper* QueryInstance,
-	EEnvQueryStatus::Type QueryStatus)
+void ASGameModeBase::OnPickUpItemSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> QueryResult)
 {
-	if (QueryStatus != EEnvQueryStatus::Success)
+	const auto* QueryResultPrr = QueryResult.Get();
+	if (QueryResultPrr == nullptr || !QueryResultPrr->IsSuccessful())
 	{
 		UE_LOGFMT(LogTemp, Warning, "Spawn pick up item EQS query failed");
 		return;
 	}
 
 	TArray<FVector> QueryResults;
-	QueryInstance->GetQueryResultsAsLocations(QueryResults);
+	QueryResultPrr->GetAllAsLocations(QueryResults);
 
 	if (QueryResults.IsEmpty())
 	{

@@ -104,15 +104,9 @@ private:
 	UFUNCTION()
 	void SpawnBotTimerElapsed();
 
-	UFUNCTION()
-	void OnFindBotSpawnQueryCompleted(
-		UEnvQueryInstanceBlueprintWrapper* QueryInstance,
-		EEnvQueryStatus::Type QueryStatus);
+	void OnFindBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> QueryResult);
 
-	UFUNCTION()
-	void OnPickUpItemSpawnQueryCompleted(
-		UEnvQueryInstanceBlueprintWrapper* QueryInstance,
-		EEnvQueryStatus::Type QueryStatus);
+	void OnPickUpItemSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> QueryResult);
 
 	void OnMonsterAssetLoaded(FPrimaryAssetId PrimaryAssetId, FVector SpawnLocation);
 };
