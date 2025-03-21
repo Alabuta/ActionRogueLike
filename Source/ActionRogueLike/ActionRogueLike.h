@@ -3,6 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Stats/Stats2.h"
+
+
+DECLARE_STATS_GROUP(TEXT("STANFORD_Game"), STATGROUP_STANFORD, STATCAT_Advanced);
 
 
 void LogOnScreen(

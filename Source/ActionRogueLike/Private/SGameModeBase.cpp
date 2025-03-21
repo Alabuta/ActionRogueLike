@@ -53,8 +53,6 @@ void ASGameModeBase::StartPlay()
 
 	if (ensure(IsValid(MonsterDataTable)))
 	{
-		LogOnScreen(this, TEXT("Starting bots spawner timer"));
-
 		GetWorldTimerManager()
 			.SetTimer(
 				TimerHandle_SpawnBots,
@@ -65,12 +63,12 @@ void ASGameModeBase::StartPlay()
 	}
 	else
 	{
-		LogOnScreen(this, TEXT("Invalid monsters table reference"));
+		LogOnScreen(this, TEXT("Invalid monsters table reference"), FColor::Red);
 	}
 
 	if (!PickUpItemClasses.IsEmpty() && ensure(PickUpItemSpawnQuery))
 	{
-		FEnvQueryRequest Request{PickUpItemSpawnQuery, this};
+		FEnvQueryRequest Request{PickUpItemSpawnQuery, nullptr};
 		Request.Execute(EEnvQueryRunMode::AllMatching, this, &ThisClass::OnPickUpItemSpawnQueryCompleted);
 	}
 }
@@ -224,8 +222,6 @@ void ASGameModeBase::SpawnBotTimerElapsed()
 {
 	if (!SConsoleVariables::CVarSpawnBots.GetValueOnGameThread())
 	{
-		LogOnScreen(this, TEXT("Bot spawning is disabled via cvar 'CVarSpawnBots'."), FColor::Red);
-
 		UE_LOGFMT(LogTemp, Warning, "Bot spawning is disabled via cvar 'CVarSpawnBots'.");
 		return;
 	}
@@ -252,17 +248,20 @@ void ASGameModeBase::SpawnBotTimerElapsed()
 
 	if (AliveBotsNum >= AliveBotsMaxCount)
 	{
-		LogOnScreen(
-			this,
-			FString::Printf(TEXT("Maximum bot capacity has reached %d"), AliveBotsNum),
-			FColor::Red);
-
 		UE_LOGFMT(LogTemp, Log, "Maximum bot capacity has reached.");
 		return;
 	}
 
-	FEnvQueryRequest Request{FindBotSpawnQuery, this};
-	Request.Execute(EEnvQueryRunMode::RandomBest5Pct, this, &ThisClass::OnFindBotSpawnQueryCompleted);
+	FEnvQueryRequest Request{FindBotSpawnQuery, nullptr};
+	const auto QueryID = Request.Execute(EEnvQueryRunMode::RandomBest5Pct, this, &ThisClass::OnFindBotSpawnQueryCompleted);
+	if (QueryID == INDEX_NONE)
+	{
+		LogOnScreen(
+			this,
+			FString::Printf(TEXT("Failed to execute EQS query")),
+			FColor::Red);
+		UE_LOGFMT(LogTemp, Warning, "Failed to execute EQS query");
+	}
 }
 
 void ASGameModeBase::OnFindBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> QueryResult)
@@ -279,38 +278,28 @@ void ASGameModeBase::OnFindBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Qu
 
 	if (Locations.IsEmpty())
 	{
-		LogOnScreen(this, TEXT("Locations are empty."), FColor::Red);
 		return;
 	}
 
 	if (!ensure(IsValid(MonsterDataTable)))
 	{
-		LogOnScreen(this, TEXT("Invalid monsters table reference #2"), FColor::Red);
 		return;
 	}
 
 	TArray<FSMonsterInfoEntry*> Monsters;
 	MonsterDataTable->GetAllRows("", Monsters);
 
-	LogOnScreen(
-		this,
-		FString::Printf(TEXT("Monsters count: %d"), Monsters.Num()));
-
 	const int32 Index = FMath::RandRange(0, Monsters.Num() - 1);
 	if (!ensure(Monsters.IsValidIndex(Index)))
 	{
-		LogOnScreen(this, TEXT("Monsters table are empty"), FColor::Red);
 		return;
 	}
 
 	const auto MonsterAssetId = Monsters[Index]->MonsterAssetId;
 	if (!ensure(MonsterAssetId.IsValid()))
 	{
-		LogOnScreen(this, TEXT("MonsterAssetId is invalid"), FColor::Red);
 		return;
 	}
-
-	LogOnScreen(this, TEXT("Starting loading monster asset"), FColor::Orange);
 
 	auto& AssetManager = UAssetManager::Get();
 
@@ -425,10 +414,6 @@ void ASGameModeBase::OnMonsterAssetLoaded(FPrimaryAssetId PrimaryAssetId, FVecto
 	{
 		return;
 	}
-
-	LogOnScreen(
-		this,
-		FString::Printf(TEXT("Spawned enemy: %s (%s)"), *GetNameSafe(SpawnedBot), *GetNameSafe(MonsterData)));
 
 	if (auto* ActionComponent = SpawnedBot->GetComponentByClass<USActionComponent>(); IsValid(ActionComponent))
 	{

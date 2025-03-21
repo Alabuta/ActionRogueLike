@@ -12,6 +12,9 @@
 #include "Net/UnrealNetwork.h"
 
 
+DECLARE_CYCLE_STAT(TEXT("StartActionByName"), STAT_StartActionByName, STATGROUP_STANFORD);
+
+
 USActionComponent::USActionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -37,24 +40,6 @@ bool USActionComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* B
 void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	/*auto DebugMessage = FString::Printf(
-		TEXT("Action Component Tick: %s | %s"),
-		*GetNameSafe(GetOwner()),
-		*ActiveGameplayTags.ToStringSimple()); 
-	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::White, MoveTemp(DebugMessage));*/
-
-	for (const auto* Action : Actions)
-	{
-		const auto Color = Action->IsRunning() ? FColor::Blue : FColor::White;
-
-		const auto Message = FString::Printf(
-			TEXT("[%s] Action: %s"),
-			*GetNameSafe(GetOwner()),
-			*GetNameSafe(Action));
-
-		LogOnScreen(this, Message, Color, 0.f);
-	}
 }
 
 USAction* USActionComponent::GetAction(TSubclassOf<USAction> ActionClass) const
@@ -94,6 +79,7 @@ void USActionComponent::AddAction(AActor* Instigator, const TSubclassOf<USAction
 
 		if (Action->bAutoStart && ensure(Action->CanStartAction(Instigator)))
 		{
+			TRACE_BOOKMARK(TEXT("StartAction::%s"), *GetNameSafe(Action));
 			Action->StartAction(Instigator);
 		}
 	}
@@ -101,6 +87,8 @@ void USActionComponent::AddAction(AActor* Instigator, const TSubclassOf<USAction
 
 bool USActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 {
+	SCOPE_CYCLE_COUNTER(STAT_StartActionByName);
+
 	const auto* ActionPtr = Algo::FindByPredicate(Actions, [Instigator, ActionName](const USAction* Action)
 	{
 		return IsValid(Action) && Action->ActionName == ActionName && Action->CanStartAction(Instigator);
@@ -166,6 +154,19 @@ void USActionComponent::BeginPlay()
 	{
 		AddAction(Owner, ActionClass);
 	}
+}
+
+void USActionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	for (TArray<USAction*> ActionsCopy = Actions; auto* Action : ActionsCopy)
+	{
+		if (Action->IsRunning())
+		{
+			Action->StopAction(GetOwner());
+		}
+	}
+
+	Super::EndPlay(EndPlayReason);
 }
 
 void USActionComponent::ServerStartAction_Implementation(AActor* Instigator, FName ActionName)

@@ -14,6 +14,8 @@ ASMagicProjectile::ASMagicProjectile()
 {
 	ColliderComponent->SetSphereRadius(20.f);
 	ColliderComponent->OnComponentBeginOverlap.AddDynamic(this, &ASMagicProjectile::OnActorOverlap);
+
+	InitialLifeSpan = 10.0f;
 }
 
 void ASMagicProjectile::OnActorOverlap(
