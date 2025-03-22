@@ -25,11 +25,6 @@ ASAICharacter::ASAICharacter()
 
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	if (IsValid(GetCapsuleComponent()))
-	{
-		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
-	}
-
 	if (auto* SkeletalMeshComponent = GetMesh(); IsValid(SkeletalMeshComponent))
 	{
 		SkeletalMeshComponent->SetGenerateOverlapEvents(true);
